@@ -5,20 +5,20 @@ export function AboutUs() {
   const features = [
     {
       icon: Database,
-      title: 'Curated Gold Data',
-      description: 'Premium quality economic data curated from 50+ verified sources, ensuring accuracy and reliability for critical decisions.',
+      title: 'Governed Official Data',
+      description: 'Official economic data organized across Bronze, Silver and Gold layers with source and quality evidence.',
       color: 'text-[#bf1f27] bg-[#bf1f27]/5',
     },
     {
       icon: Zap,
-      title: 'AI-Powered Insights',
-      description: 'Advanced analytics powered by artificial intelligence, transforming raw data into actionable intelligence.',
+      title: 'Source-Backed Insights',
+      description: 'Analytical products calculated from official INE, BNA, MINFIN, ANPG and BODIVA publications.',
       color: 'text-blue-600 bg-blue-50',
     },
     {
       icon: TrendingUp,
-      title: 'Real-Time Analytics',
-      description: 'Live dashboards and instant updates on key economic indicators, financial markets, and social metrics.',
+      title: 'Publication-Led Updates',
+      description: 'Indicators retain their official frequency, reference period and documented publication status.',
       color: 'text-green-600 bg-green-50',
     },
   ];
@@ -37,7 +37,7 @@ export function AboutUs() {
             <p className="text-xl text-muted-foreground leading-relaxed">An integrated intelligence platform focused on Angola’s economic and social data.</p>
             <div className="space-y-4 text-muted-foreground">
               <p className="leading-relaxed">
-                LAZA transforms complex Angolan economic and social data into accessible intelligence, empowering institutions, businesses, and individuals to make smarter decisions through trusted analytics and real-time insights.
+                LAZA transforms complex Angolan economic and social data into accessible intelligence, helping institutions, businesses and individuals make decisions from transparent official evidence.
               </p>
               <p className="leading-relaxed">Our platform serves as the single              point of access for Angola's economic landscape, combining cutting-edge technology with deep local expertise to deliver unparalleled market intelligence and data-driven insights.</p>
             </div>
@@ -52,8 +52,8 @@ export function AboutUs() {
                     <BarChart3 className="w-8 h-8 text-[#bf1f27]" />
                   </div>
                   <div>
-                    <p className="text-3xl">50+</p>
-                    <p className="text-sm text-muted-foreground">Data Sources</p>
+                    <p className="text-3xl">10</p>
+                    <p className="text-sm text-muted-foreground">Official Datasets</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -61,8 +61,8 @@ export function AboutUs() {
                     <Database className="w-8 h-8 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-3xl">100K+</p>
-                    <p className="text-sm text-muted-foreground">Data Points</p>
+                    <p className="text-3xl">36</p>
+                    <p className="text-sm text-muted-foreground">Governed Source Files</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -70,8 +70,8 @@ export function AboutUs() {
                     <TrendingUp className="w-8 h-8 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-3xl">Daily</p>
-                    <p className="text-sm text-muted-foreground">Updates</p>
+                    <p className="text-3xl">4</p>
+                    <p className="text-sm text-muted-foreground">Advanced Analyses</p>
                   </div>
                 </div>
               </div>

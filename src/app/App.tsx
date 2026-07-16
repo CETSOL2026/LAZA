@@ -1,29 +1,92 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { MetricsOverview } from './components/MetricsOverview';
-import { OilGasIntelligence } from './components/OilGasIntelligence';
-import { FiscalExecutionIntelligence } from './components/FiscalExecutionIntelligence';
-import { SovereignYieldCurveIntelligence } from './components/SovereignYieldCurveIntelligence';
-import { OilNonOilGdpIntelligence } from './components/OilNonOilGdpIntelligence';
 import { AdvancedIntelligenceCards } from './components/AdvancedIntelligenceCards';
 import { AdvancedIntelligencePage } from './components/AdvancedIntelligencePage';
-import { EconomySection } from './components/EconomySection';
-import { DataMarketplace } from './components/DataMarketplace';
-import { SourceFilesMarketplace } from './components/SourceFilesMarketplace';
 import { FeaturedInsights } from './components/FeaturedInsights';
-import { AboutUs } from './components/AboutUs';
-import { LazaTeam } from './components/LazaTeam';
-import { Contact } from './components/Contact';
-import { AdminGate } from './components/AdminGate';
+import { TrustAndMethodology } from './components/TrustAndMethodology';
+import { Footer } from './components/Footer';
+
+const OilGasIntelligence = lazy(() => import('./components/OilGasIntelligence').then((module) => ({ default: module.OilGasIntelligence })));
+const FiscalExecutionIntelligence = lazy(() => import('./components/FiscalExecutionIntelligence').then((module) => ({ default: module.FiscalExecutionIntelligence })));
+const SovereignYieldCurveIntelligence = lazy(() => import('./components/SovereignYieldCurveIntelligence').then((module) => ({ default: module.SovereignYieldCurveIntelligence })));
+const OilNonOilGdpIntelligence = lazy(() => import('./components/OilNonOilGdpIntelligence').then((module) => ({ default: module.OilNonOilGdpIntelligence })));
+const EconomySection = lazy(() => import('./components/EconomySection').then((module) => ({ default: module.EconomySection })));
+const DataMarketplace = lazy(() => import('./components/DataMarketplace').then((module) => ({ default: module.DataMarketplace })));
+const SourceFilesMarketplace = lazy(() => import('./components/SourceFilesMarketplace').then((module) => ({ default: module.SourceFilesMarketplace })));
+const AboutUs = lazy(() => import('./components/AboutUs').then((module) => ({ default: module.AboutUs })));
+const LazaTeam = lazy(() => import('./components/LazaTeam').then((module) => ({ default: module.LazaTeam })));
+const Contact = lazy(() => import('./components/Contact').then((module) => ({ default: module.Contact })));
+const AdminGate = lazy(() => import('./components/AdminGate').then((module) => ({ default: module.AdminGate })));
+
+const advancedPaths: Record<string, string> = {
+  'advanced-gdp-diversification': '/intelligence/oil-vs-non-oil-gdp',
+  'advanced-oil-gas': '/intelligence/oil-gas-production',
+  'advanced-fiscal-execution': '/intelligence/fiscal-execution',
+  'advanced-sovereign-yield': '/intelligence/sovereign-yield-curve',
+};
+
+const institutionalPaths: Record<string, string> = { about: '/institutional/about', team: '/institutional/team', contacts: '/institutional/contacts' };
+const officialIndicatorIds = ['gdp-growth', 'inflation-rate', 'exchange-rate', 'population', 'banking-assets', 'public-debt-gdp'];
+const marketplaceTabs = ['kiluange', 'bwila', 'lukeni', 'ekuikui', 'njinga'];
+const methodologyTabs = ['data-quality', 'scn-2008', 'cpi', 'gfs', 'bpm', 'edi', 'equity', 'bond', 'yield', 'fsi', 'traffic', 'macro-fiscal', 'external', 'banking', 'market', 'stress', 'benchmarks'];
+
+function routeFromPath(pathname: string) {
+  const cleanPath = pathname.replace(/\/+$/, '') || '/';
+  const indicatorMatch = cleanPath.match(/^\/indicators\/([a-z0-9-]+)$/);
+  if (indicatorMatch && officialIndicatorIds.includes(indicatorMatch[1])) return { tab: 'official-indicator-detail', indicatorId: indicatorMatch[1], admin: false };
+  const advancedTab = Object.keys(advancedPaths).find((tab) => advancedPaths[tab] === cleanPath);
+  if (advancedTab) return { tab: advancedTab, indicatorId: 'gdp-growth', admin: false };
+  const institutionalTab = Object.keys(institutionalPaths).find((tab) => institutionalPaths[tab] === cleanPath);
+  if (institutionalTab) return { tab: institutionalTab, indicatorId: 'gdp-growth', admin: false };
+  if (cleanPath === '/data') return { tab: 'data-intelligence', indicatorId: 'gdp-growth', admin: false };
+  if (cleanPath === '/admin') return { tab: 'overview', indicatorId: 'gdp-growth', admin: true };
+  const dataMatch = cleanPath.match(/^\/data\/([a-z0-9-]+)$/);
+  if (dataMatch && marketplaceTabs.includes(dataMatch[1])) return { tab: dataMatch[1], indicatorId: 'gdp-growth', admin: false };
+  const methodologyMatch = cleanPath.match(/^\/methodology\/([a-z0-9-]+)$/);
+  if (methodologyMatch && methodologyTabs.includes(methodologyMatch[1])) return { tab: methodologyMatch[1], indicatorId: 'gdp-growth', admin: false };
+  return { tab: 'overview', indicatorId: 'gdp-growth', admin: false };
+}
+
+function pathForTab(tab: string) {
+  if (tab === 'overview') return '/';
+  if (tab === 'data-intelligence') return '/data';
+  if (advancedPaths[tab]) return advancedPaths[tab];
+  if (institutionalPaths[tab]) return institutionalPaths[tab];
+  if (marketplaceTabs.includes(tab)) return `/data/${tab}`;
+  if (methodologyTabs.includes(tab)) return `/methodology/${tab}`;
+  return '/';
+}
+
+function PageLoader() {
+  return <div className="mx-auto max-w-[1400px] px-4 py-20 text-center text-sm text-muted-foreground" role="status">Loading LAZA content...</div>;
+}
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [showAdmin, setShowAdmin] = useState(false);
-  const [selectedOfficialIndicator, setSelectedOfficialIndicator] = useState('gdp-growth');
+  const initialRoute = routeFromPath(window.location.pathname);
+  const [activeTab, setActiveTab] = useState(initialRoute.tab);
+  const [showAdmin, setShowAdmin] = useState(initialRoute.admin);
+  const [selectedOfficialIndicator, setSelectedOfficialIndicator] = useState(initialRoute.indicatorId);
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
+  useEffect(() => {
+    const indicatorTitles: Record<string, string> = { 'gdp-growth': 'GDP Growth', 'inflation-rate': 'Inflation Rate', 'exchange-rate': 'Exchange Rate', population: 'Population', 'banking-assets': 'Banking Assets', 'public-debt-gdp': 'Public Debt/GDP' };
+    const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };
+    const pageTitle = showAdmin ? 'Admin Panel' : activeTab === 'official-indicator-detail' ? indicatorTitles[selectedOfficialIndicator] : tabTitles[activeTab] ?? 'Data & Intelligence';
+    document.title = `${pageTitle} | LAZA`;
+  }, [activeTab, selectedOfficialIndicator, showAdmin]);
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = routeFromPath(window.location.pathname);
+      setActiveTab(route.tab);
+      setSelectedOfficialIndicator(route.indicatorId);
+      setShowAdmin(route.admin);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const advancedPages = {
     'advanced-gdp-diversification': {
@@ -49,25 +112,43 @@ export default function App() {
   } as const;
   const advancedPage = advancedPages[activeTab as keyof typeof advancedPages];
 
-  if (showAdmin) return <AdminGate onBack={() => setShowAdmin(false)} />;
+  const navigateTo = (tab: string) => {
+    const targetPath = pathForTab(tab);
+    if (window.location.pathname !== targetPath) window.history.pushState({}, '', targetPath);
+    setShowAdmin(false);
+    setActiveTab(tab);
+  };
 
   const openOfficialIndicator = (indicatorId: string) => {
+    const targetPath = `/indicators/${indicatorId}`;
+    if (window.location.pathname !== targetPath) window.history.pushState({}, '', targetPath);
+    setShowAdmin(false);
     setSelectedOfficialIndicator(indicatorId);
     setActiveTab('official-indicator-detail');
   };
 
-  return <div className="min-h-screen bg-background">
-    <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-    <button onClick={() => setShowAdmin(true)} className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl bg-secondary px-4 py-2.5 text-sm text-white shadow-xl transition-colors hover:bg-secondary/90" title="Open Admin Dashboard"><span className="h-2 w-2 rounded-full bg-primary" />Admin Panel</button>
+  const openAdmin = () => {
+    if (window.location.pathname !== '/admin') window.history.pushState({}, '', '/admin');
+    setShowAdmin(true);
+  };
 
-    {activeTab === 'overview' && <><Hero /><main className="mx-auto max-w-[1400px] space-y-16 px-4 py-12 sm:px-6 lg:px-8">
-      <MetricsOverview summaryOnly onIndicatorSelect={openOfficialIndicator} />
-      <AdvancedIntelligenceCards onNavigate={setActiveTab} />
-      <FeaturedInsights onNavigate={setActiveTab} />
+  if (showAdmin) return <Suspense fallback={<PageLoader />}><AdminGate onBack={() => navigateTo('overview')} /></Suspense>;
+
+  return <div className="min-h-screen bg-background">
+    <a href="#main-content" className="sr-only z-[100] rounded-lg bg-white px-4 py-2 text-primary focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to main content</a>
+    <Header activeTab={activeTab} setActiveTab={navigateTo} />
+    <div id="main-content" tabIndex={-1}>
+    <Suspense fallback={<PageLoader />}>
+
+    {activeTab === 'overview' && <><Hero onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} /><main className="mx-auto max-w-[1400px] space-y-16 px-4 py-12 sm:px-6 lg:px-8">
+      <div id="official-indicators"><MetricsOverview summaryOnly onIndicatorSelect={openOfficialIndicator} /></div>
+      <AdvancedIntelligenceCards onNavigate={navigateTo} />
+      <FeaturedInsights onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} />
+      <TrustAndMethodology onNavigate={navigateTo} />
     </main></>}
 
     {activeTab === 'official-indicator-detail' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
-      <button type="button" onClick={() => setActiveTab('overview')} className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
+      <button type="button" onClick={() => navigateTo('overview')} className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
         <ArrowLeft className="h-4 w-4" /> Back to overview
       </button>
       <MetricsOverview key={selectedOfficialIndicator} initialSelectedId={selectedOfficialIndicator} />
@@ -75,7 +156,7 @@ export default function App() {
 
     {activeTab === 'data-intelligence' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><SourceFilesMarketplace /></main>}
 
-    {advancedPage && <AdvancedIntelligencePage topic={advancedPage.topic} title={advancedPage.title} description={advancedPage.description} onBack={() => setActiveTab('overview')}>{advancedPage.content}</AdvancedIntelligencePage>}
+    {advancedPage && <AdvancedIntelligencePage topic={advancedPage.topic} title={advancedPage.title} description={advancedPage.description} onBack={() => navigateTo('overview')}>{advancedPage.content}</AdvancedIntelligencePage>}
 
     {(['kiluange', 'bwila', 'lukeni', 'ekuikui', 'njinga'].includes(activeTab)) && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><DataMarketplace /></main>}
 
@@ -85,5 +166,8 @@ export default function App() {
     {activeTab === 'about' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><AboutUs /></main>}
     {activeTab === 'team' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><LazaTeam /></main>}
     {activeTab === 'contacts' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><Contact /></main>}
+    </Suspense>
+    </div>
+    <Footer onNavigate={navigateTo} onAdmin={openAdmin} />
   </div>;
 }

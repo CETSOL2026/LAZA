@@ -1,4 +1,4 @@
-import { BarChart3, Database, FileText, Building, ChevronDown, ChevronRight } from 'lucide-react';
+import { BarChart3, Database, FileText, Building, ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import logoFull from '../../imports/Artboard_1_3.png';
 
@@ -10,6 +10,7 @@ interface HeaderProps {
 export function Header({ activeTab, setActiveTab }: HeaderProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [leaveTimeout, setLeaveTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const advancedTabs = ['advanced-gdp-diversification', 'advanced-oil-gas', 'advanced-fiscal-execution', 'advanced-sovereign-yield'];
 
@@ -72,12 +73,18 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
     setLeaveTimeout(timeout);
   };
 
+  const activate = (tab: string) => {
+    setActiveTab(tab);
+    setOpenDropdown(null);
+    setMobileOpen(false);
+  };
+
   return (
       <header className="sticky top-0 z-50 w-full bg-[#bf1f27] border-b border-[#a81b22] shadow-sm">
         <div className="mx-auto max-w-[1400px] px-[32px] py-[10px]">
           <div className="flex h-16 items-center justify-between px-[0px] py-[20px]">
             <div className="flex items-center gap-12">
-              <button onClick={() => setActiveTab('overview')} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <button onClick={() => activate('overview')} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <img src={logoFull} alt="LAZA" className="h-10" />
               </button>
 
@@ -96,7 +103,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                           if (item.hasDropdown) {
                             setOpenDropdown(openDropdown === item.id ? null : item.id);
                           } else {
-                            setActiveTab(item.id);
+                            activate(item.id);
                           }
                         }}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${
@@ -117,8 +124,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                             <button
                               key={dropdownItem.id}
                               onClick={() => {
-                                setActiveTab(dropdownItem.id);
-                                setOpenDropdown(null);
+                                activate(dropdownItem.id);
                               }}
                               className={`group w-full border-t text-left transition-colors hover:bg-[#bf1f27]/5 ${index === 0 ? 'border-border/70' : 'border-transparent'} px-4 py-3`}
                             >
@@ -135,15 +141,23 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
               </nav>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button className="hidden sm:block px-4 py-2 rounded-lg border border-white/30 text-white text-sm hover:bg-white/10 transition-colors">
-                API Access
+            <div className="hidden items-center gap-3 md:flex">
+              <button onClick={() => activate('data-quality')} className="px-4 py-2 rounded-lg border border-white/30 text-white text-sm hover:bg-white/10 transition-colors">
+                Methodology
               </button>
-              <button className="px-5 py-2 rounded-lg bg-white text-[#bf1f27] text-sm hover:bg-white/90 transition-colors shadow-sm">
-                Get Started
+              <button onClick={() => activate('data-intelligence')} className="px-5 py-2 rounded-lg bg-white text-[#bf1f27] text-sm hover:bg-white/90 transition-colors shadow-sm">
+                Browse Data
               </button>
             </div>
+            <button type="button" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileOpen} className="rounded-lg border border-white/25 p-2.5 text-white transition-colors hover:bg-white/10 md:hidden">{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
           </div>
+          {mobileOpen && <nav className="border-t border-white/15 pb-4 pt-3 md:hidden">
+            {navItems.map((item) => { const Icon = item.icon; return <div key={item.id} className="py-1">
+              <button type="button" onClick={() => !item.hasDropdown && activate(item.id)} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-white"><Icon className="h-4 w-4" />{item.label}</button>
+              {item.hasDropdown && <div className="ml-6 grid gap-1 border-l border-white/15 pl-3">{item.dropdownItems?.map((dropdownItem) => <button type="button" key={dropdownItem.id} onClick={() => activate(dropdownItem.id)} className="rounded-lg px-3 py-2 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white">{dropdownItem.label}</button>)}</div>}
+            </div>; })}
+            <button type="button" onClick={() => activate('data-intelligence')} className="mt-3 w-full rounded-lg bg-white px-4 py-2.5 text-sm text-[#bf1f27]">Browse official data</button>
+          </nav>}
         </div>
       </header>
   );

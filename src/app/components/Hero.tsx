@@ -1,176 +1,87 @@
-import { Search, ArrowRight, TrendingUp, Database, Globe } from 'lucide-react';
-import { useState } from 'react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { getIndicatorById } from '../data/indicators';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { ArrowRight, BarChart3, CheckCircle2, Database, FileDown, Layers3, Search, ShieldCheck } from 'lucide-react';
+import { loadLatestIndicators, PilotIndicator } from '../data/indicators';
 
-export function Hero() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const gdpGrowth = getIndicatorById('gdp-growth');
-  const inflationRate = getIndicatorById('inflation-rate');
+interface HeroProps {
+  onNavigate: (tab: string) => void;
+  onIndicatorSelect: (indicatorId: string) => void;
+}
 
-  const carouselSlides = [
-    {
-      id: 1,
-      title: 'GDP Growth',
-      value: gdpGrowth?.value ?? '—',
-      description: 'Year-over-year growth',
-      trend: 'positive',
-      image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
-    },
-    {
-      id: 2,
-      title: 'Inflation Rate',
-      value: inflationRate?.value ?? '—',
-      description: 'Year-over-year change',
-      trend: 'neutral',
-      image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
-    },
-    {
-      id: 3,
-      title: 'Laza Equity Index',
-      value: '1,248.5',
-      description: 'Latest index reading',
-      trend: 'positive',
-      image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
-    },
-    {
-      id: 4,
-      title: 'Economic Diversification Index',
-      value: '64.2',
-      description: 'Diversification score',
-      trend: 'positive',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
-    },
-  ];
+const searchItems = [
+  { label: 'GDP Growth', keywords: 'gdp pib growth crescimento', indicatorId: 'gdp-growth' },
+  { label: 'Inflation Rate', keywords: 'inflation inflacao ipcn prices precos', indicatorId: 'inflation-rate' },
+  { label: 'Exchange Rate', keywords: 'exchange cambio usd aoa bna', indicatorId: 'exchange-rate' },
+  { label: 'Population', keywords: 'population populacao census censo', indicatorId: 'population' },
+  { label: 'Banking Assets', keywords: 'banking banks ativos bancarios', indicatorId: 'banking-assets' },
+  { label: 'Public Debt/GDP', keywords: 'public debt divida publica gdp pib', indicatorId: 'public-debt-gdp' },
+  { label: 'Oil vs. Non-Oil GDP', keywords: 'oil non-oil petroleo diversificacao', tab: 'advanced-gdp-diversification' },
+  { label: 'Oil & Gas Production', keywords: 'oil gas production anpg petroleo', tab: 'advanced-oil-gas' },
+  { label: 'Fiscal Execution', keywords: 'fiscal budget revenue expenditure minfin', tab: 'advanced-fiscal-execution' },
+  { label: 'Sovereign Yield Curve', keywords: 'yield curve treasury bodiva juros', tab: 'advanced-sovereign-yield' },
+  { label: 'Official Source Marketplace', keywords: 'data files downloads sources ficheiros fontes', tab: 'data-intelligence' },
+];
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    arrows: false,
-    pauseOnHover: true,
+export function Hero({ onNavigate, onIndicatorSelect }: HeroProps) {
+  const [query, setQuery] = useState('');
+  const [latest, setLatest] = useState<PilotIndicator[]>([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    loadLatestIndicators(controller.signal).then((payload) => setLatest(payload.data)).catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+
+  const matches = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return [];
+    return searchItems.filter((item) => `${item.label} ${item.keywords}`.toLowerCase().includes(normalized)).slice(0, 5);
+  }, [query]);
+
+  const openItem = (item: (typeof searchItems)[number]) => {
+    setQuery('');
+    if (item.indicatorId) onIndicatorSelect(item.indicatorId);
+    else if (item.tab) onNavigate(item.tab);
   };
 
-  return (
-    <div className="relative bg-gradient-to-br from-primary/5 via-white to-accent border-b border-border">
-      <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
+  const submitSearch = (event: FormEvent) => {
+    event.preventDefault();
+    if (matches[0]) openItem(matches[0]);
+    else onNavigate('data-intelligence');
+  };
 
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#bf1f27]/10 text-[#bf1f27] text-sm mb-6">
-              <Database className="w-4 h-4" />
-              Laza's Intelligence Hub
-            </div>
+  const gdp = latest.find((indicator) => indicator.id === 'gdp-growth');
+  const inflation = latest.find((indicator) => indicator.id === 'inflation-rate');
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Unlock insights into Angola's economy, society, and finance
-            </h1>
+  return <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary/5 via-white to-slate-50">
+    <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-20">
+      <div className="max-w-3xl">
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary"><Database className="h-4 w-4" />Official intelligence for Angola</div>
+        <h1 className="mb-5 text-4xl tracking-tight text-foreground sm:text-5xl lg:text-6xl">Trusted economic and financial data, ready for decision-making</h1>
+        <p className="mb-7 max-w-2xl text-lg leading-relaxed text-muted-foreground">Explore six official indicators, four advanced analytical products and the original source files preserved with quality and lineage evidence.</p>
 
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl leading-relaxed">
-              Centralized, curated data providing a comprehensive understanding of Angola's economic indicators, financial systems, and social dynamics.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search datasets, indicators, reports..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-border bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#bf1f27]/20 focus:border-[#bf1f27] transition-all"
-                />
-              </div>
-              <button className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#bf1f27] to-[#DC2626] text-white hover:from-[#8a0d1f] hover:to-[#b91c1c] transition-all shadow-sm flex items-center justify-center gap-2 whitespace-nowrap">Explore Data<ArrowRight className="w-4 h-4" /></button>
-            </div>
-
-            <div className="flex flex-wrap gap-6">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-[#bf1f27]/20 flex items-center justify-center border-2 border-white">
-                    <TrendingUp className="w-4 h-4 text-[#bf1f27]" />
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border-2 border-white">
-                    <Database className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center border-2 border-white">
-                    <Globe className="w-4 h-4 text-green-600" />
-                  </div>
-                </div>
-                <span>50+ Data Sources</span>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                <span className="text-foreground">Updated Daily</span> • Real-time insights
-              </div>
-            </div>
+        <form onSubmit={submitSearch} className="mb-7 flex flex-col gap-3 sm:flex-row">
+          <div className="relative max-w-xl flex-1">
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+            <input value={query} onChange={(event) => setQuery(event.target.value)} aria-label="Search indicators and datasets" placeholder="Search indicators, analyses or source files..." className="w-full rounded-xl border-2 border-border bg-white py-3.5 pl-12 pr-4 shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" />
+            {matches.length > 0 && <div className="absolute left-0 right-0 top-full z-40 mt-2 overflow-hidden rounded-xl border border-border bg-white py-1 shadow-xl">{matches.map((item) => <button type="button" key={item.label} onClick={() => openItem(item)} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm transition-colors hover:bg-primary/5 hover:text-primary"><span>{item.label}</span><ArrowRight className="h-4 w-4" /></button>)}</div>}
           </div>
+          <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-white shadow-sm transition-colors hover:bg-primary/90">Search <ArrowRight className="h-4 w-4" /></button>
+        </form>
 
-          <div className="hidden lg:flex items-center justify-center relative">
-            <div className="relative w-full max-w-lg">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#bf1f27]/20 to-blue-500/20 rounded-2xl blur-3xl opacity-50"></div>
-
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border bg-white">
-                <Slider {...sliderSettings}>
-                  {carouselSlides.map((slide) => (
-                    <div key={slide.id} className="outline-none">
-                      <div className="relative">
-                        <img
-                          src={slide.image}
-                          alt={slide.title}
-                          className="w-full h-64 object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                          <p className="text-sm opacity-90 mb-1">{slide.description}</p>
-                          <h3 className="text-2xl mb-2">{slide.title}</h3>
-                          <p className="text-4xl">{slide.value}</p>
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${slide.bgColor}`}>
-                          <TrendingUp className={`w-5 h-5 ${slide.color}`} />
-                          <span className={`text-sm ${slide.color}`}>
-                            {slide.trend === 'positive' ? 'Positive Trend' : 'Stable'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </Slider>
-              </div>
-
-              <style jsx global>{`
-                .slick-dots {
-                  bottom: -35px;
-                }
-                .slick-dots li button:before {
-                  color: #bf1f27;
-                  font-size: 8px;
-                }
-                .slick-dots li.slick-active button:before {
-                  color: #bf1f27;
-                  opacity: 1;
-                }
-              `}</style>
-            </div>
-          </div>
+        <div className="flex flex-wrap gap-3">
+          <button type="button" onClick={() => document.getElementById('official-indicators')?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-white px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/5"><BarChart3 className="h-4 w-4" />View official indicators</button>
+          <button type="button" onClick={() => onNavigate('data-intelligence')} className="inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-sm transition-colors hover:bg-muted"><FileDown className="h-4 w-4" />Download source files</button>
         </div>
       </div>
+
+      <div className="rounded-2xl border border-border bg-white p-6 shadow-xl shadow-slate-200/60">
+        <div className="flex items-start justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.16em] text-primary">MVP coverage</p><h2 className="mt-1 text-2xl">Official data foundation</h2></div><div className="rounded-xl bg-emerald-50 p-3 text-emerald-700"><ShieldCheck className="h-6 w-6" /></div></div>
+        <div className="mt-6 grid grid-cols-2 gap-3">{[
+          ['6', 'Official indicators'], ['4', 'Advanced analyses'], ['36', 'Source files'], ['10', 'Official datasets'],
+        ].map(([value, label]) => <div key={label} className="rounded-xl bg-slate-50 p-4"><p className="text-2xl text-primary">{value}</p><p className="mt-1 text-xs text-muted-foreground">{label}</p></div>)}</div>
+        <div className="mt-5 rounded-xl border border-border p-4"><div className="mb-3 flex items-center gap-2 text-sm"><Layers3 className="h-4 w-4 text-primary" />Bronze → Silver → Gold lineage</div><div className="space-y-2 text-xs text-muted-foreground"><p className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />Source files archived locally with SHA-256 evidence</p><p className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />Published values exposed through read-only APIs</p></div></div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2"><button type="button" onClick={() => onIndicatorSelect('gdp-growth')} className="rounded-xl border border-border p-4 text-left transition hover:border-primary/30 hover:bg-primary/5"><p className="text-xs text-muted-foreground">Latest GDP growth</p><p className="mt-1 text-xl">{gdp?.value ?? 'Loading...'}</p><p className="mt-1 text-xs text-muted-foreground">{gdp?.period ?? 'Official series'}</p></button><button type="button" onClick={() => onIndicatorSelect('inflation-rate')} className="rounded-xl border border-border p-4 text-left transition hover:border-primary/30 hover:bg-primary/5"><p className="text-xs text-muted-foreground">Latest inflation</p><p className="mt-1 text-xl">{inflation?.value ?? 'Loading...'}</p><p className="mt-1 text-xs text-muted-foreground">{inflation?.period ?? 'Official series'}</p></button></div>
+      </div>
     </div>
-  );
+  </section>;
 }

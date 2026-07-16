@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, ExternalLink, Info, Minus, TrendingDown, TrendingUp } from 'lucide-react';
-import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import {
   IndicatorHistoryPoint,
   loadBankingAssetsHistory,
@@ -13,19 +12,7 @@ import {
   pilotIndicators,
 } from '../data/indicators';
 
-function InflationTooltip({ active, payload }: any) {
-  if (!active || !payload?.length) return null;
-  const point = payload[0].payload as IndicatorHistoryPoint;
-  return (
-    <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-lg">
-      <p className="font-medium">{point.period}</p>
-      <p className="mt-1 text-primary">{point.displayValue}</p>
-      <p className="mt-1 text-muted-foreground">Quality score {point.qualityScore.toFixed(2)}</p>
-      {point.hasAcceptedException && <p className="mt-1 text-amber-700">Accepted reconciliation exception</p>}
-      {point.hasSourceWarning && <p className="mt-1 text-amber-700">{point.sourceWarningMessage ?? 'Source warning documented'}</p>}
-    </div>
-  );
-}
+const IndicatorHistoryChart = lazy(() => import('./IndicatorHistoryChart').then((module) => ({ default: module.IndicatorHistoryChart })));
 
 interface MetricsOverviewProps {
   summaryOnly?: boolean;
@@ -102,8 +89,8 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
     <section>
       <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 className="mb-1 text-2xl tracking-tight">Pilot Indicators</h2>
-          <p className="text-muted-foreground">Six indicators prepared for the first staged data integration test.</p>
+          <h2 className="mb-1 text-2xl tracking-tight">Official Indicators</h2>
+          <p className="text-muted-foreground">Six source-backed indicators published through the governed LAZA data platform.</p>
         </div>
         <div className={`inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${
           connectionStatus === 'connected'
@@ -159,6 +146,10 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
               <div className="space-y-1">
                 <p className="text-2xl tracking-tight transition-colors group-hover:text-primary">{metric.value}</p>
                 <p className="text-xs text-muted-foreground">{metric.label}</p>
+              </div>
+              <div className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-3 text-[11px] text-muted-foreground">
+                <span className="truncate" title={metric.sourceName}>{metric.sourceName}</span>
+                <span className="shrink-0">{metric.qualityScore != null ? `Q ${metric.qualityScore.toFixed(1)}` : metric.qualityStatus}</span>
               </div>
             </button>
           );
@@ -236,42 +227,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
                     <div className="text-xs text-muted-foreground">{selected.id === 'gdp-growth' ? '21 official observations / Q1 2021-Q1 2026' : selected.id === 'population' ? '2 official censuses / 2014 and 2024' : selected.id === 'banking-assets' ? '65 official observations / Jan 2021-May 2026' : selected.id === 'public-debt-gdp' ? '2 official periods / 2025 and Q1 2026' : '66 official observations / Jan 2021-Jun 2026'}</div>
                   </div>
 
-                  <ResponsiveContainer width="100%" height={320}>
-                    <AreaChart data={inflationHistory} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
-                      <defs>
-                        <linearGradient id="inflationGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#bf1f27" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#bf1f27" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis
-                        dataKey="period"
-                        interval={['population', 'public-debt-gdp'].includes(selected.id) ? 0 : selected.id === 'gdp-growth' ? 3 : 11}
-                        stroke="#6b7280"
-                        style={{ fontSize: '12px' }}
-                      />
-                      <YAxis
-                        domain={['dataMin - 2', 'dataMax + 2']}
-                        tickFormatter={(value) => selected.id === 'exchange-rate' ? `${value}` : selected.id === 'population' ? `${value}M` : selected.id === 'banking-assets' ? `Kz ${value}tn` : `${value}%`}
-                        stroke="#6b7280"
-                        style={{ fontSize: '12px' }}
-                        width={48}
-                      />
-                      <Tooltip content={<InflationTooltip />} />
-                      <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '12px' }} />
-                      <Area
-                        type="monotone"
-                        dataKey="numericValue"
-                        name={selected.id === 'inflation-rate' ? 'Inflation YoY (%)' : selected.id === 'exchange-rate' ? 'Exchange rate (AOA/USD)' : selected.id === 'gdp-growth' ? 'Real GDP YoY (%)' : selected.id === 'population' ? 'Resident population (millions)' : selected.id === 'banking-assets' ? 'Banking assets (Kz trillion)' : 'Public debt (% GDP)'}
-                        stroke="#bf1f27"
-                        strokeWidth={2}
-                        fill="url(#inflationGradient)"
-                        fillOpacity={1}
-                        activeDot={{ r: 4, fill: '#bf1f27', stroke: '#ffffff', strokeWidth: 2 }}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  <Suspense fallback={<div className="flex h-80 items-center justify-center text-sm text-muted-foreground" role="status">Loading chart...</div>}><IndicatorHistoryChart indicatorId={selected.id} history={inflationHistory} /></Suspense>
                 </div>
 
                 <div className="mt-5 overflow-hidden rounded-lg border border-border bg-white">
