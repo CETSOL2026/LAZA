@@ -26,6 +26,8 @@
 | 16 | `16_validate_ipcn_2021_reconciliation_exceptions.sql` | Validate approved exceptions, preserved warnings and Gold isolation | No |
 | 17 | `17_publish_ine_ipcn_2021_2026_gold.sql` | Approve the 66 official observations and publish the validated IPCN series to Gold | Inserts OFFICIAL approvals, updates Silver publication state and inserts Gold facts |
 | 18 | `18_validate_ine_ipcn_gold_publication.sql` | Validate official Gold counts, lineage, scores and API latest result | No |
+| 19 | `19_create_ipcn_incremental_procedure.sql` | Create the guarded one-month IPCN Bronze-to-Gold procedure | Creates or alters one stored procedure |
+| 20 | `20_simulate_ipcn_incremental_67_rollback.sql` | Prove a synthetic 67th month through the complete pipeline and roll it back | No persistent changes |
 | 99 | `99_rollback.sql` | Remove the entire POC database after explicit confirmation | **Yes** |
 
 ## Safety properties

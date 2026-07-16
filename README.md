@@ -26,6 +26,25 @@ Clicking the official inflation indicator loads its 66 published monthly
 observations from `/api/indicators/inflation-rate/history`, with a trend chart,
 exact-value table, quality scores and accepted-exception labels for 2021.
 
+## Monthly IPCN automation
+
+Run discovery without writes:
+
+```powershell
+.\scripts\ipcn\Invoke-LazaIpcnPipeline.ps1 -Mode Discover
+```
+
+Run the guarded incremental pipeline:
+
+```powershell
+.\scripts\ipcn\Invoke-LazaIpcnPipeline.ps1 -Mode Run
+```
+
+The scheduled task checks the official INE portal daily at 09:15. It writes
+nothing when the portal period is not newer than Gold, and only publishes the
+single next consecutive month after PDF signature, SHA-256, headline/table and
+homologue reconciliation checks pass.
+
 ## Validation rule
 
 Do not remove the demonstration-data label until the exact source asset,
