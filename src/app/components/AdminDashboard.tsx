@@ -236,7 +236,7 @@ function EditDrawer({
 }
 
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
-export function AdminDashboard({ onBack }: { onBack: () => void }) {
+export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLogout: () => void }) {
   const [activeNav, setActiveNav] = useState('data-management');
   const [datasets, setDatasets] = useState<Dataset[]>(SAMPLE_DATASETS);
   const [search, setSearch] = useState('');
@@ -437,7 +437,7 @@ export function AdminDashboard({ onBack }: { onBack: () => void }) {
                     </button>
                   ))}
                   <div className="border-t border-border mt-1 pt-1">
-                    <button onClick={onBack} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-muted/60 transition-colors">
+                    <button onClick={onLogout} className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-muted/60 transition-colors">
                       Sign out
                     </button>
                   </div>

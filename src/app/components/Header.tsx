@@ -1,7 +1,6 @@
-import { BarChart3, Database, FileText, Building, ChevronDown } from 'lucide-react';
+import { BarChart3, Database, FileText, Building, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import logoFull from '../../imports/Artboard_1_3.png';
-import { PricingModal } from './PricingModal';
 
 interface HeaderProps {
   activeTab: string;
@@ -11,7 +10,8 @@ interface HeaderProps {
 export function Header({ activeTab, setActiveTab }: HeaderProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [leaveTimeout, setLeaveTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [pricingOpen, setPricingOpen] = useState(false);
+
+  const advancedTabs = ['advanced-gdp-diversification', 'advanced-oil-gas', 'advanced-fiscal-execution', 'advanced-sovereign-yield'];
 
   const navItems = [
     {
@@ -24,7 +24,14 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
       id: 'data-intelligence',
       label: 'Data & Intelligence',
       icon: Database,
-      hasDropdown: false,
+      hasDropdown: true,
+      dropdownItems: [
+        { id: 'data-intelligence', label: 'Data Marketplace', topic: 'Data Catalogue', description: 'Datasets, formats and access options' },
+        { id: 'advanced-gdp-diversification', label: 'Oil vs. Non-Oil GDP', topic: 'Macroeconomy & Diversification', description: 'Growth, contribution and economic structure' },
+        { id: 'advanced-oil-gas', label: 'Oil & Gas Production', topic: 'Energy', description: 'Production, forecast and gas allocation' },
+        { id: 'advanced-fiscal-execution', label: 'Fiscal Execution', topic: 'Public Finance', description: 'Revenue, expenditure and budget balance' },
+        { id: 'advanced-sovereign-yield', label: 'Sovereign Yield Curve', topic: 'Capital Markets', description: 'Observed yields, spreads and curve shifts' },
+      ],
     },
     {
       id: 'policies',
@@ -65,13 +72,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
     setLeaveTimeout(timeout);
   };
 
-  const handleStarterSelect = () => {
-    setPricingOpen(false);
-    setActiveTab('data-intelligence');
-  };
-
   return (
-    <>
       <header className="sticky top-0 z-50 w-full bg-[#bf1f27] border-b border-[#a81b22] shadow-sm">
         <div className="mx-auto max-w-[1400px] px-[32px] py-[10px]">
           <div className="flex h-16 items-center justify-between px-[0px] py-[20px]">
@@ -92,14 +93,14 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                     >
                       <button
                         onClick={() => {
-                          if (item.id === 'data-intelligence') {
-                            setPricingOpen(true);
-                          } else if (!item.hasDropdown) {
+                          if (item.hasDropdown) {
+                            setOpenDropdown(openDropdown === item.id ? null : item.id);
+                          } else {
                             setActiveTab(item.id);
                           }
                         }}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${
-                          activeTab === item.id
+                          activeTab === item.id || (item.id === 'data-intelligence' && advancedTabs.includes(activeTab))
                             ? 'bg-white/20 text-white'
                             : 'text-white/90 hover:bg-white/10 hover:text-white'
                         }`}
@@ -110,17 +111,20 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                       </button>
 
                       {item.hasDropdown && openDropdown === item.id && (
-                        <div className="absolute top-full left-0 mt-0.5 w-64 bg-white rounded-lg shadow-xl border border-border py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                          {item.dropdownItems?.map((dropdownItem) => (
+                        <div className={`absolute top-full left-0 mt-0.5 bg-white rounded-xl shadow-xl border border-border py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 ${item.id === 'data-intelligence' ? 'w-[390px]' : 'w-64'}`}>
+                          {item.id === 'data-intelligence' && <div className="px-4 pb-2 pt-1"><p className="text-[11px] uppercase tracking-[0.16em] text-[#bf1f27]">Advanced Market Intelligence</p><p className="mt-1 text-xs text-muted-foreground">Official indicators organised by analytical topic</p></div>}
+                          {item.dropdownItems?.map((dropdownItem, index) => (
                             <button
                               key={dropdownItem.id}
                               onClick={() => {
                                 setActiveTab(dropdownItem.id);
                                 setOpenDropdown(null);
                               }}
-                              className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-[#bf1f27]/5 hover:text-[#bf1f27] transition-colors"
+                              className={`group w-full border-t text-left transition-colors hover:bg-[#bf1f27]/5 ${index === 0 ? 'border-border/70' : 'border-transparent'} px-4 py-3`}
                             >
-                              {dropdownItem.label}
+                              {'topic' in dropdownItem && <span className="block text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{dropdownItem.topic}</span>}
+                              <span className="mt-0.5 flex items-center justify-between gap-3 text-sm text-foreground group-hover:text-[#bf1f27]">{dropdownItem.label}<ChevronRight className="h-3.5 w-3.5 opacity-40" /></span>
+                              {'description' in dropdownItem && <span className="mt-0.5 block text-xs text-muted-foreground">{dropdownItem.description}</span>}
                             </button>
                           ))}
                         </div>
@@ -142,12 +146,5 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
           </div>
         </div>
       </header>
-
-      <PricingModal
-        isOpen={pricingOpen}
-        onClose={() => setPricingOpen(false)}
-        onSelectStarter={handleStarterSelect}
-      />
-    </>
   );
 }

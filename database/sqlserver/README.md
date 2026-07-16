@@ -37,6 +37,7 @@
 | 26 | `26_load_anpg_oil_gas_production_2025_2026.sql` | Load 18 ANPG monthly oil, gas-allocation and Angola LNG publications for January 2025 through June 2026 | Inserts 18 Bronze assets and 252 official Silver/DQ/Gold observations; creates the analytical API view and records two accepted source exceptions |
 | 27 | `27_load_minfin_fiscal_execution_2025_2026.sql` | Load official MINFIN quarterly budget execution from 2025 Q1 through 2026 Q1 | Inserts 5 Bronze PDF assets and 80 official Silver/DQ/Gold observations; creates the fiscal analytical API view and records three accepted source exceptions |
 | 28 | `28_load_bodiva_sovereign_yield_curve_2025_2026.sql` | Load four official BODIVA kwanza sovereign-yield snapshots from February 2025 through June 2026 | Inserts 4 Bronze PDFs and 48 official Silver/DQ/Gold tenor observations; creates the curve analytical API view without interpolation |
+| 30 | `30_create_source_asset_mirror.sql` | Create the governed local-mirror registry used by Marketplace downloads | Creates one control table; does not overwrite Bronze lineage |
 | 99 | `99_rollback.sql` | Remove the entire POC database after explicit confirmation | **Yes** |
 
 ## Safety properties
@@ -72,6 +73,12 @@ See [`BACKUP.md`](BACKUP.md) for the verified initial `COPY_ONLY` baseline.
 
 See [`LANDING.md`](LANDING.md) for the external landing, archive, rejected,
 manifest and log contract.
+
+After script 30, run `scripts/archive/Archive-LazaOfficialSourceAssets.ps1`
+with PowerShell execution-policy bypass. The idempotent routine copies or
+downloads each official Bronze source once into
+`D:\LAZA_DATA\archive\official-source-assets`, verifies its SHA-256 evidence
+and registers the local path used by the Marketplace API.
 
 The first acquired official-source evidence is recorded in
 [`evidence/ine-ipcn-2026-06-manifest.json`](evidence/ine-ipcn-2026-06-manifest.json)

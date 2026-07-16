@@ -1,4 +1,6 @@
 import { execFile } from 'node:child_process';
+import { createHash, pbkdf2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
@@ -12,6 +14,33 @@ const instance = process.env.LAZA_SQL_INSTANCE ?? '.\\SQLEXPRESS';
 const database = process.env.LAZA_SQL_DATABASE ?? 'LAZA_DATA_PLATFORM_DEV';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.join(projectRoot, 'dist');
+const adminAuthConfigPath = process.env.LAZA_ADMIN_AUTH_CONFIG ?? 'D:\\LAZA_DATA\\config\\laza-admin-auth.json';
+const adminSessionTtlMs = 8 * 60 * 60 * 1000;
+const adminLoginWindowMs = 15 * 60 * 1000;
+const adminLoginMaxFailures = 5;
+
+function loadAdminAuthConfig() {
+  try {
+    const config = JSON.parse(readFileSync(adminAuthConfigPath, 'utf8').replace(/^\uFEFF/, ''));
+    if (typeof config.username !== 'string' || !config.username.trim()) throw new Error('username is missing');
+    if (!Number.isInteger(config.iterations) || config.iterations < 100_000) throw new Error('iterations are invalid');
+    if (!/^[A-Fa-f0-9]{32,}$/.test(config.saltHex)) throw new Error('saltHex is invalid');
+    if (!/^[A-Fa-f0-9]{64}$/.test(config.passwordHashHex)) throw new Error('passwordHashHex is invalid');
+    return {
+      username: config.username,
+      iterations: config.iterations,
+      salt: Buffer.from(config.saltHex, 'hex'),
+      passwordHash: Buffer.from(config.passwordHashHex, 'hex'),
+    };
+  } catch (error) {
+    console.error(`LAZA admin authentication is unavailable: ${error.message}`);
+    return null;
+  }
+}
+
+const adminAuth = loadAdminAuthConfig();
+const adminSessions = new Map();
+const adminLoginFailures = new Map();
 
 const contentTypes = new Map([
   ['.css', 'text/css; charset=utf-8'],
@@ -300,6 +329,40 @@ ORDER BY period_start
 FOR JSON PATH;
 `;
 
+const downloadCatalogQuery = `
+SET NOCOUNT ON;
+SELECT a.source_asset_id AS assetId,
+       p.pipeline_code AS pipelineCode,
+       b.batch_code AS batchCode,
+       s.source_code AS sourceCode,
+       s.source_name AS sourceName,
+       s.organization_name AS organizationName,
+       s.homepage_url AS sourceHomepageUrl,
+       a.asset_type AS assetType,
+       a.asset_name AS assetName,
+       CONVERT(char(10),a.publication_date,23) AS publicationDate,
+       m.mirror_size_bytes AS contentSizeBytes,
+       CONVERT(varchar(64),m.mirror_sha256,2) AS sha256,
+       CONVERT(varchar(64),a.content_hash,2) AS registeredSha256,
+       m.mirror_status AS mirrorStatus,
+       N'LOCAL_ARCHIVE' AS storageMode,
+       CONVERT(bit,0) AS isRemote
+FROM bronze.source_asset a
+JOIN control.ingestion_batch b ON b.ingestion_batch_id=a.ingestion_batch_id
+JOIN control.pipeline_run run ON run.pipeline_run_id=b.pipeline_run_id
+JOIN control.pipeline_definition p ON p.pipeline_id=run.pipeline_id
+JOIN reference.source s ON s.source_id=a.source_id
+JOIN control.source_asset_mirror m ON m.source_asset_id=a.source_asset_id
+WHERE a.is_official=1
+  AND b.data_classification='OFFICIAL'
+  AND p.pipeline_code IN
+  (N'INE_IPCN_TO_BRONZE',N'BNA_EXCHANGE_REFERENCE_MONTHLY',N'INE_GDP_QUARTERLY_YOY',N'INE_RGPH_POPULATION',
+   N'BNA_OSD_BANKING_ASSETS',N'UGD_PUBLIC_DEBT_GDP',N'ANPG_OIL_GAS_MONTHLY',N'MINFIN_FISCAL_EXECUTION_QUARTERLY',
+   N'BODIVA_SOVEREIGN_YIELD_CURVE',N'INE_GDP_OIL_NON_OIL_QUARTERLY')
+ORDER BY p.pipeline_code,a.publication_date,a.source_asset_id
+FOR JSON PATH;
+`;
+
 let cache = null;
 let cachedAt = 0;
 let historyCache = null;
@@ -322,6 +385,8 @@ let sovereignYieldCurveCache = null;
 let sovereignYieldCurveCachedAt = 0;
 let oilNonOilGdpCache = null;
 let oilNonOilGdpCachedAt = 0;
+let downloadCatalogCache = null;
+let downloadCatalogCachedAt = 0;
 const cacheTtlMs = 30_000;
 
 async function runJsonQuery(query) {
@@ -345,6 +410,7 @@ async function runJsonQuery(query) {
     .filter(Boolean)
     .join('');
 
+  if (!jsonText) return [];
   return JSON.parse(jsonText);
 }
 
@@ -472,12 +538,166 @@ async function readOilNonOilGdp() {
   return quarters;
 }
 
+async function readDownloadCatalog() {
+  if (downloadCatalogCache && Date.now() - downloadCatalogCachedAt < cacheTtlMs) return downloadCatalogCache;
+  const assets = await runJsonQuery(downloadCatalogQuery);
+  if (!Array.isArray(assets) || assets.length === 0) throw new Error('No official source assets are available for download.');
+  downloadCatalogCache = assets;
+  downloadCatalogCachedAt = Date.now();
+  return assets;
+}
+
+async function readDownloadAsset(assetId) {
+  const query = `
+SET NOCOUNT ON;
+SELECT a.source_asset_id AS assetId,a.asset_name AS assetName,a.asset_type AS assetType,m.mirror_path AS assetLocation,
+       m.mirror_size_bytes AS contentSizeBytes,CONVERT(varchar(64),m.mirror_sha256,2) AS sha256,
+       CONVERT(varchar(64),a.content_hash,2) AS registeredSha256,m.mirror_status AS mirrorStatus
+FROM bronze.source_asset a
+JOIN control.ingestion_batch b ON b.ingestion_batch_id=a.ingestion_batch_id
+JOIN control.pipeline_run run ON run.pipeline_run_id=b.pipeline_run_id
+JOIN control.pipeline_definition p ON p.pipeline_id=run.pipeline_id
+JOIN control.source_asset_mirror m ON m.source_asset_id=a.source_asset_id
+WHERE a.source_asset_id=${assetId} AND a.is_official=1 AND b.data_classification='OFFICIAL'
+  AND p.pipeline_code IN
+  (N'INE_IPCN_TO_BRONZE',N'BNA_EXCHANGE_REFERENCE_MONTHLY',N'INE_GDP_QUARTERLY_YOY',N'INE_RGPH_POPULATION',
+   N'BNA_OSD_BANKING_ASSETS',N'UGD_PUBLIC_DEBT_GDP',N'ANPG_OIL_GAS_MONTHLY',N'MINFIN_FISCAL_EXECUTION_QUARTERLY',
+   N'BODIVA_SOVEREIGN_YIELD_CURVE',N'INE_GDP_OIL_NON_OIL_QUARTERLY')
+FOR JSON PATH;`;
+  const assets = await runJsonQuery(query);
+  return assets[0];
+}
+
+const downloadContentTypes = new Map([
+  ['.csv','text/csv; charset=utf-8'],['.html','text/html; charset=utf-8'],['.json','application/json; charset=utf-8'],
+  ['.pdf','application/pdf'],['.xls','application/vnd.ms-excel'],['.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+]);
+const allowedLocalRoots = [path.resolve('D:\\LAZA_DATA\\archive\\official-source-assets')];
+
+function downloadHeaders(asset, contentLength) {
+  const extension = path.extname(asset.assetName).toLowerCase();
+  return {
+    'Content-Type': downloadContentTypes.get(extension) || 'application/octet-stream',
+    'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(asset.assetName)}`,
+    'Content-Length': String(contentLength),
+    'Cache-Control': 'private, max-age=300',
+    'X-Content-SHA256': asset.sha256,
+    'X-Registered-SHA256': asset.registeredSha256,
+    'X-Source-Hash-Status': asset.mirrorStatus,
+    'X-Source-Storage': 'LOCAL_ARCHIVE',
+    'X-Content-Type-Options': 'nosniff',
+  };
+}
+
+function assetBufferIsValid(asset, buffer) {
+  return createHash('sha256').update(buffer).digest('hex').toUpperCase() === asset.sha256.toUpperCase();
+}
+
+async function sendSourceAsset(response, assetId) {
+  const asset = await readDownloadAsset(assetId);
+  if (!asset) { sendJson(response,404,{ error:'SOURCE_ASSET_NOT_FOUND' }); return; }
+  if (asset.contentSizeBytes > 20 * 1024 * 1024) { sendJson(response,413,{ error:'SOURCE_ASSET_TOO_LARGE' }); return; }
+
+  const filePath = path.resolve(asset.assetLocation);
+  if (!allowedLocalRoots.some((root) => filePath === root || filePath.startsWith(`${root}${path.sep}`))) {
+    sendJson(response,403,{ error:'SOURCE_PATH_NOT_ALLOWED' }); return;
+  }
+  const details = await stat(filePath);
+  if (!details.isFile()) { sendJson(response,404,{ error:'SOURCE_FILE_NOT_FOUND' }); return; }
+  const buffer = await readFile(filePath);
+  if (!assetBufferIsValid(asset,buffer)) { sendJson(response,409,{ error:'SOURCE_ASSET_HASH_MISMATCH',message:'The local archive no longer matches the file used by the indicator.' }); return; }
+  response.writeHead(200,downloadHeaders(asset,details.size));
+  response.end(buffer);
+}
+
 function sendJson(response, statusCode, payload) {
   response.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
   });
   response.end(JSON.stringify(payload));
+}
+
+function readCookie(request, name) {
+  const cookies = String(request.headers.cookie ?? '').split(';');
+  for (const cookie of cookies) {
+    const separator = cookie.indexOf('=');
+    if (separator < 0) continue;
+    if (cookie.slice(0, separator).trim() === name) return decodeURIComponent(cookie.slice(separator + 1).trim());
+  }
+  return null;
+}
+
+function adminSession(request) {
+  const token = readCookie(request, 'laza_admin_session');
+  if (!token || !/^[A-Fa-f0-9]{64}$/.test(token)) return null;
+  const tokenHash = createHash('sha256').update(token).digest('hex');
+  const session = adminSessions.get(tokenHash);
+  if (!session) return null;
+  if (session.expiresAt <= Date.now()) {
+    adminSessions.delete(tokenHash);
+    return null;
+  }
+  return session;
+}
+
+function adminCookie(request, token, maxAgeSeconds) {
+  const forwardedProto = String(request.headers['x-forwarded-proto'] ?? '').toLowerCase();
+  const secure = forwardedProto === 'https' ? '; Secure' : '';
+  return `laza_admin_session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAgeSeconds}${secure}`;
+}
+
+function adminClientKey(request) {
+  return String(request.headers['cf-connecting-ip'] ?? request.socket.remoteAddress ?? 'unknown');
+}
+
+function isAdminLoginBlocked(clientKey) {
+  const record = adminLoginFailures.get(clientKey);
+  if (!record) return false;
+  if (record.windowStartedAt + adminLoginWindowMs <= Date.now()) {
+    adminLoginFailures.delete(clientKey);
+    return false;
+  }
+  return record.failures >= adminLoginMaxFailures;
+}
+
+function registerAdminLoginFailure(clientKey) {
+  const current = adminLoginFailures.get(clientKey);
+  if (!current || current.windowStartedAt + adminLoginWindowMs <= Date.now()) {
+    adminLoginFailures.set(clientKey, { failures: 1, windowStartedAt: Date.now() });
+    return;
+  }
+  current.failures += 1;
+}
+
+async function readJsonBody(request, maxBytes = 16 * 1024) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of request) {
+    size += chunk.length;
+    if (size > maxBytes) throw new Error('REQUEST_BODY_TOO_LARGE');
+    chunks.push(chunk);
+  }
+  if (chunks.length === 0) return {};
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+}
+
+function verifyAdminCredentials(username, password) {
+  if (!adminAuth || typeof username !== 'string' || typeof password !== 'string') return false;
+  const suppliedUsername = Buffer.from(username);
+  const configuredUsername = Buffer.from(adminAuth.username);
+  const usernameMatches = suppliedUsername.length === configuredUsername.length
+    && timingSafeEqual(suppliedUsername, configuredUsername);
+  const candidateHash = pbkdf2Sync(password, adminAuth.salt, adminAuth.iterations, 32, 'sha256');
+  return usernameMatches && timingSafeEqual(candidateHash, adminAuth.passwordHash);
+}
+
+function createAdminSession() {
+  const token = randomBytes(32).toString('hex');
+  const tokenHash = createHash('sha256').update(token).digest('hex');
+  const session = { username: adminAuth.username, expiresAt: Date.now() + adminSessionTtlMs };
+  adminSessions.set(tokenHash, session);
+  return { token, session };
 }
 
 async function sendSiteAsset(request, response) {
@@ -525,6 +745,49 @@ const server = createServer(async (request, response) => {
     } catch (error) {
       sendJson(response, 503, { status: 'error', message: error.message });
     }
+    return;
+  }
+
+  if (request.method === 'GET' && request.url === '/api/admin/session') {
+    const session = adminSession(request);
+    sendJson(response, session ? 200 : 401, session
+      ? { authenticated: true, username: session.username, expiresAt: new Date(session.expiresAt).toISOString() }
+      : { authenticated: false });
+    return;
+  }
+
+  if (request.method === 'POST' && request.url === '/api/admin/login') {
+    if (!adminAuth) {
+      sendJson(response, 503, { error: 'ADMIN_AUTH_NOT_CONFIGURED' });
+      return;
+    }
+    const clientKey = adminClientKey(request);
+    if (isAdminLoginBlocked(clientKey)) {
+      sendJson(response, 429, { error: 'ADMIN_LOGIN_TEMPORARILY_BLOCKED', message: 'Too many failed attempts. Try again later.' });
+      return;
+    }
+    try {
+      const credentials = await readJsonBody(request);
+      if (!verifyAdminCredentials(credentials.username, credentials.password)) {
+        registerAdminLoginFailure(clientKey);
+        sendJson(response, 401, { error: 'INVALID_ADMIN_CREDENTIALS', message: 'Invalid username or password.' });
+        return;
+      }
+      adminLoginFailures.delete(clientKey);
+      const { token, session } = createAdminSession();
+      response.setHeader('Set-Cookie', adminCookie(request, token, Math.floor(adminSessionTtlMs / 1000)));
+      sendJson(response, 200, { authenticated: true, username: session.username, expiresAt: new Date(session.expiresAt).toISOString() });
+    } catch (error) {
+      sendJson(response, error.message === 'REQUEST_BODY_TOO_LARGE' ? 413 : 400, { error: 'INVALID_LOGIN_REQUEST' });
+    }
+    return;
+  }
+
+  if (request.method === 'POST' && request.url === '/api/admin/logout') {
+    const token = readCookie(request, 'laza_admin_session');
+    if (token) adminSessions.delete(createHash('sha256').update(token).digest('hex'));
+    response.setHeader('Set-Cookie', adminCookie(request, '', 0));
+    sendJson(response, 200, { authenticated: false });
     return;
   }
 
@@ -761,6 +1024,35 @@ const server = createServer(async (request, response) => {
       });
     } catch (error) {
       sendJson(response, 503, { error: 'SQL_SERVER_ANALYTICS_UNAVAILABLE', message: error.message });
+    }
+    return;
+  }
+
+  if (request.method === 'GET' && request.url === '/api/downloads/catalog') {
+    try {
+      const assets = await readDownloadCatalog();
+      sendJson(response,200,{
+        data: assets,
+        meta: {
+          source: 'LAZA_DATA_PLATFORM_DEV.bronze.source_asset',
+          generatedAt: new Date().toISOString(),
+          assetCount: assets.length,
+          datasetCount: new Set(assets.map((asset) => asset.pipelineCode)).size,
+        },
+      });
+    } catch (error) {
+      sendJson(response,503,{ error:'DOWNLOAD_CATALOG_UNAVAILABLE',message:error.message });
+    }
+    return;
+  }
+
+  const downloadMatch = request.method === 'GET' ? request.url?.match(/^\/api\/downloads\/assets\/(\d+)$/) : null;
+  if (downloadMatch) {
+    try {
+      await sendSourceAsset(response,Number(downloadMatch[1]));
+    } catch (error) {
+      if (!response.headersSent) sendJson(response,502,{ error:'SOURCE_DOWNLOAD_FAILED',message:error.message });
+      else response.destroy(error);
     }
     return;
   }

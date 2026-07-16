@@ -27,9 +27,15 @@ function InflationTooltip({ active, payload }: any) {
   );
 }
 
-export function MetricsOverview() {
+interface MetricsOverviewProps {
+  summaryOnly?: boolean;
+  initialSelectedId?: string;
+  onIndicatorSelect?: (indicatorId: string) => void;
+}
+
+export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndicatorSelect }: MetricsOverviewProps) {
   const [indicators, setIndicators] = useState(pilotIndicators);
-  const [selectedId, setSelectedId] = useState(pilotIndicators[0].id);
+  const [selectedId, setSelectedId] = useState(initialSelectedId ?? pilotIndicators[0].id);
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'connected' | 'fallback'>('loading');
   const [inflationHistory, setInflationHistory] = useState<IndicatorHistoryPoint[]>([]);
   const [historyStatus, setHistoryStatus] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
@@ -54,6 +60,11 @@ export function MetricsOverview() {
   }, []);
 
   useEffect(() => {
+    if (initialSelectedId) setSelectedId(initialSelectedId);
+  }, [initialSelectedId]);
+
+  useEffect(() => {
+    if (summaryOnly) return;
     const expectedHistorySize = selectedId === 'gdp-growth'
       ? 21
       : selectedId === 'banking-assets'
@@ -85,7 +96,7 @@ export function MetricsOverview() {
         if (error.name !== 'AbortError') setHistoryStatus('error');
       });
     return () => controller.abort();
-  }, [selectedId, inflationHistory.length, historyIndicatorId]);
+  }, [selectedId, inflationHistory.length, historyIndicatorId, summaryOnly]);
 
   return (
     <section>
@@ -118,10 +129,15 @@ export function MetricsOverview() {
             <button
               type="button"
               key={metric.id}
-              onClick={() => setSelectedId(metric.id)}
-              aria-pressed={selectedId === metric.id}
-              className={`group cursor-pointer rounded-xl border bg-card p-5 text-left transition-all hover:border-primary/40 hover:shadow-lg ${
-                selectedId === metric.id ? 'border-primary ring-2 ring-primary/10' : 'border-border'
+              onClick={() => {
+                if (summaryOnly) onIndicatorSelect?.(metric.id);
+                else setSelectedId(metric.id);
+              }}
+              disabled={summaryOnly && !onIndicatorSelect}
+              aria-pressed={!summaryOnly && selectedId === metric.id}
+              aria-label={summaryOnly ? `Open ${metric.label} details` : undefined}
+              className={`group rounded-xl border bg-card p-5 text-left transition-all hover:border-primary/40 hover:shadow-lg ${summaryOnly && !onIndicatorSelect ? 'cursor-default' : 'cursor-pointer'} ${
+                !summaryOnly && selectedId === metric.id ? 'border-primary ring-2 ring-primary/10' : 'border-border'
               }`}
             >
               <div className="mb-4 flex items-start justify-between gap-2">
@@ -149,7 +165,7 @@ export function MetricsOverview() {
         })}
       </div>
 
-      <div className="mt-5 rounded-xl border border-border bg-muted/40 p-5">
+      {!summaryOnly && <div className="mt-5 rounded-xl border border-border bg-muted/40 p-5">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -317,7 +333,7 @@ export function MetricsOverview() {
             )}
           </div>
         )}
-      </div>
+      </div>}
     </section>
   );
 }

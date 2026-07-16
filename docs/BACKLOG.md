@@ -30,7 +30,7 @@
 | --- | --- | --- | --- | --- | --- |
 | LAZA-001 | Criar a rota `laza.way4u.com.br` no túnel `Tunnel_Alteryx`, apontando para `http://127.0.0.1:8790` | Pendente no painel Cloudflare | XS | Sessão autenticada Cloudflare | DNS resolve, HTTPS retorna 200 e as rotas ALT_ORC/NOVOAPP permanecem disponíveis |
 | LAZA-002 | Executar validação pública ponta a ponta | Bloqueado por LAZA-001 | S | LAZA-001 | Página, assets e todas as APIs retornam 200 fora da rede local; certificado é válido |
-| LAZA-003 | Proteger ou remover o `Admin Panel` antes da divulgação pública | Pendente | M | Decisão de acesso | Área administrativa exige autenticação/autorização ou não é entregue no build público |
+| LAZA-003 | Proteger ou remover o `Admin Panel` antes da divulgação pública | Concluído em 16/07/2026 | M | Nenhuma | Login validado no servidor, sessão HttpOnly, limitação de tentativas e logout invalidando a sessão |
 | LAZA-004 | Definir política Cloudflare Access para homologação e demonstrações restritas | Pendente | S | Lista de utilizadores autorizados | Somente identidades aprovadas acessam o hostname de homologação |
 | LAZA-005 | Rotacionar o token do túnel e atualizar o serviço Windows | Pendente | S | Janela curta de manutenção | Novo token instalado, túnel saudável e token anterior revogado sem indisponibilidade prolongada |
 | LAZA-006 | Formalizar backup e restauração do `LAZA_DATA_PLATFORM_DEV` | Pendente | M | Espaço de backup aprovado | Backup executado, restauração testada em base isolada e evidência registrada |
@@ -68,6 +68,7 @@
 | LAZA-023 | Criar catálogo funcional dos indicadores e metodologias | Pendente | M | Aprovação dos donos de dados | Cada indicador apresenta definição, fórmula, unidade, frequência, fonte, owner e versão |
 | LAZA-024 | Formalizar fluxo de aprovação e segregação de funções | Pendente | M | Papéis do projeto | Ingestão, validação e aprovação possuem responsáveis e evidência verificável |
 | LAZA-025 | Criar registro de mudanças de fonte e metodologia | Pendente | M | LAZA-023 | Alterações não sobrescrevem silenciosamente séries ou regras anteriores |
+| LAZA-041 | Versionar na Bronze os HTMLs da ANPG alterados pelo publicador após a extração | Em backlog por decisão de 16/07/2026 | M | Política de versionamento de fontes | Cada HTML alterado gera uma nova versão de `source_asset`, sem sobrescrever hash, caminho ou linhagem histórica |
 
 ## P2 — Evolução analítica e experiência
 
