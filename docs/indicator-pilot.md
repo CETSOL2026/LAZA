@@ -1,0 +1,87 @@
+# LAZA indicator pilot
+
+## Objective
+
+Validate the LAZA website data flow with six indicators before investing in the
+full marketplace platform. The user interface remains stable while the data
+adapter evolves from controlled fixtures to official automated sources.
+
+## Pilot indicators
+
+| Indicator | Definition | Frequency | Initial source | Stage 1 status |
+| --- | --- | --- | --- | --- |
+| GDP Growth | Annual percentage change in real GDP | Annual / quarterly | INE | Demonstration |
+| Inflation Rate | YoY change in the national CPI | Monthly | INE | Demonstration |
+| Exchange Rate | AOA per USD reference rate | Daily / monthly | BNA | Demonstration |
+| Population | Estimated resident population | Annual | INE | Demonstration |
+| Banking Assets | Aggregate banking-sector assets | Annual / quarterly | BNA and bank reports | Demonstration |
+| Public Debt/GDP | Gross public debt as a share of nominal GDP | Annual / quarterly | MINFIN and BNA | Demonstration |
+
+## Staged implementation
+
+### Stage 1 - Controlled data contract
+
+- Keep the six values inherited from the visual prototype.
+- Move them to one typed indicator catalogue.
+- Display period, unit, definition, source and quality status.
+- Mark all values as demonstration data.
+
+Acceptance: the website uses one source module for the six indicator cards and
+does not present the values as validated official statistics.
+
+### Stage 2 - Reviewed local files
+
+- Create one normalized CSV or JSON input file.
+- Load reviewed extracts from INE, BNA and MINFIN.
+- Add source URL, extraction date, publication date and version.
+- Run basic completeness, type, duplicate and freshness checks.
+
+Acceptance: a non-developer can replace a reviewed input file and refresh the
+six cards without changing React components.
+
+### Stage 3 - Read-only API
+
+- Add `GET /indicators` and `GET /indicators/{id}/series`.
+- Move transformation rules into the service/data layer.
+- Return value, period, unit, source, freshness and quality metadata.
+- Connect both the public website and admin view to the same API.
+
+Acceptance: website and API return the same values and metadata.
+
+### Stage 4 - Automated pipelines and DQF
+
+- Ingest the official sources into Bronze.
+- Normalize and reconcile in Silver.
+- Publish approved values in Gold.
+- Apply DQF rules, lineage, freshness and publication gates.
+
+Acceptance: only approved Gold values can receive `published` status.
+
+### Stage 5 - Scale the catalogue
+
+- Add the remaining essential MVP indicators by product family.
+- Introduce dashboards, history, export and subscription controls.
+- Measure usage before adding countries or premium AI capabilities.
+
+## Indicator contract
+
+Every published indicator must contain:
+
+- stable indicator ID;
+- business definition;
+- numeric value and display value;
+- unit and frequency;
+- reference period and publication date;
+- source name, URL and source version;
+- comparison and trend;
+- quality/freshness status;
+- publication status and accountable owner.
+
+## Guardrails
+
+- Demonstration values must remain visibly labelled.
+- A source link is not proof of validation; the exact source asset and period
+  must be recorded in Stage 2.
+- A favorable trend cannot be inferred from `up` or `down` alone. For example,
+  a higher exchange-rate value may represent currency depreciation.
+- No value should be promoted to `published` without lineage and DQF evidence.
