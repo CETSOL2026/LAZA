@@ -7,7 +7,7 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 const port = Number(process.env.LAZA_API_PORT ?? 8790);
-const sqlcmd = process.env.LAZA_SQLCMD ?? 'sqlcmd.exe';
+const sqlcmd = process.env.LAZA_SQLCMD ?? 'C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\SQLCMD.EXE';
 const instance = process.env.LAZA_SQL_INSTANCE ?? '.\\SQLEXPRESS';
 const database = process.env.LAZA_SQL_DATABASE ?? 'LAZA_DATA_PLATFORM_DEV';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
