@@ -278,6 +278,28 @@ ORDER BY reference_date
 FOR JSON PATH;
 `;
 
+const oilNonOilGdpQuery = `
+SET NOCOUNT ON;
+SELECT period,
+       period_start AS periodStart,
+       source_url AS sourceUrl,
+       oil_nominal_million_aoa AS oilNominalMillionAoa,
+       non_oil_nominal_million_aoa AS nonOilNominalMillionAoa,
+       oil_share_pct AS oilSharePct,
+       non_oil_share_pct AS nonOilSharePct,
+       oil_yoy_pct AS oilYoyPct,
+       non_oil_yoy_pct AS nonOilYoyPct,
+       total_yoy_pct AS totalYoyPct,
+       oil_contribution_pp AS oilContributionPp,
+       non_oil_contribution_pp AS nonOilContributionPp,
+       total_contribution_pp AS totalContributionPp,
+       quality_score AS qualityScore,
+       CONVERT(bit, has_accepted_exception) AS hasAcceptedException
+FROM api.vw_ine_oil_non_oil_gdp_quarterly
+ORDER BY period_start
+FOR JSON PATH;
+`;
+
 let cache = null;
 let cachedAt = 0;
 let historyCache = null;
@@ -298,6 +320,8 @@ let fiscalExecutionCache = null;
 let fiscalExecutionCachedAt = 0;
 let sovereignYieldCurveCache = null;
 let sovereignYieldCurveCachedAt = 0;
+let oilNonOilGdpCache = null;
+let oilNonOilGdpCachedAt = 0;
 const cacheTtlMs = 30_000;
 
 async function runJsonQuery(query) {
@@ -435,6 +459,17 @@ async function readSovereignYieldCurve() {
   sovereignYieldCurveCache = snapshots;
   sovereignYieldCurveCachedAt = Date.now();
   return snapshots;
+}
+
+async function readOilNonOilGdp() {
+  if (oilNonOilGdpCache && Date.now() - oilNonOilGdpCachedAt < cacheTtlMs) return oilNonOilGdpCache;
+  const quarters = await runJsonQuery(oilNonOilGdpQuery);
+  if (!Array.isArray(quarters) || quarters.length !== 21) {
+    throw new Error(`Expected 21 published INE oil/non-oil GDP quarters, received ${quarters?.length ?? 0}.`);
+  }
+  oilNonOilGdpCache = quarters;
+  oilNonOilGdpCachedAt = Date.now();
+  return quarters;
 }
 
 function sendJson(response, statusCode, payload) {
@@ -701,6 +736,27 @@ const server = createServer(async (request, response) => {
           firstPeriod: snapshots[0].referenceDate,
           lastPeriod: snapshots.at(-1).referenceDate,
           interpolationApplied: false,
+        },
+      });
+    } catch (error) {
+      sendJson(response, 503, { error: 'SQL_SERVER_ANALYTICS_UNAVAILABLE', message: error.message });
+    }
+    return;
+  }
+
+  if (request.method === 'GET' && request.url === '/api/analytics/oil-non-oil-gdp') {
+    try {
+      const quarters = await readOilNonOilGdp();
+      sendJson(response, 200, {
+        data: quarters,
+        meta: {
+          source: 'LAZA_DATA_PLATFORM_DEV.api.vw_ine_oil_non_oil_gdp_quarterly',
+          sourceName: 'Instituto Nacional de Estatistica de Angola (INE)',
+          generatedAt: new Date().toISOString(),
+          observationCount: quarters.length,
+          firstPeriod: quarters[0].period,
+          lastPeriod: quarters.at(-1).period,
+          acceptedExceptionCount: quarters.filter((item) => item.hasAcceptedException).length,
         },
       });
     } catch (error) {

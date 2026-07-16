@@ -5,6 +5,7 @@ import { MetricsOverview } from './components/MetricsOverview';
 import { OilGasIntelligence } from './components/OilGasIntelligence';
 import { FiscalExecutionIntelligence } from './components/FiscalExecutionIntelligence';
 import { SovereignYieldCurveIntelligence } from './components/SovereignYieldCurveIntelligence';
+import { OilNonOilGdpIntelligence } from './components/OilNonOilGdpIntelligence';
 import { EconomySection } from './components/EconomySection';
 import { SocietySection } from './components/SocietySection';
 import { FinancialSystemSection } from './components/FinancialSystemSection';
@@ -51,6 +52,8 @@ export default function App() {
             <FiscalExecutionIntelligence />
 
             <SovereignYieldCurveIntelligence />
+
+            <OilNonOilGdpIntelligence />
 
             <FeaturedInsights />
 

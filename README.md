@@ -10,6 +10,9 @@ the other five indicators remain clearly identified as demonstration values.
 See [the indicator pilot plan](docs/indicator-pilot.md) for the staged path from
 fixtures to reviewed files, API, automated pipelines and DQF publication.
 
+Open work, priorities and pending decisions are maintained in the
+[MVP backlog](docs/BACKLOG.md).
+
 ## Local development
 
 1. Install Node.js LTS.

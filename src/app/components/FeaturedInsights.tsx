@@ -1,13 +1,25 @@
+import { useEffect, useState } from 'react';
 import { TrendingUp, TrendingDown, AlertCircle, CheckCircle } from 'lucide-react';
+import { loadOilNonOilGdp, OilNonOilGdpQuarter } from '../data/oilNonOilGdp';
 
 export function FeaturedInsights() {
+  const [gdp, setGdp] = useState<OilNonOilGdpQuarter | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    loadOilNonOilGdp(controller.signal).then((payload) => setGdp(payload.data.at(-1) ?? null)).catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+
   const insights = [
     {
-      title: 'Economic Diversification Index',
-      description: 'Angolan economy shows signs of further diversification',
+      title: 'Non-Oil Growth Momentum',
+      description: gdp
+        ? `Non-oil activity generated ${gdp.nonOilContributionPp.toFixed(2)} pp of ${gdp.totalYoyPct.toFixed(2)}% total GDP growth in ${gdp.period}.`
+        : 'Loading the latest official INE diversification signal.',
       trend: 'positive',
       icon: TrendingUp,
-      metric: '+3.2%',
+      metric: gdp ? `${gdp.nonOilYoyPct >= 0 ? '+' : ''}${gdp.nonOilYoyPct.toFixed(2)}%` : '—',
       color: 'text-green-600 bg-green-50',
     },
     {
