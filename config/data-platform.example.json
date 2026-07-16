@@ -1,0 +1,15 @@
+{
+  "sqlServer": {
+    "instance": ".\\SQLEXPRESS",
+    "database": "LAZA_DATA_PLATFORM_DEV",
+    "authentication": "windows"
+  },
+  "storage": {
+    "root": "D:\\LAZA_DATA",
+    "landing": "D:\\LAZA_DATA\\landing",
+    "archive": "D:\\LAZA_DATA\\archive",
+    "rejected": "D:\\LAZA_DATA\\rejected",
+    "manifests": "D:\\LAZA_DATA\\manifests",
+    "logs": "D:\\LAZA_DATA\\logs"
+  }
+}

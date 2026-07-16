@@ -19,6 +19,42 @@ export interface PilotIndicator {
   sourceUrl: string;
   qualityStatus: string;
   status: IndicatorStatus;
+  isOfficial?: boolean;
+  qualityScore?: number | null;
+}
+
+export interface IndicatorApiResponse {
+  data: PilotIndicator[];
+  meta: {
+    source: string;
+    generatedAt: string;
+    indicatorCount: number;
+    officialIndicatorCount: number;
+  };
+}
+
+export interface IndicatorHistoryPoint {
+  period: string;
+  periodStart: string;
+  numericValue: number;
+  displayValue: string;
+  qualityStatus: string;
+  qualityScore: number;
+  isOfficial: boolean;
+  hasAcceptedException: boolean;
+}
+
+export interface IndicatorHistoryResponse {
+  data: IndicatorHistoryPoint[];
+  meta: {
+    source: string;
+    seriesCode: string;
+    generatedAt: string;
+    observationCount: number;
+    firstPeriod: string;
+    lastPeriod: string;
+    acceptedExceptionCount: number;
+  };
 }
 
 // Stage 1 fixture data. Values are inherited from the original visual prototype
@@ -142,4 +178,33 @@ export const pilotIndicators: PilotIndicator[] = [
 
 export function getIndicatorById(id: string) {
   return pilotIndicators.find((indicator) => indicator.id === id);
+}
+
+export async function loadLatestIndicators(signal?: AbortSignal): Promise<IndicatorApiResponse> {
+  const response = await fetch('/api/indicators/latest', { signal });
+  if (!response.ok) {
+    throw new Error(`Indicator API returned HTTP ${response.status}.`);
+  }
+
+  const payload = await response.json() as IndicatorApiResponse;
+  if (!Array.isArray(payload.data) || payload.data.length === 0) {
+    throw new Error('Indicator API returned no data.');
+  }
+
+  const byId = new Map(payload.data.map((indicator) => [indicator.id, indicator]));
+  payload.data = pilotIndicators.map((fixture) => byId.get(fixture.id) ?? fixture);
+  return payload;
+}
+
+export async function loadInflationHistory(signal?: AbortSignal): Promise<IndicatorHistoryResponse> {
+  const response = await fetch('/api/indicators/inflation-rate/history', { signal });
+  if (!response.ok) {
+    throw new Error(`Inflation history API returned HTTP ${response.status}.`);
+  }
+
+  const payload = await response.json() as IndicatorHistoryResponse;
+  if (!Array.isArray(payload.data) || payload.data.length !== 66) {
+    throw new Error('Inflation history API did not return the expected 66 months.');
+  }
+  return payload;
 }

@@ -9,7 +9,7 @@ decision.
 | Database name | `LAZA_DATA_PLATFORM_DEV` | Applied 2026-07-16 |
 | Recovery model | `SIMPLE` | Applied 2026-07-16 |
 | MDF/LDF location | SQL Server instance default directory | Applied 2026-07-16 |
-| Raw landing location | External folder, to be defined | Pending operational definition |
+| Raw landing location | `D:\LAZA_DATA` outside SQL Server and Git | Created and documented 2026-07-16 |
 | Layer schemas | `control`, `audit`, `reference`, `bronze`, `silver`, `dq`, `gold`, `api` | Applied 2026-07-16 |
 | Initial data | Six non-official demo observations | Applied 2026-07-16 |
 | Demo Gold publication | Allowed only as `DEMONSTRATION`, `is_official = 0` | Applied and validated |

@@ -69,3 +69,15 @@ approval. Script `99_rollback.sql` was not executed.
 The expected six warnings are from `OFFICIAL_SOURCE_EVIDENCE`: the prototype
 homepages are not exact official source assets. This is intentional and blocks
 promotion of the demo values to official publication.
+
+## First official Bronze load
+
+On 2026-07-16, INE IPCN June 2026 was loaded under batch
+`INE-IPCN-2026-06-20260716-V1`:
+
+- pipeline run 2: `SUCCEEDED`;
+- 3 source assets registered with SHA-256 and archived;
+- 1 raw headline observation accepted: June 2026 YoY inflation 10.11%;
+- 0 Silver rows and 0 official Gold rows;
+- all 6 existing Gold DEMO rows unchanged;
+- 0 validation violations.
