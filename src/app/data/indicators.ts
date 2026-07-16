@@ -42,6 +42,7 @@ export interface IndicatorHistoryPoint {
   qualityScore: number;
   isOfficial: boolean;
   hasAcceptedException: boolean;
+  hasSourceWarning?: boolean;
 }
 
 export interface IndicatorHistoryResponse {
@@ -205,6 +206,26 @@ export async function loadInflationHistory(signal?: AbortSignal): Promise<Indica
   const payload = await response.json() as IndicatorHistoryResponse;
   if (!Array.isArray(payload.data) || payload.data.length !== 66) {
     throw new Error('Inflation history API did not return the expected 66 months.');
+  }
+  return payload;
+}
+
+export async function loadExchangeHistory(signal?: AbortSignal): Promise<IndicatorHistoryResponse> {
+  const response = await fetch('/api/indicators/exchange-rate/history', { signal });
+  if (!response.ok) throw new Error(`Exchange-rate history API returned HTTP ${response.status}.`);
+  const payload = await response.json() as IndicatorHistoryResponse;
+  if (!Array.isArray(payload.data) || payload.data.length !== 66) {
+    throw new Error('Exchange-rate history API did not return the expected 66 months.');
+  }
+  return payload;
+}
+
+export async function loadGdpHistory(signal?: AbortSignal): Promise<IndicatorHistoryResponse> {
+  const response = await fetch('/api/indicators/gdp-growth/history', { signal });
+  if (!response.ok) throw new Error(`GDP history API returned HTTP ${response.status}.`);
+  const payload = await response.json() as IndicatorHistoryResponse;
+  if (!Array.isArray(payload.data) || payload.data.length !== 21) {
+    throw new Error('GDP history API did not return the expected 21 quarters.');
   }
   return payload;
 }

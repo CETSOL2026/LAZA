@@ -64,10 +64,54 @@ ORDER BY period_start.full_date
 FOR JSON PATH;
 `;
 
+const exchangeHistoryQuery = `
+SET NOCOUNT ON;
+SELECT
+    f.reference_period_label AS period,
+    CONVERT(char(10), period_start.full_date, 23) AS periodStart,
+    CONVERT(float, f.numeric_value) AS numericValue,
+    f.display_value AS displayValue,
+    f.quality_status AS qualityStatus,
+    f.quality_score AS qualityScore,
+    CONVERT(bit, f.is_official) AS isOfficial,
+    CONVERT(bit, CASE WHEN f.quality_score < 100 THEN 1 ELSE 0 END) AS hasSourceWarning
+FROM [gold].[fact_indicator_observation] AS f
+INNER JOIN [gold].[dim_series] AS series ON series.series_key = f.series_key
+INNER JOIN [gold].[dim_date] AS period_start ON period_start.date_key = f.period_start_date_key
+WHERE series.series_code = N'EXCHANGE_RATE_AGO_BNA_USD_REFERENCE_MONTHLY'
+  AND f.publication_status = 'PUBLISHED' AND f.is_official = 1
+ORDER BY period_start.full_date
+FOR JSON PATH;
+`;
+
+const gdpHistoryQuery = `
+SET NOCOUNT ON;
+SELECT f.reference_period_label AS period,
+       CONVERT(char(10), d.full_date, 23) AS periodStart,
+       CONVERT(float, f.numeric_value) AS numericValue,
+       f.display_value AS displayValue,
+       f.quality_status AS qualityStatus,
+       f.quality_score AS qualityScore,
+       CONVERT(bit, f.is_official) AS isOfficial,
+       CONVERT(bit, 0) AS hasAcceptedException,
+       CONVERT(bit, 0) AS hasSourceWarning
+FROM gold.fact_indicator_observation f
+JOIN gold.dim_series s ON s.series_key=f.series_key
+JOIN gold.dim_date d ON d.date_key=f.period_start_date_key
+WHERE s.series_code=N'GDP_GROWTH_AGO_INE_QUARTERLY_YOY_2015'
+  AND f.publication_status='PUBLISHED' AND f.is_official=1
+ORDER BY d.full_date
+FOR JSON PATH;
+`;
+
 let cache = null;
 let cachedAt = 0;
 let historyCache = null;
 let historyCachedAt = 0;
+let exchangeHistoryCache = null;
+let exchangeHistoryCachedAt = 0;
+let gdpHistoryCache = null;
+let gdpHistoryCachedAt = 0;
 const cacheTtlMs = 30_000;
 
 async function runJsonQuery(query) {
@@ -116,6 +160,28 @@ async function readInflationHistory() {
 
   historyCache = history;
   historyCachedAt = Date.now();
+  return history;
+}
+
+async function readExchangeHistory() {
+  if (exchangeHistoryCache && Date.now() - exchangeHistoryCachedAt < cacheTtlMs) return exchangeHistoryCache;
+  const history = await runJsonQuery(exchangeHistoryQuery);
+  if (!Array.isArray(history) || history.length !== 66) {
+    throw new Error(`Expected 66 published BNA exchange-rate months, received ${history?.length ?? 0}.`);
+  }
+  exchangeHistoryCache = history;
+  exchangeHistoryCachedAt = Date.now();
+  return history;
+}
+
+async function readGdpHistory() {
+  if (gdpHistoryCache && Date.now() - gdpHistoryCachedAt < cacheTtlMs) return gdpHistoryCache;
+  const history = await runJsonQuery(gdpHistoryQuery);
+  if (!Array.isArray(history) || history.length !== 21) {
+    throw new Error(`Expected 21 published INE GDP quarters, received ${history?.length ?? 0}.`);
+  }
+  gdpHistoryCache = history;
+  gdpHistoryCachedAt = Date.now();
   return history;
 }
 
@@ -184,6 +250,47 @@ const server = createServer(async (request, response) => {
         error: 'SQL_SERVER_HISTORY_UNAVAILABLE',
         message: error.message,
       });
+    }
+    return;
+  }
+
+  if (request.method === 'GET' && request.url === '/api/indicators/exchange-rate/history') {
+    try {
+      const history = await readExchangeHistory();
+      sendJson(response, 200, {
+        data: history,
+        meta: {
+          source: 'LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation',
+          seriesCode: 'EXCHANGE_RATE_AGO_BNA_USD_REFERENCE_MONTHLY',
+          generatedAt: new Date().toISOString(),
+          observationCount: history.length,
+          firstPeriod: history[0].period,
+          lastPeriod: history.at(-1).period,
+          sourceWarningCount: history.filter((item) => item.hasSourceWarning).length,
+        },
+      });
+    } catch (error) {
+      sendJson(response, 503, { error: 'SQL_SERVER_HISTORY_UNAVAILABLE', message: error.message });
+    }
+    return;
+  }
+
+  if (request.method === 'GET' && request.url === '/api/indicators/gdp-growth/history') {
+    try {
+      const history = await readGdpHistory();
+      sendJson(response, 200, {
+        data: history,
+        meta: {
+          source: 'LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation',
+          seriesCode: 'GDP_GROWTH_AGO_INE_QUARTERLY_YOY_2015',
+          generatedAt: new Date().toISOString(),
+          observationCount: history.length,
+          firstPeriod: history[0].period,
+          lastPeriod: history.at(-1).period,
+        },
+      });
+    } catch (error) {
+      sendJson(response, 503, { error: 'SQL_SERVER_HISTORY_UNAVAILABLE', message: error.message });
     }
     return;
   }

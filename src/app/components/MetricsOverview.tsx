@@ -3,6 +3,8 @@ import { CheckCircle2, ExternalLink, Info, Minus, TrendingDown, TrendingUp } fro
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import {
   IndicatorHistoryPoint,
+  loadExchangeHistory,
+  loadGdpHistory,
   loadInflationHistory,
   loadLatestIndicators,
   pilotIndicators,
@@ -14,9 +16,10 @@ function InflationTooltip({ active, payload }: any) {
   return (
     <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-lg">
       <p className="font-medium">{point.period}</p>
-      <p className="mt-1 text-primary">{point.displayValue} year over year</p>
+      <p className="mt-1 text-primary">{point.displayValue}</p>
       <p className="mt-1 text-muted-foreground">Quality score {point.qualityScore.toFixed(2)}</p>
       {point.hasAcceptedException && <p className="mt-1 text-amber-700">Accepted reconciliation exception</p>}
+      {point.hasSourceWarning && <p className="mt-1 text-amber-700">Exact source duplicate deduplicated</p>}
     </div>
   );
 }
@@ -27,6 +30,7 @@ export function MetricsOverview() {
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'connected' | 'fallback'>('loading');
   const [inflationHistory, setInflationHistory] = useState<IndicatorHistoryPoint[]>([]);
   const [historyStatus, setHistoryStatus] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
+  const [historyIndicatorId, setHistoryIndicatorId] = useState('');
   const selected = indicators.find((indicator) => indicator.id === selectedId) ?? indicators[0];
   const officialCount = useMemo(
     () => indicators.filter((indicator) => indicator.isOfficial).length,
@@ -47,19 +51,26 @@ export function MetricsOverview() {
   }, []);
 
   useEffect(() => {
-    if (selectedId !== 'inflation-rate' || inflationHistory.length === 66) return;
+    const expectedHistorySize = selectedId === 'gdp-growth' ? 21 : 66;
+    if (!['gdp-growth', 'inflation-rate', 'exchange-rate'].includes(selectedId) || (historyIndicatorId === selectedId && inflationHistory.length === expectedHistorySize)) return;
     const controller = new AbortController();
     setHistoryStatus('loading');
-    loadInflationHistory(controller.signal)
+    const loader = selectedId === 'inflation-rate'
+      ? loadInflationHistory
+      : selectedId === 'exchange-rate'
+        ? loadExchangeHistory
+        : loadGdpHistory;
+    loader(controller.signal)
       .then((payload) => {
         setInflationHistory(payload.data);
+        setHistoryIndicatorId(selectedId);
         setHistoryStatus('loaded');
       })
       .catch((error) => {
         if (error.name !== 'AbortError') setHistoryStatus('error');
       });
     return () => controller.abort();
-  }, [selectedId, inflationHistory.length]);
+  }, [selectedId, inflationHistory.length, historyIndicatorId]);
 
   return (
     <section>
@@ -168,10 +179,10 @@ export function MetricsOverview() {
           </div>
         </dl>
 
-        {selected.id === 'inflation-rate' && selected.isOfficial && (
+        {['gdp-growth', 'inflation-rate', 'exchange-rate'].includes(selected.id) && selected.isOfficial && (
           <div className="mt-6 border-t border-border pt-5">
             {historyStatus === 'loading' && (
-              <div className="mt-4 rounded-lg bg-white p-4 text-sm text-muted-foreground">Loading 66-month series...</div>
+                <div className="mt-4 rounded-lg bg-white p-4 text-sm text-muted-foreground">Loading official history...</div>
             )}
             {historyStatus === 'error' && (
               <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -185,11 +196,13 @@ export function MetricsOverview() {
                     <div>
                       <h4 className="mb-1 flex items-center gap-2 text-xl">
                         <TrendingUp className="h-5 w-5 text-primary" />
-                        Inflation Overview
+                        {selected.id === 'inflation-rate' ? 'Inflation Overview' : selected.id === 'exchange-rate' ? 'Exchange Rate Overview' : 'GDP Growth Overview'}
                       </h4>
-                      <p className="text-sm text-muted-foreground">Monthly IPCN year-over-year trend</p>
+                      <p className="text-sm text-muted-foreground">
+                        {selected.id === 'inflation-rate' ? 'Monthly IPCN year-over-year trend' : selected.id === 'exchange-rate' ? 'Monthly average BNA USD/AOA reference rate' : 'Quarterly real GDP year-over-year growth'}
+                      </p>
                     </div>
-                    <div className="text-xs text-muted-foreground">66 official observations / Jan 2021-Jun 2026</div>
+                    <div className="text-xs text-muted-foreground">{selected.id === 'gdp-growth' ? '21 official observations / Q1 2021-Q1 2026' : '66 official observations / Jan 2021-Jun 2026'}</div>
                   </div>
 
                   <ResponsiveContainer width="100%" height={320}>
@@ -209,7 +222,7 @@ export function MetricsOverview() {
                       />
                       <YAxis
                         domain={['dataMin - 2', 'dataMax + 2']}
-                        tickFormatter={(value) => `${value}%`}
+                        tickFormatter={(value) => selected.id === 'exchange-rate' ? `${value}` : `${value}%`}
                         stroke="#6b7280"
                         style={{ fontSize: '12px' }}
                         width={48}
@@ -219,7 +232,7 @@ export function MetricsOverview() {
                       <Area
                         type="monotone"
                         dataKey="numericValue"
-                        name="Inflation YoY (%)"
+                        name={selected.id === 'inflation-rate' ? 'Inflation YoY (%)' : selected.id === 'exchange-rate' ? 'Exchange rate (AOA/USD)' : 'Real GDP YoY (%)'}
                         stroke="#bf1f27"
                         strokeWidth={2}
                         fill="url(#inflationGradient)"
@@ -234,7 +247,9 @@ export function MetricsOverview() {
                   <div className="border-b border-border px-4 py-3">
                     <h5 className="text-sm">All monthly observations</h5>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Exact published values and quality evidence. The 2021 records retain accepted exceptions.
+                      {selected.id === 'inflation-rate'
+                        ? 'Exact published values and quality evidence. The 2021 records retain accepted exceptions.'
+                        : 'Exact published values and quality evidence from the official source.'}
                     </p>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
@@ -242,7 +257,7 @@ export function MetricsOverview() {
                       <thead className="sticky top-0 bg-muted text-xs text-muted-foreground">
                         <tr>
                           <th className="px-4 py-2.5 font-medium">Period</th>
-                          <th className="px-4 py-2.5 text-right font-medium">Inflation YoY</th>
+                          <th className="px-4 py-2.5 text-right font-medium">{selected.id === 'inflation-rate' ? 'Inflation YoY' : selected.id === 'exchange-rate' ? 'Monthly average' : 'GDP YoY'}</th>
                           <th className="hidden px-4 py-2.5 text-right font-medium sm:table-cell">Quality score</th>
                           <th className="px-4 py-2.5 font-medium">Evidence</th>
                         </tr>
@@ -261,7 +276,7 @@ export function MetricsOverview() {
                                   ? 'bg-amber-50 text-amber-700'
                                   : 'bg-green-50 text-green-700'
                               }`}>
-                                {point.hasAcceptedException ? 'Accepted exception' : 'Reconciled'}
+                                {point.hasAcceptedException ? 'Accepted exception' : point.hasSourceWarning ? 'Source duplicate handled' : 'Validated'}
                               </span>
                             </td>
                           </tr>
