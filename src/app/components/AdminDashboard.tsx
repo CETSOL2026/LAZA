@@ -29,9 +29,11 @@ import {
   Menu,
   LogOut,
   TrendingUp,
+  Workflow,
 } from 'lucide-react';
 import logoFull from '../../imports/Artboard_1_3.png';
 import { pilotIndicators } from '../data/indicators';
+import { PipelineOperations } from './PipelineOperations';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Dataset {
@@ -63,6 +65,7 @@ const SAMPLE_DATASETS: Dataset[] = pilotIndicators.map((indicator, index) => ({
 
 const SIDEBAR_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'pipelines', label: 'Pipeline Operations', icon: Workflow },
   { id: 'data-management', label: 'Data Management', icon: Database },
   { id: 'indicators', label: 'Indicators', icon: TrendingUp },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -237,7 +240,7 @@ function EditDrawer({
 
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
 export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLogout: () => void }) {
-  const [activeNav, setActiveNav] = useState('data-management');
+  const [activeNav, setActiveNav] = useState('pipelines');
   const [datasets, setDatasets] = useState<Dataset[]>(SAMPLE_DATASETS);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -449,6 +452,10 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
 
         {/* ── Content ── */}
         <main className="flex-1 overflow-y-auto p-6">
+          {activeNav === 'pipelines' ? (
+            <PipelineOperations onSessionExpired={onLogout} />
+          ) : (
+          <>
           {/* Page Header */}
           <div className="flex items-start justify-between mb-6">
             <div>
@@ -645,6 +652,8 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
               </div>
             </div>
           </div>
+          </>
+          )}
         </main>
       </div>
 

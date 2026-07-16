@@ -414,6 +414,115 @@ async function runJsonQuery(query) {
   return JSON.parse(jsonText);
 }
 
+async function readAdminPipelineSummary() {
+  const rows = await runJsonQuery(`
+SET NOCOUNT ON;
+SELECT
+  (SELECT COUNT_BIG(*) FROM control.pipeline_definition WHERE is_active=1) AS activePipelines,
+  (SELECT COUNT_BIG(*) FROM control.pipeline_run) AS totalRuns,
+  (SELECT COUNT_BIG(*) FROM control.pipeline_run WHERE run_status='SUCCEEDED') AS successfulRuns,
+  (SELECT COUNT_BIG(*) FROM control.pipeline_run WHERE run_status IN ('FAILED','ERROR')) AS failedRuns,
+  (SELECT COUNT_BIG(*) FROM control.pipeline_run WHERE run_status IN ('RUNNING','STARTED')) AS runningRuns,
+  CAST(100.0 * (SELECT COUNT_BIG(*) FROM control.pipeline_run WHERE run_status='SUCCEEDED') /
+       NULLIF((SELECT COUNT_BIG(*) FROM control.pipeline_run),0) AS decimal(5,2)) AS successRatePct,
+  (SELECT COALESCE(SUM(rows_read),0) FROM control.pipeline_run) AS totalRowsRead,
+  (SELECT COALESCE(SUM(rows_written),0) FROM control.pipeline_run) AS totalRowsWritten,
+  (SELECT COALESCE(SUM(rows_rejected),0) FROM control.pipeline_run) AS totalRowsRejected,
+  (SELECT MAX(started_at) FROM control.pipeline_run) AS lastRunAt,
+  (SELECT MAX(ended_at) FROM control.pipeline_run) AS lastCompletedAt
+FOR JSON PATH;
+`);
+  return rows[0] ?? {};
+}
+
+async function readAdminPipelines() {
+  return runJsonQuery(`
+SET NOCOUNT ON;
+SELECT p.pipeline_id AS pipelineId,
+       p.pipeline_code AS pipelineCode,
+       p.pipeline_name AS pipelineName,
+       p.source_system AS sourceSystem,
+       CONVERT(bit,p.is_active) AS isActive,
+       r.pipeline_run_id AS latestRunId,
+       r.run_status AS latestStatus,
+       r.trigger_type AS triggerType,
+       r.started_at AS startedAt,
+       r.ended_at AS endedAt,
+       CASE WHEN r.started_at IS NULL THEN NULL
+            ELSE DATEDIFF_BIG(millisecond,r.started_at,COALESCE(r.ended_at,SYSUTCDATETIME())) END AS durationMs,
+       COALESCE(r.rows_read,0) AS rowsRead,
+       COALESCE(r.rows_written,0) AS rowsWritten,
+       COALESCE(r.rows_rejected,0) AS rowsRejected,
+       r.error_message AS errorMessage,
+       r.initiated_by AS initiatedBy,
+       COALESCE(batchInfo.batchCount,0) AS batchCount,
+       COALESCE(dqInfo.passCount,0) AS dqPassCount,
+       COALESCE(dqInfo.warningCount,0) AS dqWarningCount,
+       COALESCE(dqInfo.failCount,0) AS dqFailCount
+FROM control.pipeline_definition p
+OUTER APPLY (
+  SELECT TOP (1) pr.*
+  FROM control.pipeline_run pr
+  WHERE pr.pipeline_id=p.pipeline_id
+  ORDER BY pr.started_at DESC,pr.pipeline_run_id DESC
+) r
+OUTER APPLY (
+  SELECT COUNT_BIG(*) AS batchCount
+  FROM control.ingestion_batch b
+  WHERE b.pipeline_run_id=r.pipeline_run_id
+) batchInfo
+OUTER APPLY (
+  SELECT SUM(CASE WHEN dr.result_status='PASS' THEN 1 ELSE 0 END) AS passCount,
+         SUM(CASE WHEN dr.result_status='WARN' THEN 1 ELSE 0 END) AS warningCount,
+         SUM(CASE WHEN dr.result_status NOT IN ('PASS','WARN') THEN 1 ELSE 0 END) AS failCount
+  FROM dq.execution de
+  JOIN dq.result dr ON dr.dq_execution_id=de.dq_execution_id
+  WHERE de.pipeline_run_id=r.pipeline_run_id
+) dqInfo
+ORDER BY p.pipeline_code
+FOR JSON PATH;
+`);
+}
+
+async function readAdminPipelineDetail(pipelineId) {
+  const [pipelineRows,runs,batches,dqResults,events,assets] = await Promise.all([
+    runJsonQuery(`SET NOCOUNT ON; SELECT pipeline_id AS pipelineId,pipeline_code AS pipelineCode,pipeline_name AS pipelineName,source_system AS sourceSystem,CONVERT(bit,is_active) AS isActive,created_at AS createdAt FROM control.pipeline_definition WHERE pipeline_id=${pipelineId} FOR JSON PATH;`),
+    runJsonQuery(`SET NOCOUNT ON; SELECT TOP (25) pipeline_run_id AS runId,run_correlation_id AS correlationId,run_status AS status,trigger_type AS triggerType,started_at AS startedAt,ended_at AS endedAt,CASE WHEN started_at IS NULL THEN NULL ELSE DATEDIFF_BIG(millisecond,started_at,COALESCE(ended_at,SYSUTCDATETIME())) END AS durationMs,rows_read AS rowsRead,rows_written AS rowsWritten,rows_rejected AS rowsRejected,error_message AS errorMessage,initiated_by AS initiatedBy FROM control.pipeline_run WHERE pipeline_id=${pipelineId} ORDER BY started_at DESC,pipeline_run_id DESC FOR JSON PATH;`),
+    runJsonQuery(`SET NOCOUNT ON; SELECT TOP (50) b.ingestion_batch_id AS batchId,b.batch_code AS batchCode,b.data_classification AS dataClassification,b.batch_status AS status,b.acquired_at AS acquiredAt,b.loaded_at AS loadedAt,b.source_record_count AS sourceRecordCount,b.accepted_record_count AS acceptedRecordCount,b.rejected_record_count AS rejectedRecordCount FROM control.ingestion_batch b JOIN control.pipeline_run r ON r.pipeline_run_id=b.pipeline_run_id WHERE r.pipeline_id=${pipelineId} ORDER BY b.acquired_at DESC,b.ingestion_batch_id DESC FOR JSON PATH;`),
+    runJsonQuery(`SET NOCOUNT ON; SELECT dr.result_status AS status,COUNT_BIG(*) AS total FROM dq.execution de JOIN control.pipeline_run r ON r.pipeline_run_id=de.pipeline_run_id JOIN dq.result dr ON dr.dq_execution_id=de.dq_execution_id WHERE r.pipeline_id=${pipelineId} GROUP BY dr.result_status ORDER BY dr.result_status FOR JSON PATH;`),
+    runJsonQuery(`SET NOCOUNT ON; SELECT TOP (50) e.pipeline_event_id AS eventId,e.event_type AS eventType,e.event_level AS eventLevel,e.event_message AS message,e.occurred_at AS occurredAt FROM audit.pipeline_event e JOIN control.pipeline_run r ON r.pipeline_run_id=e.pipeline_run_id WHERE r.pipeline_id=${pipelineId} ORDER BY e.occurred_at DESC,e.pipeline_event_id DESC FOR JSON PATH;`),
+    runJsonQuery(`SET NOCOUNT ON; SELECT TOP (50) a.source_asset_id AS assetId,a.asset_name AS assetName,a.asset_type AS assetType,a.publication_date AS publicationDate,a.content_size_bytes AS registeredSizeBytes,m.mirror_size_bytes AS mirrorSizeBytes,m.mirror_status AS mirrorStatus,CONVERT(bit,m.hash_matches_registered) AS hashMatchesRegistered,m.last_verified_at AS lastVerifiedAt FROM bronze.source_asset a JOIN control.ingestion_batch b ON b.ingestion_batch_id=a.ingestion_batch_id JOIN control.pipeline_run r ON r.pipeline_run_id=b.pipeline_run_id LEFT JOIN control.source_asset_mirror m ON m.source_asset_id=a.source_asset_id WHERE r.pipeline_id=${pipelineId} ORDER BY a.publication_date DESC,a.source_asset_id DESC FOR JSON PATH;`),
+  ]);
+  if (!pipelineRows[0]) return null;
+  return { pipeline: pipelineRows[0], runs, batches, dqResults, events, assets };
+}
+
+async function readAdminDataQualitySummary() {
+  const summary = await runJsonQuery(`
+SET NOCOUNT ON;
+SELECT (SELECT COUNT_BIG(*) FROM dq.execution) AS totalExecutions,
+       (SELECT COUNT_BIG(*) FROM dq.execution WHERE execution_status='PASSED') AS passedExecutions,
+       (SELECT COUNT_BIG(*) FROM dq.execution WHERE execution_status='WARNING') AS warningExecutions,
+       (SELECT COUNT_BIG(*) FROM dq.result WHERE result_status='PASS') AS passedResults,
+       (SELECT COUNT_BIG(*) FROM dq.result WHERE result_status='WARN') AS warningResults,
+       (SELECT COUNT_BIG(*) FROM dq.result WHERE result_status NOT IN ('PASS','WARN')) AS failedResults,
+       (SELECT CAST(AVG(CAST(quality_score AS decimal(10,2))) AS decimal(10,2)) FROM dq.indicator_score) AS averageQualityScore,
+       (SELECT COUNT_BIG(*) FROM dq.exception WHERE exception_status='APPROVED') AS approvedExceptions,
+       (SELECT COUNT_BIG(*) FROM dq.exception WHERE exception_status NOT IN ('APPROVED','RESOLVED','REJECTED')) AS openExceptions,
+       (SELECT COUNT_BIG(*) FROM dq.approval WHERE decision='APPROVE') AS approvals
+FOR JSON PATH;
+`);
+  return summary[0] ?? {};
+}
+
+async function readAdminAssetSummary() {
+  const [summary,statuses] = await Promise.all([
+    runJsonQuery(`SET NOCOUNT ON; SELECT COUNT_BIG(*) AS totalAssets,COALESCE(SUM(mirror_size_bytes),0) AS totalMirrorBytes,SUM(CASE WHEN hash_matches_registered=1 THEN 1 ELSE 0 END) AS hashVerifiedAssets,SUM(CASE WHEN hash_matches_registered=0 THEN 1 ELSE 0 END) AS hashMismatchAssets,MAX(last_verified_at) AS lastVerifiedAt FROM control.source_asset_mirror FOR JSON PATH;`),
+    runJsonQuery(`SET NOCOUNT ON; SELECT mirror_status AS status,COUNT_BIG(*) AS total,COALESCE(SUM(mirror_size_bytes),0) AS totalBytes FROM control.source_asset_mirror GROUP BY mirror_status ORDER BY mirror_status FOR JSON PATH;`),
+  ]);
+  return { ...(summary[0] ?? {}), statuses };
+}
+
 async function readLatestIndicators() {
   if (cache && Date.now() - cachedAt < cacheTtlMs) return cache;
   const indicators = await runJsonQuery(latestIndicatorsQuery);
@@ -788,6 +897,58 @@ const server = createServer(async (request, response) => {
     if (token) adminSessions.delete(createHash('sha256').update(token).digest('hex'));
     response.setHeader('Set-Cookie', adminCookie(request, '', 0));
     sendJson(response, 200, { authenticated: false });
+    return;
+  }
+
+  if (request.method === 'GET' && request.url?.startsWith('/api/admin/')) {
+    const session = adminSession(request);
+    if (!session) {
+      sendJson(response, 401, { error: 'ADMIN_AUTH_REQUIRED', message: 'An authenticated administrator session is required.' });
+      return;
+    }
+
+    try {
+      if (request.url === '/api/admin/pipelines/summary') {
+        const data = await readAdminPipelineSummary();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.control.pipeline_run', generatedAt: new Date().toISOString(), readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/pipelines') {
+        const data = await readAdminPipelines();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.control.pipeline_definition', generatedAt: new Date().toISOString(), pipelineCount: data.length, readOnly: true } });
+        return;
+      }
+      const runsMatch = request.url.match(/^\/api\/admin\/pipelines\/(\d+)\/runs$/);
+      if (runsMatch) {
+        const pipelineId = Number(runsMatch[1]);
+        if (!Number.isSafeInteger(pipelineId) || pipelineId <= 0) {
+          sendJson(response, 400, { error: 'INVALID_PIPELINE_ID' });
+          return;
+        }
+        const data = await readAdminPipelineDetail(pipelineId);
+        if (!data) {
+          sendJson(response, 404, { error: 'PIPELINE_NOT_FOUND' });
+          return;
+        }
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV operational schemas', generatedAt: new Date().toISOString(), readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/data-quality/summary') {
+        const data = await readAdminDataQualitySummary();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.dq', generatedAt: new Date().toISOString(), readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/assets/summary') {
+        const data = await readAdminAssetSummary();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.control.source_asset_mirror', generatedAt: new Date().toISOString(), readOnly: true } });
+        return;
+      }
+    } catch (error) {
+      sendJson(response, 503, { error: 'ADMIN_OPERATIONS_UNAVAILABLE', message: error.message });
+      return;
+    }
+
+    sendJson(response, 404, { error: 'ADMIN_ENDPOINT_NOT_FOUND' });
     return;
   }
 
