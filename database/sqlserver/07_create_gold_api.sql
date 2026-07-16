@@ -255,7 +255,7 @@ WITH ranked AS
         ROW_NUMBER() OVER
         (
             PARTITION BY f.indicator_key
-            ORDER BY f.period_end_date_key DESC, f.published_at DESC, f.fact_observation_id DESC
+            ORDER BY f.is_official DESC, f.period_end_date_key DESC, f.published_at DESC, f.fact_observation_id DESC
         ) AS row_number
     FROM [gold].[fact_indicator_observation] AS f
     INNER JOIN [gold].[dim_indicator] AS i ON i.indicator_key = f.indicator_key

@@ -1,0 +1,527 @@
+{
+  "generatedAt": "2026-07-16T16:48:59.496715+00:00",
+  "source": {
+    "name": "BODIVA Official Market Bulletin",
+    "archiveUrl": "https://www.bodiva.ao/estatistica"
+  },
+  "currency": "AOA",
+  "curve": "Curva de Rendimentos Kz",
+  "methodology": "Official published tenor points; no interpolation and no forward filling.",
+  "assets": [
+    {
+      "referenceDate": "2025-02-21",
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "contentSha256": "527E274C2A480D63C8A05529B362DF3C5CD324AFF33217421DF286C00E9BC956",
+      "contentSizeBytes": 578110
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "contentSha256": "310F02309A0BB7AB21F0E3BD3CC9A5BDD10350C432C17F46EBCC7352AB49074B",
+      "contentSizeBytes": 751974
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "contentSha256": "F25CAFA3C6046606F6DAE90A81CF502BF3F93BFE61A68EA64AEDCE85C7B2824E",
+      "contentSizeBytes": 1336109
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "contentSha256": "EB59829EC47DD223964FC5EE21259F7260F93802F09B7E978318FB5C17F1A7E6",
+      "contentSizeBytes": 1555888
+    }
+  ],
+  "rows": [
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "3M",
+      "tenorMonths": 3,
+      "yieldPct": 17.56,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "6M",
+      "tenorMonths": 6,
+      "yieldPct": 17.62,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "1Y",
+      "tenorMonths": 12,
+      "yieldPct": 18.07,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "2Y",
+      "tenorMonths": 24,
+      "yieldPct": 17.32,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "3Y",
+      "tenorMonths": 36,
+      "yieldPct": 17.31,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "4Y",
+      "tenorMonths": 48,
+      "yieldPct": 17.91,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "5Y",
+      "tenorMonths": 60,
+      "yieldPct": 17.16,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "6Y",
+      "tenorMonths": 72,
+      "yieldPct": 17.42,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "7Y",
+      "tenorMonths": 84,
+      "yieldPct": 18.47,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "8Y",
+      "tenorMonths": 96,
+      "yieldPct": 19.62,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "9Y",
+      "tenorMonths": 108,
+      "yieldPct": 20.87,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-02-21",
+      "tenor": "10Y",
+      "tenorMonths": 120,
+      "yieldPct": 21.74,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250221.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": -91.0,
+      "spread10y2yBps": 442.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "3M",
+      "tenorMonths": 3,
+      "yieldPct": 13.66,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "6M",
+      "tenorMonths": 6,
+      "yieldPct": 15.13,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "1Y",
+      "tenorMonths": 12,
+      "yieldPct": 14.77,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "2Y",
+      "tenorMonths": 24,
+      "yieldPct": 17.15,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "3Y",
+      "tenorMonths": 36,
+      "yieldPct": 18.85,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "4Y",
+      "tenorMonths": 48,
+      "yieldPct": 19.19,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "5Y",
+      "tenorMonths": 60,
+      "yieldPct": 18.09,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "6Y",
+      "tenorMonths": 72,
+      "yieldPct": 18.29,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "7Y",
+      "tenorMonths": 84,
+      "yieldPct": 19.73,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "8Y",
+      "tenorMonths": 96,
+      "yieldPct": 20.01,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "9Y",
+      "tenorMonths": 108,
+      "yieldPct": 20.71,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2025-05-06",
+      "tenor": "10Y",
+      "tenorMonths": 120,
+      "yieldPct": 20.44,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20250506.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 332.0,
+      "spread10y2yBps": 329.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "3M",
+      "tenorMonths": 3,
+      "yieldPct": 16.06,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "6M",
+      "tenorMonths": 6,
+      "yieldPct": 16.81,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "1Y",
+      "tenorMonths": 12,
+      "yieldPct": 17.65,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "2Y",
+      "tenorMonths": 24,
+      "yieldPct": 17.59,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "3Y",
+      "tenorMonths": 36,
+      "yieldPct": 18.31,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "4Y",
+      "tenorMonths": 48,
+      "yieldPct": 18.12,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "5Y",
+      "tenorMonths": 60,
+      "yieldPct": 18.58,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "6Y",
+      "tenorMonths": 72,
+      "yieldPct": 19.03,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "7Y",
+      "tenorMonths": 84,
+      "yieldPct": 19.45,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "8Y",
+      "tenorMonths": 96,
+      "yieldPct": 19.12,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "9Y",
+      "tenorMonths": 108,
+      "yieldPct": 18.93,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-01-23",
+      "tenor": "10Y",
+      "tenorMonths": 120,
+      "yieldPct": 18.65,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260123.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 93.0,
+      "spread10y2yBps": 106.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "3M",
+      "tenorMonths": 3,
+      "yieldPct": 13.9,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "6M",
+      "tenorMonths": 6,
+      "yieldPct": 16.61,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "1Y",
+      "tenorMonths": 12,
+      "yieldPct": 16.63,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "2Y",
+      "tenorMonths": 24,
+      "yieldPct": 16.86,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "3Y",
+      "tenorMonths": 36,
+      "yieldPct": 17.47,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "4Y",
+      "tenorMonths": 48,
+      "yieldPct": 18.18,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "5Y",
+      "tenorMonths": 60,
+      "yieldPct": 18.63,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "6Y",
+      "tenorMonths": 72,
+      "yieldPct": 19.13,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "7Y",
+      "tenorMonths": 84,
+      "yieldPct": 19.31,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "8Y",
+      "tenorMonths": 96,
+      "yieldPct": 19.35,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "9Y",
+      "tenorMonths": 108,
+      "yieldPct": 18.94,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    },
+    {
+      "referenceDate": "2026-06-25",
+      "tenor": "10Y",
+      "tenorMonths": 120,
+      "yieldPct": 18.42,
+      "sourceUrl": "https://www.bodiva.ao/media/boletim-diario/boletimdiario20260625.pdf",
+      "sourcePage": 7,
+      "spread5y1yBps": 200.0,
+      "spread10y2yBps": 156.0
+    }
+  ],
+  "quality": {
+    "criticalFindings": 0,
+    "highFindings": 0,
+    "expectedTenorsPerSnapshot": 12
+  }
+}

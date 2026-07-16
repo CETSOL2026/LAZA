@@ -10,12 +10,12 @@ adapter evolves from controlled fixtures to official automated sources.
 
 | Indicator | Definition | Frequency | Initial source | Stage 1 status |
 | --- | --- | --- | --- | --- |
-| GDP Growth | Annual percentage change in real GDP | Annual / quarterly | INE | Demonstration |
-| Inflation Rate | YoY change in the national CPI | Monthly | INE | Demonstration |
-| Exchange Rate | AOA per USD reference rate | Daily / monthly | BNA | Demonstration |
-| Population | Estimated resident population | Annual | INE | Demonstration |
-| Banking Assets | Aggregate banking-sector assets | Annual / quarterly | BNA and bank reports | Demonstration |
-| Public Debt/GDP | Gross public debt as a share of nominal GDP | Annual / quarterly | MINFIN and BNA | Demonstration |
+| GDP Growth | YoY change in real quarterly GDP | Quarterly | INE | Official / published |
+| Inflation Rate | YoY change in the national IPCN | Monthly | INE | Official / published |
+| Exchange Rate | Monthly average AOA per USD reference rate | Monthly | BNA | Official / published |
+| Population | Resident population counted at census moments | Decennial census | INE | Official / published |
+| Banking Assets | Month-end total assets of other depository corporations | Monthly | BNA | Official / published; 2026 preliminary |
+| Public Debt/GDP | Government debt plus unguaranteed public-enterprise debt as a share of nominal GDP | Annual / quarterly | UGD / MINFIN | Official / published; Q1 2026 derived from official components |
 
 ## Staged implementation
 

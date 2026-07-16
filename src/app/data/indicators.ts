@@ -43,6 +43,7 @@ export interface IndicatorHistoryPoint {
   isOfficial: boolean;
   hasAcceptedException: boolean;
   hasSourceWarning?: boolean;
+  sourceWarningMessage?: string;
 }
 
 export interface IndicatorHistoryResponse {
@@ -226,6 +227,36 @@ export async function loadGdpHistory(signal?: AbortSignal): Promise<IndicatorHis
   const payload = await response.json() as IndicatorHistoryResponse;
   if (!Array.isArray(payload.data) || payload.data.length !== 21) {
     throw new Error('GDP history API did not return the expected 21 quarters.');
+  }
+  return payload;
+}
+
+export async function loadPopulationHistory(signal?: AbortSignal): Promise<IndicatorHistoryResponse> {
+  const response = await fetch('/api/indicators/population/history', { signal });
+  if (!response.ok) throw new Error(`Population history API returned HTTP ${response.status}.`);
+  const payload = await response.json() as IndicatorHistoryResponse;
+  if (!Array.isArray(payload.data) || payload.data.length !== 2) {
+    throw new Error('Population history API did not return the expected two censuses.');
+  }
+  return payload;
+}
+
+export async function loadBankingAssetsHistory(signal?: AbortSignal): Promise<IndicatorHistoryResponse> {
+  const response = await fetch('/api/indicators/banking-assets/history', { signal });
+  if (!response.ok) throw new Error(`Banking-assets history API returned HTTP ${response.status}.`);
+  const payload = await response.json() as IndicatorHistoryResponse;
+  if (!Array.isArray(payload.data) || payload.data.length !== 65) {
+    throw new Error('Banking-assets history API did not return the expected 65 months.');
+  }
+  return payload;
+}
+
+export async function loadPublicDebtHistory(signal?: AbortSignal): Promise<IndicatorHistoryResponse> {
+  const response = await fetch('/api/indicators/public-debt-gdp/history', { signal });
+  if (!response.ok) throw new Error(`Public-debt history API returned HTTP ${response.status}.`);
+  const payload = await response.json() as IndicatorHistoryResponse;
+  if (!Array.isArray(payload.data) || payload.data.length !== 2) {
+    throw new Error('Public-debt history API did not return the expected two periods.');
   }
   return payload;
 }

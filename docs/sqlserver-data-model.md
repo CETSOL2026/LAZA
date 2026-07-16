@@ -146,12 +146,12 @@ is not considered evidence of an official observation.
 
 | Indicator code | Initial source | Reference period | Classification |
 | --- | --- | --- | --- |
-| `gdp-growth` | INE Angola - National Accounts | 2024 | DEMO |
-| `inflation-rate` | INE Angola - National CPI | 2024 | DEMO |
-| `exchange-rate` | Banco Nacional de Angola | Q2 2024 | DEMO |
-| `population` | INE Angola - Population Statistics | 2024 | DEMO |
-| `banking-assets` | BNA and official bank reports | 2024 | DEMO |
-| `public-debt-gdp` | Ministry of Finance and BNA | 2024 | DEMO |
+| `gdp-growth` | INE quarterly national accounts | 2021-Q1 to 2026-Q1 | OFFICIAL / PUBLISHED |
+| `inflation-rate` | INE national IPCN | 2021-01 to 2026-06 | OFFICIAL / PUBLISHED |
+| `exchange-rate` | BNA reference-rate API | 2021-01 to 2026-06 | OFFICIAL / PUBLISHED |
+| `population` | INE RGPH census results | Census 2014 and Census 2024 | OFFICIAL / PUBLISHED |
+| `banking-assets` | BNA monetary and financial statistics | 2021-01 to 2026-05 | OFFICIAL / PUBLISHED; 2026 preliminary |
+| `public-debt-gdp` | UGD public-debt statistical bulletins | 2025 and 2026-Q1 | OFFICIAL / PUBLISHED; Q1 2026 derived from official components |
 
 ## Security model
 

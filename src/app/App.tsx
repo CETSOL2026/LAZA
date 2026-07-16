@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { MetricsOverview } from './components/MetricsOverview';
+import { OilGasIntelligence } from './components/OilGasIntelligence';
+import { FiscalExecutionIntelligence } from './components/FiscalExecutionIntelligence';
+import { SovereignYieldCurveIntelligence } from './components/SovereignYieldCurveIntelligence';
 import { EconomySection } from './components/EconomySection';
 import { SocietySection } from './components/SocietySection';
 import { FinancialSystemSection } from './components/FinancialSystemSection';
@@ -42,6 +45,12 @@ export default function App() {
 
           <main className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 py-12 space-y-16">
             <MetricsOverview />
+
+            <OilGasIntelligence />
+
+            <FiscalExecutionIntelligence />
+
+            <SovereignYieldCurveIntelligence />
 
             <FeaturedInsights />
 
