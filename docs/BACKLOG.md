@@ -44,7 +44,7 @@
 | LAZA-009 | Avaliar execução no arranque do Windows sem depender de login interativo | Pendente | M | Conta de serviço/credenciais SQL | Site volta automaticamente após reinício e mantém autenticação SQL com privilégio mínimo |
 | LAZA-010 | Criar procedimento de publicação: build, smoke test, rollback e versionamento | Pendente | M | LAZA-007 | Uma versão pode ser publicada e revertida com comandos documentados e evidência de teste |
 | LAZA-011 | Adicionar testes automatizados de contrato para as APIs | Concluído em 17/07/2026 | M | Nenhuma | Testes cobrem `/health`, seis indicadores e quatro módulos avançados, incluindo esquemas, contagens, ordenação cronológica, autenticação admin e download de assets |
-| LAZA-012 | Adicionar testes de interface para navegação, detalhes e três análises avançadas | Pendente | L | Ambiente de teste de navegador | Fluxos críticos passam em desktop e viewport móvel antes de cada publicação |
+| LAZA-012 | Adicionar testes de interface para navegação, detalhes e quatro análises avançadas | Concluído em 17/07/2026 | L | Ambiente de teste de navegador | Fluxos críticos passam em desktop e viewport móvel antes de cada publicação |
 | LAZA-013 | Monitorar tamanho do SQL Express e crescimento das camadas | Pendente | S | LAZA-007 | Relatório periódico alerta antes de atingir 70%, 85% e 95% do limite operacional |
 
 ## P1 — Automação dos dados oficiais
