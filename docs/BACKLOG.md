@@ -86,8 +86,8 @@
 
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
-| LAZA-033 | Mapear Bronze/Silver/Gold local para os serviços Google aprovados na arquitetura | Em backlog por decisão de 17/07/2026 | M | Decisão de landing zone | Documento de mapeamento cobre storage, processamento, warehouse, API, IAM e observabilidade |
-| LAZA-034 | Definir infraestrutura como código e ambientes DEV/HML/PRD | Pendente | L | LAZA-033 | Recursos podem ser recriados com configuração versionada e segregação de ambientes |
+| LAZA-033 | Mapear Bronze/Silver/Gold local para os serviços Google aprovados na arquitetura | Concluído em 17/07/2026 | M | Decisão de landing zone | Documento `docs/google-cloud-migration-blueprint.md` cobre storage, processamento, warehouse, API, IAM e observabilidade |
+| LAZA-034 | Definir infraestrutura como código e ambientes DEV/HML/PRD | Concluído em 17/07/2026 | L | LAZA-033 | Documento `docs/google-cloud-iac-environments.md`, Word oficial e scaffold `infra/google/` definem recursos recriáveis com configuração versionada e segregação de ambientes |
 | LAZA-035 | Executar prova de portabilidade de um indicador ponta a ponta | Pendente | XL | LAZA-033 e landing zone | Um indicador percorre ingestão, DQ, Gold e site na Google Cloud com reconciliação 100% contra SQL Server |
 | LAZA-036 | Planejar migração dos nove produtos e corte operacional | Pendente | L | LAZA-035 | Plano possui ondas, rollback, custos, responsáveis e critérios de saída |
 

@@ -1,8 +1,31 @@
 {
+  "provider": "sqlserver",
   "sqlServer": {
     "instance": ".\\SQLEXPRESS",
     "database": "LAZA_DATA_PLATFORM_DEV",
     "authentication": "windows"
+  },
+  "googleCloud": {
+    "projectId": "laza-dev-project-id",
+    "environment": "dev",
+    "region": "europe-west1",
+    "datasets": {
+      "control": "control",
+      "audit": "audit",
+      "reference": "reference",
+      "bronze": "bronze",
+      "silver": "silver",
+      "dq": "dq",
+      "gold": "gold",
+      "api": "api"
+    },
+    "buckets": {
+      "landing": "laza-dev-landing-laza-dev-project-id",
+      "bronzeAssets": "laza-dev-bronze-assets-laza-dev-project-id",
+      "rejected": "laza-dev-rejected-laza-dev-project-id",
+      "manifests": "laza-dev-manifests-laza-dev-project-id",
+      "logs": "laza-dev-logs-laza-dev-project-id"
+    }
   },
   "storage": {
     "root": "D:\\LAZA_DATA",

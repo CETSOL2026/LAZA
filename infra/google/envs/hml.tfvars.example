@@ -1,0 +1,15 @@
+project_id      = "laza-hml-project-id"
+environment     = "hml"
+region          = "europe-west1"
+bucket_location = "EU"
+bucket_prefix   = "laza"
+
+landing_retention_days  = 30
+rejected_retention_days = 180
+logs_retention_days     = 365
+force_destroy_buckets   = false
+
+labels = {
+  cost_center = "laza"
+  owner       = "data-platform"
+}
