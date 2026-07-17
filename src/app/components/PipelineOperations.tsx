@@ -101,7 +101,9 @@ export function PipelineOperations({ onSessionExpired }: { onSessionExpired: () 
     } finally { setLoading(false); setRefreshing(false); }
   }, [onSessionExpired]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount + poll, not a derived-state mirror
   useEffect(() => { void refresh(); const timer = window.setInterval(() => void refresh(true), 30000); return () => window.clearInterval(timer); }, [refresh]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch keyed on selectedId
   useEffect(() => { if (selectedId === null) return; setDetailLoading(true); setDetail(null); loadPipelineDetail(selectedId).then((response) => setDetail(response.data)).catch((reason) => { if (reason instanceof Error && reason.message === 'ADMIN_SESSION_EXPIRED') onSessionExpired(); else setError(reason instanceof Error ? reason.message : 'Unable to load pipeline detail.'); }).finally(() => setDetailLoading(false)); }, [selectedId,onSessionExpired]);
 
   const sources = useMemo(() => [...new Set(pipelines.map((item) => item.sourceSystem))].sort(), [pipelines]);

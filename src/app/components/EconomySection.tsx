@@ -1,11 +1,7 @@
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 
-interface EconomySectionProps {
-  featured?: boolean;
-}
-
-export function EconomySection({ featured = false }: EconomySectionProps) {
+export function EconomySection() {
   const gdpData = [
     { year: '2019', gdp: 88.8, growth: 0.2 },
     { year: '2020', gdp: 62.3, growth: -5.6 },

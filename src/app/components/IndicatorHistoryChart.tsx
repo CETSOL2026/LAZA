@@ -1,9 +1,9 @@
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { IndicatorHistoryPoint } from '../data/indicators';
 
-function HistoryTooltip({ active, payload }: any) {
+function HistoryTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: IndicatorHistoryPoint }> }) {
   if (!active || !payload?.length) return null;
-  const point = payload[0].payload as IndicatorHistoryPoint;
+  const point = payload[0].payload;
   return <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-lg"><p className="font-medium">{point.period}</p><p className="mt-1 text-primary">{point.displayValue}</p><p className="mt-1 text-muted-foreground">Quality score {point.qualityScore.toFixed(2)}</p>{point.hasAcceptedException && <p className="mt-1 text-amber-700">Accepted reconciliation exception</p>}{point.hasSourceWarning && <p className="mt-1 text-amber-700">{point.sourceWarningMessage ?? 'Source warning documented'}</p>}</div>;
 }
 

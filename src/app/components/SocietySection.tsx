@@ -1,11 +1,7 @@
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Users } from 'lucide-react';
 
-interface SocietySectionProps {
-  featured?: boolean;
-}
-
-export function SocietySection({ featured = false }: SocietySectionProps) {
+export function SocietySection() {
   const populationData = [
     { year: '2019', population: 31.2, urbanization: 65.3 },
     { year: '2020', population: 32.1, urbanization: 66.1 },

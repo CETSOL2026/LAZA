@@ -1,4 +1,4 @@
-import { X, Check, Minus, Zap, Building2, Rocket } from 'lucide-react';
+import { X, Minus, Zap, Building2, Rocket } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 interface PricingModalProps {

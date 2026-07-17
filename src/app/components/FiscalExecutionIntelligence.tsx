@@ -28,12 +28,19 @@ function FiscalCard({ label, value, context, icon: Icon, positive }: {
   );
 }
 
-function FiscalTooltip({ active, payload, label }: any) {
+interface FiscalTooltipItem {
+  dataKey: string;
+  name: string;
+  value: number;
+  color?: string;
+}
+
+function FiscalTooltip({ active, payload, label }: { active?: boolean; payload?: FiscalTooltipItem[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-border bg-white p-3 text-xs shadow-xl">
       <p className="mb-2 font-medium">{label}</p>
-      {payload.map((item: any) => (
+      {payload.map((item) => (
         <p key={item.dataKey} className="mt-1" style={{ color: item.color }}>
           {item.name}: {item.dataKey.toLowerCase().includes('pct') ? `${decimal.format(item.value)}%` : money(item.value)}
         </p>

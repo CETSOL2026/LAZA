@@ -22,10 +22,18 @@ function CurveCard({ label, value, context, icon: Icon }: { label: string; value
   </div>;
 }
 
-function YieldTooltip({ active, payload, label, suffix = '%' }: any) {
+interface YieldTooltipItem {
+  dataKey: string;
+  name: string;
+  value: number;
+  color?: string;
+  fill?: string;
+}
+
+function YieldTooltip({ active, payload, label, suffix = '%' }: { active?: boolean; payload?: YieldTooltipItem[]; label?: string; suffix?: string }) {
   if (!active || !payload?.length) return null;
   return <div className="rounded-xl border border-violet-100 bg-white p-3 text-xs shadow-xl"><p className="mb-2 font-medium">{label}</p>
-    {payload.map((item: any) => <p key={`${item.dataKey}-${item.name}`} className="mt-1" style={{ color: item.color ?? item.fill }}>{item.name}: {decimal.format(item.value)}{suffix}</p>)}
+    {payload.map((item) => <p key={`${item.dataKey}-${item.name}`} className="mt-1" style={{ color: item.color ?? item.fill }}>{item.name}: {decimal.format(item.value)}{suffix}</p>)}
   </div>;
 }
 

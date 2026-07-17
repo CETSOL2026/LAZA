@@ -29,12 +29,19 @@ function MetricCard({ label, value, context, icon: Icon, tone = 'default' }: {
   );
 }
 
-function AnalysisTooltip({ active, payload, label }: any) {
+interface AnalysisTooltipItem {
+  dataKey: string;
+  name: string;
+  value?: number;
+  color?: string;
+}
+
+function AnalysisTooltip({ active, payload, label }: { active?: boolean; payload?: AnalysisTooltipItem[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-border bg-white p-3 text-xs shadow-xl">
       <p className="mb-2 font-medium">{label}</p>
-      {payload.map((item: any) => (
+      {payload.map((item) => (
         <p key={item.dataKey} className="mt-1" style={{ color: item.color }}>
           {item.name}: {integer.format(item.value ?? 0)}
         </p>

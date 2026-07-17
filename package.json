@@ -1,5 +1,5 @@
 {
-  "name": "@figma/my-make-file",
+  "name": "laza-data-marketplace",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -10,7 +10,7 @@
     "dev:api": "node server/indicator-api.mjs",
     "test": "node --test",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

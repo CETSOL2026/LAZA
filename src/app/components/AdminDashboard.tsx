@@ -122,11 +122,6 @@ function EditDrawer({
   const [form, setForm] = useState<Partial<Dataset>>(dataset || {});
   const [statusActive, setStatusActive] = useState(dataset?.status === 'Active');
 
-  useEffect(() => {
-    setForm(dataset || {});
-    setStatusActive(dataset?.status === 'Active');
-  }, [dataset]);
-
   if (!dataset) return null;
 
   return (
@@ -664,6 +659,7 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
 
       {/* ── Edit Drawer ── */}
       <EditDrawer
+        key={editingDataset?.id ?? 'none'}
         dataset={editingDataset}
         onClose={() => setEditingDataset(null)}
         onSave={handleSave}

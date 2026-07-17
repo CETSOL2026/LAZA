@@ -27,6 +27,11 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
   const [inflationHistory, setInflationHistory] = useState<IndicatorHistoryPoint[]>([]);
   const [historyStatus, setHistoryStatus] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
   const [historyIndicatorId, setHistoryIndicatorId] = useState('');
+  const [appliedInitialSelectedId, setAppliedInitialSelectedId] = useState(initialSelectedId);
+  if (initialSelectedId !== appliedInitialSelectedId) {
+    setAppliedInitialSelectedId(initialSelectedId);
+    if (initialSelectedId) setSelectedId(initialSelectedId);
+  }
   const selected = indicators.find((indicator) => indicator.id === selectedId) ?? indicators[0];
   const officialCount = useMemo(
     () => indicators.filter((indicator) => indicator.isOfficial).length,
@@ -47,10 +52,6 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
   }, []);
 
   useEffect(() => {
-    if (initialSelectedId) setSelectedId(initialSelectedId);
-  }, [initialSelectedId]);
-
-  useEffect(() => {
     if (summaryOnly) return;
     const expectedHistorySize = selectedId === 'gdp-growth'
       ? 21
@@ -61,6 +62,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
           : 66;
     if (!['gdp-growth', 'inflation-rate', 'exchange-rate', 'population', 'banking-assets', 'public-debt-gdp'].includes(selectedId) || (historyIndicatorId === selectedId && inflationHistory.length === expectedHistorySize)) return;
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch: mark loading before the async call starts
     setHistoryStatus('loading');
     const loader = selectedId === 'inflation-rate'
       ? loadInflationHistory

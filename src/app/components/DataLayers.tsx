@@ -75,6 +75,11 @@ export function DataLayers({ onSessionExpired }: { onSessionExpired: () => void 
   const [lastRefresh,setLastRefresh] = useState<Date | null>(null);
   const [error,setError] = useState('');
   const [search,setSearch] = useState('');
+  const [searchResetLayer,setSearchResetLayer] = useState(activeLayer);
+  if (activeLayer !== searchResetLayer) {
+    setSearchResetLayer(activeLayer);
+    setSearch('');
+  }
 
   const refresh = useCallback(async (quiet = false) => {
     if (quiet) setRefreshing(true); else setLoading(true);
@@ -88,8 +93,8 @@ export function DataLayers({ onSessionExpired }: { onSessionExpired: () => void 
     } finally { setLoading(false); setRefreshing(false); }
   },[onSessionExpired]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount + poll, not a derived-state mirror
   useEffect(() => { void refresh(); const timer=window.setInterval(() => void refresh(true),60000); return () => window.clearInterval(timer); },[refresh]);
-  useEffect(() => setSearch(''),[activeLayer]);
   const reconciledPipelines = useMemo(() => summary?.reconciliation.filter((row) => row.bronzeRecords || row.silverObservations || row.goldFacts) ?? [],[summary]);
 
   return <div className="min-h-full">

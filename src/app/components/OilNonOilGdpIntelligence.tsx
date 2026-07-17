@@ -17,10 +17,18 @@ function GdpCard({ label, value, context, icon: Icon, positive }: {
   </div>;
 }
 
-function PercentTooltip({ active, payload, label }: any) {
+interface PercentTooltipItem {
+  dataKey: string;
+  name: string;
+  value: number;
+  color?: string;
+  fill?: string;
+}
+
+function PercentTooltip({ active, payload, label }: { active?: boolean; payload?: PercentTooltipItem[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return <div className="rounded-xl border border-emerald-100 bg-white p-3 text-xs shadow-xl"><p className="mb-2 font-medium">{label}</p>
-    {payload.map((item: any) => <p key={item.dataKey} className="mt-1" style={{ color: item.color ?? item.fill }}>{item.name}: {decimal.format(item.value)}{item.dataKey.toLowerCase().includes('contribution') ? ' pp' : '%'}</p>)}
+    {payload.map((item) => <p key={item.dataKey} className="mt-1" style={{ color: item.color ?? item.fill }}>{item.name}: {decimal.format(item.value)}{item.dataKey.toLowerCase().includes('contribution') ? ' pp' : '%'}</p>)}
   </div>;
 }
 

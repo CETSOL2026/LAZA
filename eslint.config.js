@@ -22,9 +22,6 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
-      // Pre-existing derived-state-on-prop-change pattern across several components;
-      // downgraded pending a dedicated refactor rather than blocking lint on it.
-      'react-hooks/set-state-in-effect': 'warn',
     },
   },
   {

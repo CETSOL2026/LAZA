@@ -161,7 +161,7 @@ export default function App() {
     {(['kiluange', 'bwila', 'lukeni', 'ekuikui', 'njinga'].includes(activeTab)) && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><DataMarketplace /></main>}
 
     {(['data-quality', 'scn-2008', 'cpi', 'gfs', 'bpm', 'edi', 'equity', 'bond', 'yield', 'fsi', 'traffic', 'macro-fiscal', 'external', 'banking', 'market', 'stress', 'benchmarks'].includes(activeTab)) &&
-      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><div className="space-y-6"><div><h1 className="mb-2 text-3xl capitalize tracking-tight">{activeTab.replace('-', ' ')}</h1><p className="text-muted-foreground">Methodology and policy information</p></div><EconomySection featured /></div></main>}
+      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><div className="space-y-6"><div><h1 className="mb-2 text-3xl capitalize tracking-tight">{activeTab.replace('-', ' ')}</h1><p className="text-muted-foreground">Methodology and policy information</p></div><EconomySection /></div></main>}
 
     {activeTab === 'about' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><AboutUs /></main>}
     {activeTab === 'team' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><LazaTeam /></main>}
