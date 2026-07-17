@@ -22,6 +22,10 @@ const contentTypes = new Map([
   ['.woff2', 'font/woff2'],
 ]);
 
+function looksLikeStaticAsset(pathname) {
+  return pathname.startsWith('/assets/') || path.extname(pathname) !== '';
+}
+
 export async function sendSiteAsset(request, response) {
   if (!['GET', 'HEAD'].includes(request.method ?? '') || request.url?.startsWith('/api/')) return false;
   const pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://localhost').pathname);
@@ -33,6 +37,10 @@ export async function sendSiteAsset(request, response) {
     const details = await stat(filePath);
     if (!details.isFile()) throw new Error('Not a file');
   } catch {
+    if (looksLikeStaticAsset(pathname)) {
+      sendJson(response, 404, { error: 'ASSET_NOT_FOUND' });
+      return true;
+    }
     filePath = path.join(distRoot, 'index.html');
   }
 
