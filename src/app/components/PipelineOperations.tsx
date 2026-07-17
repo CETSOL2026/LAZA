@@ -90,7 +90,7 @@ export function PipelineOperations({ onSessionExpired }: { onSessionExpired: () 
   const [detailLoading, setDetailLoading] = useState(false);
 
   const refresh = useCallback(async (quiet = false) => {
-    quiet ? setRefreshing(true) : setLoading(true);
+    if (quiet) setRefreshing(true); else setLoading(true);
     try {
       const [summaryResponse,pipelinesResponse,dqResponse,assetResponse] = await Promise.all([loadPipelineSummary(),loadAdminPipelines(),loadDataQualitySummary(),loadAssetSummary()]);
       setSummary(summaryResponse.data); setPipelines(pipelinesResponse.data); setDq(dqResponse.data); setAssets(assetResponse.data);

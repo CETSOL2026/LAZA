@@ -77,7 +77,7 @@ export function DataLayers({ onSessionExpired }: { onSessionExpired: () => void 
   const [search,setSearch] = useState('');
 
   const refresh = useCallback(async (quiet = false) => {
-    quiet ? setRefreshing(true) : setLoading(true);
+    if (quiet) setRefreshing(true); else setLoading(true);
     try {
       const [summaryResponse,bronzeResponse,silverResponse,goldResponse] = await Promise.all([loadDataLayersSummary(),loadBronzeLayer(),loadSilverLayer(),loadGoldLayer()]);
       setSummary(summaryResponse.data); setBronze(bronzeResponse.data); setSilver(silverResponse.data); setGold(goldResponse.data);

@@ -8,7 +8,7 @@ const adminLoginMaxFailures = 5;
 
 function loadAdminAuthConfig() {
   try {
-    const config = JSON.parse(readFileSync(adminAuthConfigPath, 'utf8').replace(/^﻿/, ''));
+    const config = JSON.parse(readFileSync(adminAuthConfigPath, 'utf8').replace(/^\uFEFF/, ''));
     if (typeof config.username !== 'string' || !config.username.trim()) throw new Error('username is missing');
     if (!Number.isInteger(config.iterations) || config.iterations < 100_000) throw new Error('iterations are invalid');
     if (!/^[A-Fa-f0-9]{32,}$/.test(config.saltHex)) throw new Error('saltHex is invalid');
