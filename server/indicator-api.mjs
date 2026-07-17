@@ -523,6 +523,125 @@ async function readAdminAssetSummary() {
   return { ...(summary[0] ?? {}), statuses };
 }
 
+async function readAdminDataLayersSummary() {
+  const [summary,reconciliation] = await Promise.all([
+    runJsonQuery(`
+SET NOCOUNT ON;
+SELECT
+  (SELECT COUNT_BIG(*) FROM bronze.source_asset) AS bronzeAssets,
+  (SELECT COUNT_BIG(*) FROM control.source_asset_mirror) AS bronzeMirroredAssets,
+  (SELECT COUNT_BIG(*) FROM bronze.raw_indicator_observation) AS bronzeRawRecords,
+  (SELECT COUNT_BIG(*) FROM bronze.raw_indicator_observation WHERE bronze_status='ACCEPTED') AS bronzeAcceptedRecords,
+  (SELECT COUNT_BIG(*) FROM bronze.raw_indicator_observation WHERE bronze_status<>'ACCEPTED') AS bronzeRejectedRecords,
+  (SELECT MAX(ingested_at) FROM bronze.raw_indicator_observation) AS bronzeFreshnessAt,
+  (SELECT COUNT_BIG(*) FROM silver.indicator) AS silverIndicators,
+  (SELECT COUNT_BIG(*) FROM silver.indicator_series WHERE is_current=1) AS silverSeries,
+  (SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1) AS silverObservations,
+  (SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1 AND quality_status='PASSED') AS silverPassedObservations,
+  (SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1 AND quality_status='WARNING') AS silverWarningObservations,
+  (SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1 AND raw_observation_id IS NOT NULL) AS silverLineageRecords,
+  (SELECT MAX(created_at) FROM silver.observation) AS silverFreshnessAt,
+  (SELECT COUNT_BIG(*) FROM gold.dim_indicator WHERE is_active=1) AS goldIndicators,
+  (SELECT COUNT_BIG(*) FROM gold.dim_series) AS goldSeries,
+  (SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation) AS goldFacts,
+  (SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation WHERE publication_status='PUBLISHED' AND is_official=1) AS goldPublishedFacts,
+  (SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation WHERE publication_status='DEMONSTRATION' OR is_official=0) AS goldDemonstrationFacts,
+  (SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation WHERE silver_observation_id IS NOT NULL AND source_asset_id IS NOT NULL) AS goldLineageRecords,
+  (SELECT MAX(published_at) FROM gold.fact_indicator_observation) AS goldFreshnessAt,
+  CAST(100.0*(SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1)/NULLIF((SELECT COUNT_BIG(*) FROM bronze.raw_indicator_observation),0) AS decimal(7,2)) AS bronzeToSilverYieldPct,
+  CAST(100.0*(SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation)/NULLIF((SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1),0) AS decimal(7,2)) AS silverToGoldCoveragePct,
+  CAST(100.0*(SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1 AND raw_observation_id IS NOT NULL)/NULLIF((SELECT COUNT_BIG(*) FROM silver.observation WHERE is_current=1),0) AS decimal(7,2)) AS silverLineageCoveragePct,
+  CAST(100.0*(SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation WHERE silver_observation_id IS NOT NULL AND source_asset_id IS NOT NULL)/NULLIF((SELECT COUNT_BIG(*) FROM gold.fact_indicator_observation),0) AS decimal(7,2)) AS goldLineageCoveragePct
+FOR JSON PATH;
+`),
+    runJsonQuery(`
+SET NOCOUNT ON;
+SELECT p.pipeline_id AS pipelineId,p.pipeline_code AS pipelineCode,p.pipeline_name AS pipelineName,p.source_system AS sourceSystem,
+       COALESCE(bz.assetCount,0) AS bronzeAssets,COALESCE(bz.rawCount,0) AS bronzeRecords,
+       COALESCE(sv.observationCount,0) AS silverObservations,COALESCE(gd.factCount,0) AS goldFacts,
+       COALESCE(sv.warningCount,0) AS warnings,COALESCE(gd.publishedCount,0) AS publishedFacts,
+       COALESCE(gd.demoCount,0) AS demonstrationFacts,
+       CASE WHEN COALESCE(sv.observationCount,0)=0 THEN NULL ELSE CAST(100.0*COALESCE(gd.factCount,0)/sv.observationCount AS decimal(7,2)) END AS silverToGoldPct
+FROM control.pipeline_definition p
+OUTER APPLY (SELECT COUNT(DISTINCT a.source_asset_id) assetCount,COUNT(DISTINCT ro.raw_observation_id) rawCount FROM control.pipeline_run r JOIN control.ingestion_batch b ON b.pipeline_run_id=r.pipeline_run_id LEFT JOIN bronze.source_asset a ON a.ingestion_batch_id=b.ingestion_batch_id LEFT JOIN bronze.raw_indicator_observation ro ON ro.ingestion_batch_id=b.ingestion_batch_id WHERE r.pipeline_id=p.pipeline_id) bz
+OUTER APPLY (SELECT COUNT_BIG(*) observationCount,SUM(CASE WHEN o.quality_status='WARNING' THEN 1 ELSE 0 END) warningCount FROM silver.observation o JOIN control.ingestion_batch b ON b.ingestion_batch_id=o.ingestion_batch_id JOIN control.pipeline_run r ON r.pipeline_run_id=b.pipeline_run_id WHERE r.pipeline_id=p.pipeline_id AND o.is_current=1) sv
+OUTER APPLY (SELECT COUNT_BIG(*) factCount,SUM(CASE WHEN f.publication_status='PUBLISHED' AND f.is_official=1 THEN 1 ELSE 0 END) publishedCount,SUM(CASE WHEN f.publication_status='DEMONSTRATION' OR f.is_official=0 THEN 1 ELSE 0 END) demoCount FROM gold.fact_indicator_observation f JOIN silver.observation o ON o.observation_id=f.silver_observation_id JOIN control.ingestion_batch b ON b.ingestion_batch_id=o.ingestion_batch_id JOIN control.pipeline_run r ON r.pipeline_run_id=b.pipeline_run_id WHERE r.pipeline_id=p.pipeline_id) gd
+WHERE p.is_active=1
+ORDER BY p.pipeline_code
+FOR JSON PATH;
+`),
+  ]);
+  return { ...(summary[0] ?? {}), reconciliation };
+}
+
+async function readAdminBronzeLayer() {
+  return runJsonQuery(`
+SET NOCOUNT ON;
+SELECT a.source_asset_id AS assetId,a.asset_name AS assetName,a.asset_type AS assetType,
+       src.source_name AS sourceName,src.organization_name AS organizationName,
+       p.pipeline_code AS pipelineCode,b.batch_code AS batchCode,b.batch_status AS batchStatus,
+       a.publication_date AS publicationDate,a.acquired_at AS acquiredAt,a.content_size_bytes AS sourceSizeBytes,
+       CONVERT(bit,a.is_official) AS isOfficial,COUNT(ro.raw_observation_id) AS rawRecords,
+       SUM(CASE WHEN ro.bronze_status='ACCEPTED' THEN 1 ELSE 0 END) AS acceptedRecords,
+       SUM(CASE WHEN ro.bronze_status<>'ACCEPTED' THEN 1 ELSE 0 END) AS rejectedRecords,
+       m.mirror_status AS mirrorStatus,m.mirror_size_bytes AS mirrorSizeBytes,
+       CONVERT(bit,m.hash_matches_registered) AS hashMatchesRegistered,m.last_verified_at AS lastVerifiedAt
+FROM bronze.source_asset a
+JOIN reference.source src ON src.source_id=a.source_id
+JOIN control.ingestion_batch b ON b.ingestion_batch_id=a.ingestion_batch_id
+JOIN control.pipeline_run r ON r.pipeline_run_id=b.pipeline_run_id
+JOIN control.pipeline_definition p ON p.pipeline_id=r.pipeline_id
+LEFT JOIN bronze.raw_indicator_observation ro ON ro.source_asset_id=a.source_asset_id
+LEFT JOIN control.source_asset_mirror m ON m.source_asset_id=a.source_asset_id
+GROUP BY a.source_asset_id,a.asset_name,a.asset_type,src.source_name,src.organization_name,p.pipeline_code,b.batch_code,b.batch_status,a.publication_date,a.acquired_at,a.content_size_bytes,a.is_official,m.mirror_status,m.mirror_size_bytes,m.hash_matches_registered,m.last_verified_at
+ORDER BY a.acquired_at DESC,a.source_asset_id DESC
+FOR JSON PATH;
+`);
+}
+
+async function readAdminSilverLayer() {
+  return runJsonQuery(`
+SET NOCOUNT ON;
+SELECT i.indicator_id AS indicatorId,i.indicator_code AS indicatorCode,i.indicator_name AS indicatorName,
+       i.domain_name AS domainName,i.accountable_owner AS accountableOwner,CONVERT(bit,i.is_active) AS isActive,
+       COUNT(DISTINCT s.series_id) AS seriesCount,COUNT(o.observation_id) AS observationCount,
+       COUNT(DISTINCT s.source_id) AS sourceCount,
+       SUM(CASE WHEN o.quality_status='PASSED' THEN 1 ELSE 0 END) AS passedCount,
+       SUM(CASE WHEN o.quality_status='WARNING' THEN 1 ELSE 0 END) AS warningCount,
+       SUM(CASE WHEN o.is_official=1 THEN 1 ELSE 0 END) AS officialCount,
+       MIN(o.reference_period_start) AS firstPeriod,MAX(o.reference_period_end) AS lastPeriod,MAX(o.created_at) AS refreshedAt
+FROM silver.indicator i
+LEFT JOIN silver.indicator_series s ON s.indicator_id=i.indicator_id AND s.is_current=1
+LEFT JOIN silver.observation o ON o.series_id=s.series_id AND o.is_current=1
+GROUP BY i.indicator_id,i.indicator_code,i.indicator_name,i.domain_name,i.accountable_owner,i.is_active
+ORDER BY i.domain_name,i.indicator_name
+FOR JSON PATH;
+`);
+}
+
+async function readAdminGoldLayer() {
+  return runJsonQuery(`
+SET NOCOUNT ON;
+SELECT i.indicator_key AS indicatorKey,i.indicator_code AS indicatorCode,i.indicator_name AS indicatorName,i.domain_name AS domainName,
+       CONVERT(bit,i.is_active) AS isActive,COUNT(DISTINCT f.series_key) AS seriesCount,COUNT(f.fact_observation_id) AS factCount,
+       COUNT(DISTINCT f.source_key) AS sourceCount,
+       SUM(CASE WHEN f.publication_status='PUBLISHED' AND f.is_official=1 THEN 1 ELSE 0 END) AS publishedCount,
+       SUM(CASE WHEN f.publication_status='DEMONSTRATION' OR f.is_official=0 THEN 1 ELSE 0 END) AS demonstrationCount,
+       CAST(AVG(f.quality_score) AS decimal(7,2)) AS averageQualityScore,
+       MAX(f.reference_period_label) AS latestPeriod,MAX(f.published_at) AS publishedAt,
+       MAX(sourceList.sources) AS sources
+FROM gold.dim_indicator i
+LEFT JOIN gold.fact_indicator_observation f ON f.indicator_key=i.indicator_key
+OUTER APPLY (
+  SELECT STRING_AGG(CONVERT(nvarchar(max),sourceNames.source_name),N', ') WITHIN GROUP (ORDER BY sourceNames.source_name) AS sources
+  FROM (SELECT DISTINCT src.source_name FROM gold.fact_indicator_observation f2 JOIN gold.dim_source src ON src.source_key=f2.source_key WHERE f2.indicator_key=i.indicator_key) sourceNames
+) sourceList
+GROUP BY i.indicator_key,i.indicator_code,i.indicator_name,i.domain_name,i.is_active
+ORDER BY i.domain_name,i.indicator_name
+FOR JSON PATH;
+`);
+}
+
 async function readLatestIndicators() {
   if (cache && Date.now() - cachedAt < cacheTtlMs) return cache;
   const indicators = await runJsonQuery(latestIndicatorsQuery);
@@ -941,6 +1060,26 @@ const server = createServer(async (request, response) => {
       if (request.url === '/api/admin/assets/summary') {
         const data = await readAdminAssetSummary();
         sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.control.source_asset_mirror', generatedAt: new Date().toISOString(), readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/data-layers/summary') {
+        const data = await readAdminDataLayersSummary();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV bronze, silver and gold schemas', generatedAt: new Date().toISOString(), readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/data-layers/bronze') {
+        const data = await readAdminBronzeLayer();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.bronze', generatedAt: new Date().toISOString(), rowCount: data.length, readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/data-layers/silver') {
+        const data = await readAdminSilverLayer();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.silver', generatedAt: new Date().toISOString(), rowCount: data.length, readOnly: true } });
+        return;
+      }
+      if (request.url === '/api/admin/data-layers/gold') {
+        const data = await readAdminGoldLayer();
+        sendJson(response, 200, { data, meta: { source: 'LAZA_DATA_PLATFORM_DEV.gold', generatedAt: new Date().toISOString(), rowCount: data.length, readOnly: true } });
         return;
       }
     } catch (error) {

@@ -4,7 +4,8 @@ param()
 $ErrorActionPreference = 'Stop'
 $taskName = 'LAZA Production Site'
 $projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$launcher = Join-Path $projectRoot 'scripts\start-laza-production-hidden.vbs'
+$node = 'C:\Program Files\nodejs\node.exe'
+$server = Join-Path $projectRoot 'server\indicator-api.mjs'
 $backupXml = [System.IO.Path]::GetTempFileName()
 
 try {
@@ -17,8 +18,8 @@ try {
     $userId = $existingTask.Principal.UserId
 
     $action = New-ScheduledTaskAction `
-        -Execute 'C:\Windows\System32\wscript.exe' `
-        -Argument ('"' + $launcher + '"') `
+        -Execute $node `
+        -Argument ('"' + $server + '"') `
         -WorkingDirectory $projectRoot
 
     $startupTrigger = New-ScheduledTaskTrigger -AtStartup

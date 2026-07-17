@@ -30,10 +30,12 @@ import {
   LogOut,
   TrendingUp,
   Workflow,
+  Layers3,
 } from 'lucide-react';
 import logoFull from '../../imports/Artboard_1_3.png';
 import { pilotIndicators } from '../data/indicators';
 import { PipelineOperations } from './PipelineOperations';
+import { DataLayers } from './DataLayers';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Dataset {
@@ -66,6 +68,7 @@ const SAMPLE_DATASETS: Dataset[] = pilotIndicators.map((indicator, index) => ({
 const SIDEBAR_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'pipelines', label: 'Pipeline Operations', icon: Workflow },
+  { id: 'data-layers', label: 'Data Layers', icon: Layers3 },
   { id: 'data-management', label: 'Data Management', icon: Database },
   { id: 'indicators', label: 'Indicators', icon: TrendingUp },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -452,7 +455,9 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
 
         {/* ── Content ── */}
         <main className="flex-1 overflow-y-auto p-6">
-          {activeNav === 'pipelines' ? (
+          {activeNav === 'data-layers' ? (
+            <DataLayers onSessionExpired={onLogout} />
+          ) : activeNav === 'pipelines' ? (
             <PipelineOperations onSessionExpired={onLogout} />
           ) : (
           <>
