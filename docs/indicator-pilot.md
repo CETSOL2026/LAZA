@@ -19,6 +19,13 @@ adapter evolves from controlled fixtures to official automated sources.
 
 ## Staged implementation
 
+Stages 1 through 4 are complete for all six pilot indicators: they are served
+from the automated Bronze/Silver/Gold pipeline behind the read-only API, not
+from the visual-prototype fixtures described below. Stage 5 is in progress —
+three advanced analytics products (Oil & Gas, Fiscal Execution and Sovereign
+Yield Curve) have already been added; see the [MVP backlog](BACKLOG.md) for
+the next candidates and remaining scale-up work.
+
 ### Stage 1 - Controlled data contract
 
 - Keep the six values inherited from the visual prototype.
