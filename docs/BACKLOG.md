@@ -34,6 +34,7 @@
 | LAZA-004 | Definir política Cloudflare Access para homologação e demonstrações restritas | Pendente | S | Lista de utilizadores autorizados | Somente identidades aprovadas acessam o hostname de homologação |
 | LAZA-005 | Rotacionar o token do túnel e atualizar o serviço Windows | Pendente | S | Janela curta de manutenção | Novo token instalado, túnel saudável e token anterior revogado sem indisponibilidade prolongada |
 | LAZA-006 | Formalizar backup e restauração do `LAZA_DATA_PLATFORM_DEV` | Pendente | M | Espaço de backup aprovado | Backup executado, restauração testada em base isolada e evidência registrada |
+| LAZA-042 | Criar usuários para teste do portal e do `Admin Panel` | Pendente | S | Política de acesso aprovada | Usuários de teste possuem perfis documentados, credenciais seguras, escopo mínimo e evidência de login/logout validada |
 
 ## P1 — Operação e confiabilidade
 
@@ -46,6 +47,8 @@
 | LAZA-011 | Adicionar testes automatizados de contrato para as APIs | Concluído em 17/07/2026 | M | Nenhuma | Testes cobrem `/health`, seis indicadores e quatro módulos avançados, incluindo esquemas, contagens, ordenação cronológica, autenticação admin e download de assets |
 | LAZA-012 | Adicionar testes de interface para navegação, detalhes e quatro análises avançadas | Concluído em 17/07/2026 | L | Ambiente de teste de navegador | Fluxos críticos passam em desktop e viewport móvel antes de cada publicação |
 | LAZA-013 | Monitorar tamanho do SQL Express e crescimento das camadas | Pendente | S | LAZA-007 | Relatório periódico alerta antes de atingir 70%, 85% e 95% do limite operacional |
+| LAZA-045 | Avaliar instalação dos MCP servers oficiais da Cloudflare para o Codex | Pendente | S | Aprovação de acesso à conta Cloudflare | Codex consegue consultar documentação, apoiar configuração de túnel/Access/deploys e analisar observabilidade sem expor tokens no repositório |
+| LAZA-046 | Implementar `AI Insight Cards` na página inicial | Prioridade 1 para 20/07/2026 | M | Dados Gold publicados e contrato de exibição aprovado | Primeira versão gera insights AI-ready com regras locais sobre dados Gold, exibe 3 cards revisáveis no site e mantém fonte, período, qualidade e status de revisão rastreáveis |
 
 ## P1 — Automação dos dados oficiais
 
@@ -99,6 +102,8 @@
 | LAZA-038 | Insights narrativos assistidos por IA | Definir política de explicabilidade, fontes e revisão humana |
 | LAZA-039 | Expansão para outros países e novas geografias | Estabilizar operação angolana e modelo de ownership |
 | LAZA-040 | Produtos premium e controlo por plano | Validar estratégia comercial e requisitos de faturação |
+| LAZA-043 | Gerar estrutura de assinaturas | Definir planos, permissões, métricas premium, cobrança, ciclo de vida da assinatura e integração futura com controlo por plano |
+| LAZA-044 | Pensar na segregação dos dados e acessos por tipo de assinatura | Definir quais indicadores, séries, granularidades, downloads, APIs e funcionalidades administrativas cada plano pode acessar |
 
 ## Decisões pendentes para a próxima revisão
 
