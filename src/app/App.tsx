@@ -8,13 +8,15 @@ import { AdvancedIntelligencePage } from './components/AdvancedIntelligencePage'
 import { FeaturedInsights } from './components/FeaturedInsights';
 import { TrustAndMethodology } from './components/TrustAndMethodology';
 import { Footer } from './components/Footer';
-import { SubscriptionPlanSwitcher } from './components/SubscriptionPlanSwitcher';
+import { PricingModal } from './components/PricingModal';
 import { normalizePlan, type SubscriptionPlan } from './data/subscriptionAccess';
 
 const OilGasIntelligence = lazy(() => import('./components/OilGasIntelligence').then((module) => ({ default: module.OilGasIntelligence })));
 const FiscalExecutionIntelligence = lazy(() => import('./components/FiscalExecutionIntelligence').then((module) => ({ default: module.FiscalExecutionIntelligence })));
 const SovereignYieldCurveIntelligence = lazy(() => import('./components/SovereignYieldCurveIntelligence').then((module) => ({ default: module.SovereignYieldCurveIntelligence })));
 const OilNonOilGdpIntelligence = lazy(() => import('./components/OilNonOilGdpIntelligence').then((module) => ({ default: module.OilNonOilGdpIntelligence })));
+const ExecutiveMarketPulse = lazy(() => import('./components/ExecutiveMarketPulse').then((module) => ({ default: module.ExecutiveMarketPulse })));
+const IndicatorCatalog = lazy(() => import('./components/IndicatorCatalog').then((module) => ({ default: module.IndicatorCatalog })));
 const DataQualityMethodology = lazy(() => import('./components/DataQualityMethodology').then((module) => ({ default: module.DataQualityMethodology })));
 const DataMarketplace = lazy(() => import('./components/DataMarketplace').then((module) => ({ default: module.DataMarketplace })));
 const SourceFilesMarketplace = lazy(() => import('./components/SourceFilesMarketplace').then((module) => ({ default: module.SourceFilesMarketplace })));
@@ -43,6 +45,7 @@ function routeFromPath(pathname: string) {
   if (advancedTab) return { tab: advancedTab, indicatorId: 'gdp-growth', admin: false };
   const institutionalTab = Object.keys(institutionalPaths).find((tab) => institutionalPaths[tab] === cleanPath);
   if (institutionalTab) return { tab: institutionalTab, indicatorId: 'gdp-growth', admin: false };
+  if (cleanPath === '/indicators') return { tab: 'indicators', indicatorId: 'gdp-growth', admin: false };
   if (cleanPath === '/data') return { tab: 'data-intelligence', indicatorId: 'gdp-growth', admin: false };
   if (cleanPath === '/admin') return { tab: 'overview', indicatorId: 'gdp-growth', admin: true };
   const dataMatch = cleanPath.match(/^\/data\/([a-z0-9-]+)$/);
@@ -54,6 +57,7 @@ function routeFromPath(pathname: string) {
 
 function pathForTab(tab: string) {
   if (tab === 'overview') return '/';
+  if (tab === 'indicators') return '/indicators';
   if (tab === 'data-intelligence') return '/data';
   if (advancedPaths[tab]) return advancedPaths[tab];
   if (institutionalPaths[tab]) return institutionalPaths[tab];
@@ -72,12 +76,13 @@ export default function App() {
   const [showAdmin, setShowAdmin] = useState(initialRoute.admin);
   const [selectedOfficialIndicator, setSelectedOfficialIndicator] = useState(initialRoute.indicatorId);
   const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(() => normalizePlan(window.localStorage.getItem('laza_subscription_plan')));
+  const [pricingOpen, setPricingOpen] = useState(false);
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
   useEffect(() => { window.localStorage.setItem('laza_subscription_plan', subscriptionPlan); }, [subscriptionPlan]);
   useEffect(() => {
     const indicatorTitles: Record<string, string> = { 'gdp-growth': 'GDP Growth', 'inflation-rate': 'Inflation Rate', 'exchange-rate': 'Exchange Rate', population: 'Population', 'banking-assets': 'Banking Assets', 'public-debt-gdp': 'Public Debt/GDP' };
-    const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };
+    const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', indicators: 'All Indicators', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };
     const pageTitle = showAdmin ? 'Admin Panel' : activeTab === 'official-indicator-detail' ? indicatorTitles[selectedOfficialIndicator] : tabTitles[activeTab] ?? 'Data & Intelligence';
     document.title = `${pageTitle} | LAZA`;
   }, [activeTab, selectedOfficialIndicator, showAdmin]);
@@ -136,7 +141,14 @@ export default function App() {
     setShowAdmin(true);
   };
 
-  if (showAdmin) return <Suspense fallback={<PageLoader />}><AdminGate onBack={() => navigateTo('overview')} /></Suspense>;
+  const previewAsPlan = (plan: SubscriptionPlan) => {
+    setSubscriptionPlan(plan);
+    if (window.location.pathname !== '/') window.history.pushState({}, '', '/');
+    setShowAdmin(false);
+    setActiveTab('overview');
+  };
+
+  if (showAdmin) return <Suspense fallback={<PageLoader />}><AdminGate onBack={() => navigateTo('overview')} onPreviewPlan={previewAsPlan} /></Suspense>;
 
   return <div className="min-h-screen bg-background">
     <a href="#main-content" className="sr-only z-[100] rounded-lg bg-white px-4 py-2 text-primary focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to main content</a>
@@ -145,10 +157,10 @@ export default function App() {
     <Suspense fallback={<PageLoader />}>
 
     {activeTab === 'overview' && <><Hero onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} /><main className="mx-auto max-w-[1400px] space-y-16 px-4 py-12 sm:px-6 lg:px-8">
-      <SubscriptionPlanSwitcher currentPlan={subscriptionPlan} onChange={setSubscriptionPlan} />
-      <div id="official-indicators"><MetricsOverview summaryOnly subscriptionPlan={subscriptionPlan} onIndicatorSelect={openOfficialIndicator} /></div>
-      <AdvancedIntelligenceCards subscriptionPlan={subscriptionPlan} onNavigate={navigateTo} />
-      <FeaturedInsights onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} />
+      <FeaturedInsights subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} />
+      <ExecutiveMarketPulse />
+      <div id="official-indicators"><MetricsOverview summaryOnly subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} onIndicatorSelect={openOfficialIndicator} /></div>
+      <AdvancedIntelligenceCards subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} onNavigate={navigateTo} />
       <TrustAndMethodology onNavigate={navigateTo} />
     </main></>}
 
@@ -156,10 +168,12 @@ export default function App() {
       <button type="button" onClick={() => navigateTo('overview')} className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
         <ArrowLeft className="h-4 w-4" /> Back to overview
       </button>
-      <MetricsOverview key={selectedOfficialIndicator} subscriptionPlan={subscriptionPlan} initialSelectedId={selectedOfficialIndicator} />
+      <MetricsOverview key={selectedOfficialIndicator} subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} initialSelectedId={selectedOfficialIndicator} />
     </main>}
 
-    {activeTab === 'data-intelligence' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><SourceFilesMarketplace subscriptionPlan={subscriptionPlan} /></main>}
+    {activeTab === 'indicators' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><IndicatorCatalog subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} /></main>}
+
+    {activeTab === 'data-intelligence' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><SourceFilesMarketplace subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} /></main>}
 
     {advancedPage && <AdvancedIntelligencePage topic={advancedPage.topic} title={advancedPage.title} description={advancedPage.description} onBack={() => navigateTo('overview')}>{advancedPage.content}</AdvancedIntelligencePage>}
 
@@ -177,5 +191,6 @@ export default function App() {
     </Suspense>
     </div>
     <Footer onNavigate={navigateTo} onAdmin={openAdmin} />
+    <PricingModal isOpen={pricingOpen} onClose={() => setPricingOpen(false)} onSelectStarter={() => { setSubscriptionPlan('free'); setPricingOpen(false); }} />
   </div>;
 }

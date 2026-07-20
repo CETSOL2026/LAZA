@@ -26,9 +26,10 @@ interface MetricsOverviewProps {
   initialSelectedId?: string;
   onIndicatorSelect?: (indicatorId: string) => void;
   subscriptionPlan?: SubscriptionPlan;
+  onUpgrade?: () => void;
 }
 
-export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndicatorSelect, subscriptionPlan = 'free' }: MetricsOverviewProps) {
+export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndicatorSelect, subscriptionPlan = 'free', onUpgrade }: MetricsOverviewProps) {
   const [indicators, setIndicators] = useState(pilotIndicators);
   const [selectedId, setSelectedId] = useState(initialSelectedId ?? pilotIndicators[0].id);
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'connected' | 'fallback'>('loading');
@@ -120,7 +121,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {indicators.map((metric) => {
           const metricAccess = officialIndicatorAccess[metric.id]?.[subscriptionPlan] ?? 'full';
           const TrendIcon = metric.trend === 'up'
@@ -140,42 +141,46 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
               disabled={summaryOnly && !onIndicatorSelect}
               aria-pressed={!summaryOnly && selectedId === metric.id}
               aria-label={summaryOnly ? `Open ${metric.label} details` : undefined}
-              className={`group rounded-xl border bg-card p-5 text-left transition-all hover:border-primary/40 hover:shadow-lg ${summaryOnly && !onIndicatorSelect ? 'cursor-default' : 'cursor-pointer'} ${
+              className={`group flex min-h-[230px] flex-col rounded-xl border bg-card p-5 text-left transition-all hover:border-primary/40 hover:shadow-lg ${summaryOnly && !onIndicatorSelect ? 'cursor-default' : 'cursor-pointer'} ${
                 !summaryOnly && selectedId === metric.id ? 'border-primary ring-2 ring-primary/10' : 'border-border'
               }`}
             >
-              <div className="mb-4 flex items-start justify-between gap-2">
-                <div className="flex flex-wrap gap-1.5">
-                  <div className="whitespace-nowrap rounded-lg bg-muted px-2 py-1 text-xs text-muted-foreground">
-                    {metric.period}
-                  </div>
-                {metric.isOfficial && (
-                  <div className="rounded-lg bg-green-50 px-2 py-1 text-xs text-green-700">Official</div>
-                )}
-                <div className={`rounded-lg px-2 py-1 text-xs ${
-                  metricAccess === 'full'
-                    ? 'bg-blue-50 text-blue-700'
-                    : metricAccess === 'preview'
-                      ? 'bg-amber-50 text-amber-700'
-                      : 'bg-slate-100 text-slate-600'
-                }`}>
-                  {accessLabel(metricAccess)}
-                </div>
+              <div className="min-h-[54px]">
+                <h3 className="text-base font-medium leading-snug text-foreground transition-colors group-hover:text-primary">{metric.label}</h3>
+                <p className="mt-1 truncate text-[11px] text-muted-foreground" title={metric.sourceName}>{metric.sourceName}</p>
               </div>
-                {metric.change && <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs ${
-                  metric.trend === 'up' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'
+
+              <div className="mt-5">
+                <p className="text-[1.65rem] leading-tight tracking-tight text-foreground transition-colors group-hover:text-primary" title={metric.id === 'banking-assets' ? `${metric.value} (29.73 biliões de kwanzas)` : metric.value}>{metric.value}</p>
+                <div className={`mt-2 inline-flex max-w-full items-center gap-1 rounded-full px-2.5 py-1 text-xs ${
+                  metric.change
+                    ? metric.trend === 'up'
+                      ? 'bg-green-50 text-green-600'
+                      : metric.trend === 'down'
+                        ? 'bg-amber-50 text-amber-700'
+                        : 'bg-slate-100 text-slate-600'
+                    : 'bg-slate-50 text-slate-500'
                 }`}>
                   <TrendIcon className="h-3 w-3" />
-                  <span>{metric.change}</span>
-                </div>}
+                  <span className="truncate">{metric.change || 'No delta available'}</span>
+                </div>
               </div>
-              <div className="space-y-1">
-                <p className="text-2xl tracking-tight transition-colors group-hover:text-primary">{metric.value}</p>
-                <p className="text-xs text-muted-foreground">{metric.label}</p>
-              </div>
-              <div className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-3 text-[11px] text-muted-foreground">
-                <span className="truncate" title={metric.sourceName}>{metric.sourceName}</span>
-                <span className="shrink-0">{metric.qualityScore != null ? `Q ${metric.qualityScore.toFixed(1)}` : metric.qualityStatus}</span>
+
+              <div className="mt-auto border-t border-border pt-3">
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="whitespace-nowrap rounded-lg bg-muted px-2 py-1 text-xs text-muted-foreground">{metric.period}</span>
+                  {metric.isOfficial && <span className="rounded-lg bg-green-50 px-2 py-1 text-xs text-green-700">Official</span>}
+                  <span className={`rounded-lg px-2 py-1 text-xs ${
+                    metricAccess === 'full'
+                      ? 'bg-blue-50 text-blue-700'
+                      : metricAccess === 'preview'
+                        ? 'bg-amber-50 text-amber-700'
+                        : 'bg-slate-100 text-slate-600'
+                  }`}>{accessLabel(metricAccess)}</span>
+                </div>
+                <div className="mt-2 text-[11px] text-muted-foreground">
+                  {metric.qualityScore != null ? `Quality ${metric.qualityScore.toFixed(1)}` : metric.qualityStatus}
+                </div>
               </div>
             </button>
           );
@@ -236,6 +241,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
                   <div>
                     <p className="font-medium">{selected.label} full history is not included in the {planLabel(subscriptionPlan)} plan.</p>
                     <p className="mt-1 text-amber-800">This plan shows the latest published value and source evidence. Upgrade to {minimumPlanForFullAccess(officialIndicatorAccess[selected.id])} to access the full historical table, chart and downloadable analytical depth.</p>
+                    {onUpgrade && <button type="button" onClick={onUpgrade} className="mt-3 rounded-lg bg-white px-3 py-2 text-xs text-amber-900 shadow-sm ring-1 ring-amber-200 transition-colors hover:bg-amber-100">View access options</button>}
                   </div>
                 </div>
               </div>

@@ -48,14 +48,16 @@
 
 ## MVP implementation boundary
 
-The website now includes a local subscription simulation selector and uses the
-matrix above to show Included, Preview or Upgrade states in:
+The website now includes an Admin-only **Access Preview** tool and uses the
+matrix above to show Included, Preview or Upgrade states in the public site:
 
 - Official Indicators;
 - Advanced Market Intelligence cards;
 - Official Source Marketplace downloads.
 
 The current implementation is intended for MVP validation and commercial
-discussion. Production-grade enforcement still requires identity integration,
+discussion. The public homepage does not expose a QA selector; administrators
+choose the simulated profile inside the Admin Panel and open the public site as
+that audience. Production-grade enforcement still requires identity integration,
 server-side authorization, subscription lifecycle, billing state, expiry rules,
 rate limits and audit logs.

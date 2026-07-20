@@ -9,6 +9,15 @@ test.describe('Site navigation', () => {
     await expect(page.getByRole('heading', { name: 'Official Indicators' })).toBeVisible();
   });
 
+  test('home page shows featured executive insights with governance evidence', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByText('Featured executive insights')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Featured Insights' })).toBeVisible();
+    await expect(page.getByText('Rule-generated').first()).toBeVisible();
+    await expect(page.getByText('Quality').first()).toBeVisible();
+    await expect(page.getByText('GDP_DIVERSIFICATION_CONTRIBUTION_V1')).toBeVisible();
+  });
+
   const advancedPages = [
     { item: 'Oil vs. Non-Oil GDP', path: '/intelligence/oil-vs-non-oil-gdp' },
     { item: 'Oil & Gas Production', path: '/intelligence/oil-gas-production' },
@@ -51,6 +60,21 @@ test.describe('Site navigation', () => {
       await page.getByRole('button', { name: 'Browse Data' }).click();
     }
     await expect(page).toHaveURL(/\/data$/);
+  });
+
+  test('indicator catalog is reachable from the header and opens indicator details', async ({ page }) => {
+    await page.goto('/');
+    if (isMobileViewport(page)) {
+      await page.getByRole('button', { name: 'Open navigation menu' }).click();
+    }
+    await page.getByRole('button', { name: 'Indicators', exact: true }).click();
+    await expect(page).toHaveURL(/\/indicators$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'All Indicators' })).toBeVisible();
+    await expect(page.getByText('Indicator catalog')).toBeVisible();
+
+    await page.getByRole('article').filter({ hasText: 'GDP Growth' }).getByRole('button', { name: 'Open details' }).click();
+    await expect(page).toHaveURL(/\/indicators\/gdp-growth$/);
+    await expect(page.getByRole('heading', { name: 'GDP Growth Overview' })).toBeVisible();
   });
 
   test('data quality methodology page shows governed DQ content', async ({ page }) => {

@@ -44,7 +44,6 @@
 | LAZA-010 | Criar procedimento de publicação: build, smoke test, rollback e versionamento | Pendente | M | LAZA-007 | Uma versão pode ser publicada e revertida com comandos documentados e evidência de teste |
 | LAZA-013 | Monitorar tamanho do SQL Express e crescimento das camadas | Pendente | S | LAZA-007 | Relatório periódico alerta antes de atingir 70%, 85% e 95% do limite operacional |
 | LAZA-045 | Avaliar instalação dos MCP servers oficiais da Cloudflare para o Codex | Pendente | S | Aprovação de acesso à conta Cloudflare | Codex consegue consultar documentação, apoiar configuração de túnel/Access/deploys e analisar observabilidade sem expor tokens no repositório |
-| LAZA-046 | Implementar `AI Insight Cards` na página inicial | Prioridade 1 para 20/07/2026 | M | Dados Gold publicados e contrato de exibição aprovado | Primeira versão gera insights AI-ready com regras locais sobre dados Gold, exibe 3 cards revisáveis no site e mantém fonte, período, qualidade e status de revisão rastreáveis |
 
 ## P1 — Automação dos dados oficiais
 

@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { ArrowLeft, Eye, EyeOff, LockKeyhole, ShieldCheck } from 'lucide-react';
 import logoFull from '../../imports/Artboard_1_3.png';
 import { AdminDashboard } from './AdminDashboard';
+import type { SubscriptionPlan } from '../data/subscriptionAccess';
 
 type AuthState = 'checking' | 'signed-out' | 'signed-in' | 'unavailable';
 export interface AdminSession {
@@ -13,7 +14,7 @@ export interface AdminSession {
   expiresAt: string;
 }
 
-export function AdminGate({ onBack }: { onBack: () => void }) {
+export function AdminGate({ onBack, onPreviewPlan }: { onBack: () => void; onPreviewPlan: (plan: SubscriptionPlan) => void }) {
   const [authState, setAuthState] = useState<AuthState>('checking');
   const [session, setSession] = useState<AdminSession | null>(null);
   const [username, setUsername] = useState('admin');
@@ -73,7 +74,7 @@ export function AdminGate({ onBack }: { onBack: () => void }) {
     setAuthState('signed-out');
   }
 
-  if (authState === 'signed-in' && session) return <AdminDashboard session={session} onBack={onBack} onLogout={logout} />;
+  if (authState === 'signed-in' && session) return <AdminDashboard session={session} onBack={onBack} onLogout={logout} onPreviewPlan={onPreviewPlan} />;
 
   return <div className="min-h-screen bg-slate-50">
     <header className="border-b border-[#a81b22] bg-[#bf1f27] px-6 py-4 shadow-sm"><div className="mx-auto flex max-w-6xl items-center justify-between"><img src={logoFull} alt="LAZA" className="h-10" /><button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white"><ArrowLeft className="h-4 w-4" />Back to site</button></div></header>

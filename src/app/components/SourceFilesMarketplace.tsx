@@ -50,7 +50,7 @@ function AssetIcon({ type }: { type: string }) {
   return <FileText className="h-4 w-4" />;
 }
 
-export function SourceFilesMarketplace({ subscriptionPlan = 'free' }: { subscriptionPlan?: SubscriptionPlan }) {
+export function SourceFilesMarketplace({ subscriptionPlan = 'free', onUpgrade }: { subscriptionPlan?: SubscriptionPlan; onUpgrade?: () => void }) {
   const [assets, setAssets] = useState<SourceDownloadAsset[]>([]);
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [query, setQuery] = useState('');
@@ -113,7 +113,7 @@ export function SourceFilesMarketplace({ subscriptionPlan = 'free' }: { subscrip
           <div className="mt-6 flex gap-2">
             {canDownload
               ? <a href={sourceDownloadUrl(primary.assetId)} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm text-white transition-colors hover:bg-primary/90"><Download className="h-4 w-4" />{files.length === 1 ? 'Download source file' : 'Download latest file'}</a>
-              : <button type="button" disabled className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-500"><LockKeyhole className="h-4 w-4" />Requires {minimumPlanForFullAccess(sourceDatasetAccess[pipelineCode])}</button>}
+              : <button type="button" onClick={onUpgrade} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-600 transition-colors hover:bg-slate-200"><LockKeyhole className="h-4 w-4" />View {minimumPlanForFullAccess(sourceDatasetAccess[pipelineCode])} access</button>}
             <button type="button" onClick={() => setExpanded(isExpanded ? null : pipelineCode)} className="inline-flex items-center gap-2 rounded-xl border border-border px-4 py-3 text-sm transition-colors hover:bg-muted">{isExpanded ? 'Hide files' : 'View files'}{isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</button>
           </div>
         </div>

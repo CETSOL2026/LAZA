@@ -14,6 +14,7 @@ import {
 interface AdvancedIntelligenceCardsProps {
   onNavigate: (tab: string) => void;
   subscriptionPlan?: SubscriptionPlan;
+  onUpgrade?: () => void;
 }
 
 interface LatestMetrics {
@@ -29,7 +30,7 @@ function formatBalance(value: number) {
   return value < 0 ? `-${display}` : display;
 }
 
-export function AdvancedIntelligenceCards({ onNavigate, subscriptionPlan = 'free' }: AdvancedIntelligenceCardsProps) {
+export function AdvancedIntelligenceCards({ onNavigate, subscriptionPlan = 'free', onUpgrade }: AdvancedIntelligenceCardsProps) {
   const [latest, setLatest] = useState<LatestMetrics>({});
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export function AdvancedIntelligenceCards({ onNavigate, subscriptionPlan = 'free
 
   const cards = [
     { id: 'advanced-gdp-diversification', topic: 'Macroeconomy & Diversification', title: 'Oil vs. Non-Oil GDP', description: 'Understand which side of the economy is driving quarterly growth and how the GDP structure is changing.', metric: latest.diversification, metricLabel: 'Non-oil growth', icon: BarChart3, tone: 'from-[#052e2b] to-[#0f766e]', accent: 'text-emerald-700 bg-emerald-50' },
-    { id: 'advanced-oil-gas', topic: 'Energy', title: 'Oil & Gas Production', description: 'Track crude output against forecast, associated gas allocation and Angola LNG production.', metric: latest.energy, metricLabel: 'Latest oil production', icon: Fuel, tone: 'from-[#450a0a] to-[#b91c1c]', accent: 'text-red-700 bg-red-50' },
+    { id: 'advanced-oil-gas', topic: 'Energy', title: 'Oil & Gas Production', description: 'Track crude output against forecast, associated gas allocation and Angola LNG production.', metric: latest.energy, metricLabel: 'Latest oil production', icon: Fuel, tone: 'from-[#450a0a] to-[#b91c1c]', accent: 'text-rose-800 bg-rose-50' },
     { id: 'advanced-fiscal-execution', topic: 'Public Finance', title: 'Fiscal Execution', description: 'Compare revenue, expenditure, execution rates and the evolving quarterly budget balance.', metric: latest.fiscal, metricLabel: 'Latest budget balance', icon: Scale, tone: 'from-[#082f49] to-[#0f766e]', accent: 'text-cyan-700 bg-cyan-50' },
     { id: 'advanced-sovereign-yield', topic: 'Capital Markets', title: 'Sovereign Yield Curve', description: 'Explore observed Treasury yields, sovereign spreads and shifts across the maturity curve.', metric: latest.yield, metricLabel: 'Latest 10-year yield', icon: Landmark, tone: 'from-[#24104f] to-[#7c3aed]', accent: 'text-violet-700 bg-violet-50' },
   ];
@@ -60,7 +61,7 @@ export function AdvancedIntelligenceCards({ onNavigate, subscriptionPlan = 'free
         const Icon = card.icon;
         const access = advancedProductAccess[card.id][subscriptionPlan];
         const canOpen = access === 'full';
-        return <button key={card.id} type="button" onClick={() => { if (canOpen) onNavigate(card.id); }} className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white text-left shadow-sm transition-all ${canOpen ? 'hover:-translate-y-0.5 hover:shadow-xl' : 'cursor-default opacity-95'}`}>
+        return <button key={card.id} type="button" onClick={() => { if (canOpen) onNavigate(card.id); else onUpgrade?.(); }} className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white text-left shadow-sm transition-all ${canOpen || onUpgrade ? 'hover:-translate-y-0.5 hover:shadow-xl' : 'cursor-default opacity-95'}`}>
           <div className={`w-full bg-gradient-to-br ${card.tone} p-5 text-white`}>
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -77,7 +78,7 @@ export function AdvancedIntelligenceCards({ onNavigate, subscriptionPlan = 'free
           <div className="flex w-full flex-1 flex-col items-start p-5">
             <p className="text-sm leading-6 text-muted-foreground">{card.description}</p>
             <span className={`mt-4 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs ${card.accent}`}>
-              {canOpen ? 'Open analysis' : `Requires ${minimumPlanForFullAccess(advancedProductAccess[card.id])}`}
+              {canOpen ? 'Open analysis' : `View ${minimumPlanForFullAccess(advancedProductAccess[card.id])} access`}
               <ArrowRight className={`h-3.5 w-3.5 transition-transform ${canOpen ? 'group-hover:translate-x-1' : ''}`} />
             </span>
           </div>

@@ -31,12 +31,14 @@ import {
   TrendingUp,
   Workflow,
   Layers3,
+  ShieldCheck,
 } from 'lucide-react';
 import logoFull from '../../imports/Artboard_1_3.png';
 import { pilotIndicators } from '../data/indicators';
 import { PipelineOperations } from './PipelineOperations';
 import { DataLayers } from './DataLayers';
 import type { AdminSession } from './AdminGate';
+import { normalizePlan, subscriptionPlans, type SubscriptionPlan } from '../data/subscriptionAccess';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Dataset {
@@ -70,6 +72,7 @@ const SIDEBAR_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'pipelines', label: 'Pipeline Operations', icon: Workflow },
   { id: 'data-layers', label: 'Data Layers', icon: Layers3 },
+  { id: 'access-preview', label: 'Access Preview', icon: ShieldCheck },
   { id: 'data-management', label: 'Data Management', icon: Database },
   { id: 'indicators', label: 'Indicators', icon: TrendingUp },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -265,7 +268,17 @@ function EditDrawer({
 }
 
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
-export function AdminDashboard({ session, onBack, onLogout }: { session: AdminSession; onBack: () => void; onLogout: () => void }) {
+export function AdminDashboard({
+  session,
+  onBack,
+  onLogout,
+  onPreviewPlan,
+}: {
+  session: AdminSession;
+  onBack: () => void;
+  onLogout: () => void;
+  onPreviewPlan: (plan: SubscriptionPlan) => void;
+}) {
   const [activeNav, setActiveNav] = useState('pipelines');
   const [datasets, setDatasets] = useState<Dataset[]>(SAMPLE_DATASETS);
   const [search, setSearch] = useState('');
@@ -278,6 +291,7 @@ export function AdminDashboard({ session, onBack, onLogout }: { session: AdminSe
   const [profileOpen, setProfileOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [previewPlan, setPreviewPlan] = useState<SubscriptionPlan>(() => normalizePlan(window.localStorage.getItem('laza_subscription_plan')));
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
@@ -328,6 +342,20 @@ export function AdminDashboard({ session, onBack, onLogout }: { session: AdminSe
   const displayName = session.displayName ?? session.username;
   const displayInitial = displayName.trim().slice(0, 1).toUpperCase() || 'A';
   const displayRole = session.role ?? 'admin';
+  const previewPlanDetails: Record<SubscriptionPlan, { tone: string; highlights: string[] }> = {
+    free: {
+      tone: 'border-slate-200 bg-white',
+      highlights: ['Official macro indicators', 'Restricted datasets visible as preview', 'Advanced products mostly preview/locked'],
+    },
+    professional: {
+      tone: 'border-blue-100 bg-blue-50/40',
+      highlights: ['Full official histories', 'Standard source downloads', 'Most advanced intelligence enabled'],
+    },
+    enterprise: {
+      tone: 'border-primary/20 bg-primary/5',
+      highlights: ['All MVP products enabled', 'Premium capital-markets intelligence', 'Best proxy for institutional access review'],
+    },
+  };
 
   return (
     <div className="flex h-screen bg-[#f5f6fa] overflow-hidden">
@@ -485,6 +513,97 @@ export function AdminDashboard({ session, onBack, onLogout }: { session: AdminSe
             <DataLayers onSessionExpired={onLogout} />
           ) : activeNav === 'pipelines' ? (
             <PipelineOperations onSessionExpired={onLogout} />
+          ) : activeNav === 'access-preview' ? (
+            <section className="space-y-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h1 className="text-foreground">Access Preview</h1>
+                  <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
+                    Select a commercial profile and open the public site exactly as that audience would see it in the MVP.
+                  </p>
+                </div>
+                <span className="inline-flex w-fit items-center rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs text-primary">
+                  Admin-only preview tool
+                </span>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-3">
+                {subscriptionPlans.map((plan) => {
+                  const isActive = previewPlan === plan.id;
+                  const detail = previewPlanDetails[plan.id];
+                  return (
+                    <article
+                      key={plan.id}
+                      className={`rounded-2xl border p-5 shadow-sm transition-all ${detail.tone} ${isActive ? 'ring-2 ring-primary/30' : ''}`}
+                    >
+                      <div className="mb-4 flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Preview profile</p>
+                          <h2 className="mt-1 text-xl text-foreground">{plan.label}</h2>
+                        </div>
+                        {isActive && <span className="rounded-full bg-green-50 px-2.5 py-1 text-xs text-green-700">Selected</span>}
+                      </div>
+                      <p className="min-h-[48px] text-sm leading-6 text-muted-foreground">{plan.description}</p>
+                      <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
+                        {detail.highlights.map((highlight) => (
+                          <li key={highlight} className="flex gap-2">
+                            <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewPlan(plan.id)}
+                        className={`mt-6 w-full rounded-xl px-4 py-2.5 text-sm transition-colors ${
+                          isActive
+                            ? 'bg-primary text-white'
+                            : 'border border-border bg-white text-foreground hover:border-primary/40 hover:bg-primary/5'
+                        }`}
+                      >
+                        Use {plan.label} profile
+                      </button>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className="rounded-2xl border border-border bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-primary">Public site preview</p>
+                    <h2 className="mt-1 text-xl text-foreground">Open site as {subscriptionPlans.find((plan) => plan.id === previewPlan)?.label}</h2>
+                    <p className="mt-1 max-w-3xl text-sm leading-6 text-muted-foreground">
+                      This saves the selected access level in this browser and returns to the public homepage. The public page itself stays clean: no selector, no QA explanation, no technical wording.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.localStorage.removeItem('laza_qa_tools');
+                        onPreviewPlan(previewPlan);
+                      }}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm text-white transition-colors hover:bg-primary/90"
+                    >
+                      <Eye className="h-4 w-4" />
+                      Preview public site
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreviewPlan('free');
+                        window.localStorage.setItem('laza_subscription_plan', 'free');
+                        addToast('success', 'Public preview reset to Free');
+                      }}
+                      className="inline-flex items-center justify-center rounded-xl border border-border bg-white px-5 py-3 text-sm text-foreground transition-colors hover:bg-muted/60"
+                    >
+                      Reset to Free
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
           ) : activeNav === 'users' ? (
             <section className="space-y-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

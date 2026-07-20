@@ -22,6 +22,12 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
       hasDropdown: false
     },
     {
+      id: 'indicators',
+      label: 'Indicators',
+      icon: BarChart3,
+      hasDropdown: false
+    },
+    {
       id: 'data-intelligence',
       label: 'Data & Intelligence',
       icon: Database,
@@ -69,7 +75,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
   const handleMouseLeave = () => {
     const timeout = setTimeout(() => {
       setOpenDropdown(null);
-    }, 150);
+    }, 500);
     setLeaveTimeout(timeout);
   };
 
@@ -88,7 +94,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                 <img src={logoFull} alt="LAZA" className="h-10" />
               </button>
 
-              <nav className="hidden md:flex items-center gap-1">
+              <nav className="hidden lg:flex items-center gap-1">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -118,7 +124,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                       </button>
 
                       {item.hasDropdown && openDropdown === item.id && (
-                        <div className={`absolute top-full left-0 mt-0.5 bg-white rounded-xl shadow-xl border border-border py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 ${item.id === 'data-intelligence' ? 'w-[390px]' : 'w-64'}`}>
+                        <div className={`absolute top-full left-0 mt-0 bg-white rounded-xl shadow-xl border border-border py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 ${item.id === 'data-intelligence' ? 'w-[390px]' : 'w-64'}`}>
                           {item.id === 'data-intelligence' && <div className="px-4 pb-2 pt-1"><p className="text-[11px] uppercase tracking-[0.16em] text-[#bf1f27]">Advanced Market Intelligence</p><p className="mt-1 text-xs text-muted-foreground">Official indicators organised by analytical topic</p></div>}
                           {item.dropdownItems?.map((dropdownItem, index) => (
                             <button
@@ -141,7 +147,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
               </nav>
             </div>
 
-            <div className="hidden items-center gap-3 md:flex">
+            <div className="hidden items-center gap-3 lg:flex">
               <button onClick={() => activate('data-quality')} className="px-4 py-2 rounded-lg border border-white/30 text-white text-sm hover:bg-white/10 transition-colors">
                 Methodology
               </button>
@@ -149,9 +155,9 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
                 Browse Data
               </button>
             </div>
-            <button type="button" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileOpen} className="rounded-lg border border-white/25 p-2.5 text-white transition-colors hover:bg-white/10 md:hidden">{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
+            <button type="button" onClick={() => setMobileOpen((value) => !value)} aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileOpen} className="rounded-lg border border-white/25 p-2.5 text-white transition-colors hover:bg-white/10 lg:hidden">{mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
           </div>
-          {mobileOpen && <nav className="border-t border-white/15 pb-4 pt-3 md:hidden">
+          {mobileOpen && <nav className="border-t border-white/15 pb-4 pt-3 lg:hidden">
             {navItems.map((item) => { const Icon = item.icon; return <div key={item.id} className="py-1">
               <button type="button" onClick={() => !item.hasDropdown && activate(item.id)} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-white"><Icon className="h-4 w-4" />{item.label}</button>
               {item.hasDropdown && <div className="ml-6 grid gap-1 border-l border-white/15 pl-3">{item.dropdownItems?.map((dropdownItem) => <button type="button" key={dropdownItem.id} onClick={() => activate(dropdownItem.id)} className="rounded-lg px-3 py-2 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white">{dropdownItem.label}</button>)}</div>}

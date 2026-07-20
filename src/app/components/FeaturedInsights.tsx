@@ -1,47 +1,131 @@
-import { useEffect, useState } from 'react';
-import { ArrowRight, Landmark, Scale, TrendingDown, TrendingUp } from 'lucide-react';
-import { loadFiscalExecution, FiscalExecutionQuarter } from '../data/fiscalExecution';
-import { loadLatestIndicators, PilotIndicator } from '../data/indicators';
-import { loadOilNonOilGdp, OilNonOilGdpQuarter } from '../data/oilNonOilGdp';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, Bot, CheckCircle2, Landmark, Scale, ShieldCheck, TrendingDown, TrendingUp, type LucideIcon } from 'lucide-react';
+import { buildAiInsightCards, type AiInsightCard, type InsightTone } from '../data/aiInsights';
+import { loadFiscalExecution, type FiscalExecutionResponse } from '../data/fiscalExecution';
+import { loadLatestIndicators, type IndicatorApiResponse } from '../data/indicators';
+import { loadOilGasAnalytics, type OilGasAnalyticsResponse } from '../data/oilGas';
+import { loadOilNonOilGdp, type OilNonOilGdpResponse } from '../data/oilNonOilGdp';
+import { loadSovereignYieldCurve, type SovereignYieldCurveResponse } from '../data/sovereignYieldCurve';
+import { planLabel, subscriptionRank, type SubscriptionPlan } from '../data/subscriptionAccess';
 
 interface FeaturedInsightsProps {
   onNavigate: (tab: string) => void;
   onIndicatorSelect: (indicatorId: string) => void;
+  subscriptionPlan?: SubscriptionPlan;
+  onUpgrade?: () => void;
 }
 
-function formatKz(value: number) {
-  const absolute = Math.abs(value);
-  const display = absolute >= 1_000_000 ? `${(absolute / 1_000_000).toFixed(2)}T Kz` : `${(absolute / 1_000).toFixed(1)}B Kz`;
-  return value < 0 ? `-${display}` : display;
+interface InsightInputsState {
+  latestIndicators?: IndicatorApiResponse;
+  oilNonOil?: OilNonOilGdpResponse;
+  fiscal?: FiscalExecutionResponse;
+  oilGas?: OilGasAnalyticsResponse;
+  yieldCurve?: SovereignYieldCurveResponse;
 }
 
-export function FeaturedInsights({ onNavigate, onIndicatorSelect }: FeaturedInsightsProps) {
-  const [indicators, setIndicators] = useState<PilotIndicator[]>([]);
-  const [gdp, setGdp] = useState<OilNonOilGdpQuarter | null>(null);
-  const [fiscal, setFiscal] = useState<FiscalExecutionQuarter | null>(null);
+const toneStyles: Record<InsightTone, string> = {
+  emerald: 'text-emerald-700 bg-emerald-50 border-emerald-100',
+  orange: 'text-amber-800 bg-amber-50 border-amber-100',
+  blue: 'text-blue-700 bg-blue-50 border-blue-100',
+  violet: 'text-violet-700 bg-violet-50 border-violet-100',
+  red: 'text-rose-800 bg-rose-50 border-rose-100',
+};
+
+const insightIcons: Record<string, LucideIcon> = {
+  'ai-diversification-momentum': TrendingUp,
+  'ai-inflation-direction': TrendingDown,
+  'ai-fiscal-balance': Scale,
+  'ai-oil-production-forecast-gap': Landmark,
+  'ai-sovereign-curve-premium': ShieldCheck,
+};
+
+function canOpenInsight(insight: AiInsightCard, subscriptionPlan: SubscriptionPlan) {
+  return subscriptionRank[subscriptionPlan] >= subscriptionRank[insight.minimumPlan];
+}
+
+export function FeaturedInsights({ onNavigate, onIndicatorSelect, subscriptionPlan = 'free', onUpgrade }: FeaturedInsightsProps) {
+  const [inputs, setInputs] = useState<InsightInputsState>({});
+  const [status, setStatus] = useState<'loading' | 'ready' | 'partial'>('loading');
 
   useEffect(() => {
     const controller = new AbortController();
-    Promise.allSettled([loadLatestIndicators(controller.signal), loadOilNonOilGdp(controller.signal), loadFiscalExecution(controller.signal)])
-      .then(([latest, oilNonOil, fiscalExecution]) => {
-        if (latest.status === 'fulfilled') setIndicators(latest.value.data);
-        if (oilNonOil.status === 'fulfilled') setGdp(oilNonOil.value.data.at(-1) ?? null);
-        if (fiscalExecution.status === 'fulfilled') setFiscal(fiscalExecution.value.data.at(-1) ?? null);
-      });
+    Promise.allSettled([
+      loadLatestIndicators(controller.signal),
+      loadOilNonOilGdp(controller.signal),
+      loadFiscalExecution(controller.signal),
+      loadOilGasAnalytics(controller.signal),
+      loadSovereignYieldCurve(controller.signal),
+    ]).then(([latestIndicators, oilNonOil, fiscal, oilGas, yieldCurve]) => {
+      const nextInputs: InsightInputsState = {};
+      if (latestIndicators.status === 'fulfilled') nextInputs.latestIndicators = latestIndicators.value;
+      if (oilNonOil.status === 'fulfilled') nextInputs.oilNonOil = oilNonOil.value;
+      if (fiscal.status === 'fulfilled') nextInputs.fiscal = fiscal.value;
+      if (oilGas.status === 'fulfilled') nextInputs.oilGas = oilGas.value;
+      if (yieldCurve.status === 'fulfilled') nextInputs.yieldCurve = yieldCurve.value;
+      setInputs(nextInputs);
+      setStatus(Object.keys(nextInputs).length >= 3 ? 'ready' : 'partial');
+    });
     return () => controller.abort();
   }, []);
 
-  const inflation = indicators.find((item) => item.id === 'inflation-rate');
-  const banking = indicators.find((item) => item.id === 'banking-assets');
-  const insights = [
-    { title: 'Non-Oil Growth Momentum', description: gdp ? `Non-oil activity contributed ${gdp.nonOilContributionPp.toFixed(2)} pp to ${gdp.totalYoyPct.toFixed(2)}% total GDP growth in ${gdp.period}.` : 'Loading the latest official INE diversification signal.', metric: gdp ? `${gdp.nonOilYoyPct >= 0 ? '+' : ''}${gdp.nonOilYoyPct.toFixed(2)}%` : '—', period: gdp?.period, icon: TrendingUp, tone: 'text-emerald-700 bg-emerald-50', action: () => onNavigate('advanced-gdp-diversification') },
-    { title: 'National Inflation', description: inflation ? `National IPCN inflation reached ${inflation.value} in ${inflation.period}, based on the official INE monthly publication.` : 'Loading the latest official INE inflation value.', metric: inflation?.value ?? '—', period: inflation?.period, icon: TrendingDown, tone: 'text-orange-700 bg-orange-50', action: () => onIndicatorSelect('inflation-rate') },
-    { title: 'Banking Sector Assets', description: banking ? `Other depository corporations reported ${banking.value} in total assets for ${banking.period}.` : 'Loading the latest official BNA banking-assets value.', metric: banking?.change || banking?.value || '—', period: banking?.period, icon: Landmark, tone: 'text-blue-700 bg-blue-50', action: () => onIndicatorSelect('banking-assets') },
-    { title: 'Fiscal Balance', description: fiscal ? `The reported budget balance was ${formatKz(fiscal.budgetBalance)} in ${fiscal.period}, with revenue execution at ${fiscal.revenueExecutionPct.toFixed(1)}%.` : 'Loading the latest official MINFIN fiscal-execution result.', metric: fiscal ? formatKz(fiscal.budgetBalance) : '—', period: fiscal?.period, icon: Scale, tone: 'text-violet-700 bg-violet-50', action: () => onNavigate('advanced-fiscal-execution') },
-  ];
+  const insights = useMemo(() => buildAiInsightCards(inputs), [inputs]);
+  const featuredInsights = insights.slice(0, 4);
+
+  function openInsight(insight: AiInsightCard) {
+    if (!canOpenInsight(insight, subscriptionPlan)) {
+      onUpgrade?.();
+      return;
+    }
+    if (insight.relatedTarget.type === 'indicator') onIndicatorSelect(insight.relatedTarget.id);
+    else onNavigate(insight.relatedTarget.id);
+  }
 
   return <section>
-    <div className="mb-6"><p className="text-xs uppercase tracking-[0.16em] text-primary">Source-backed signals</p><h2 className="mt-1 text-2xl tracking-tight">Featured official insights</h2><p className="mt-1 text-muted-foreground">Calculated from the latest published values in the LAZA governed data platform.</p></div>
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">{insights.map((insight) => { const Icon = insight.icon; return <button type="button" key={insight.title} onClick={insight.action} className="group rounded-xl border border-border bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-lg"><div className="mb-4 flex items-start justify-between gap-3"><div className={`rounded-lg p-2 ${insight.tone}`}><Icon className="h-5 w-5" /></div><span className={`rounded-full px-2 py-1 text-xs ${insight.tone}`}>{insight.metric}</span></div><h3 className="mb-2 text-base transition-colors group-hover:text-primary">{insight.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{insight.description}</p><div className="mt-4 flex items-center justify-between text-xs"><span className="text-muted-foreground">{insight.period ?? 'Official data'}</span><span className="inline-flex items-center gap-1 text-primary">Open details <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" /></span></div></button>; })}</div>
+    <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p className="text-xs uppercase tracking-[0.16em] text-primary">Featured executive insights</p>
+        <h2 className="mt-1 text-2xl tracking-tight">Featured Insights</h2>
+        <p className="mt-1 text-muted-foreground">Fast-reading signals generated from Gold data, with source, quality and review evidence preserved.</p>
+        <button type="button" onClick={() => onNavigate('data-quality')} className="mt-2 text-xs text-primary underline-offset-4 hover:underline">Rule-generated means deterministic, source-backed logic — see methodology.</button>
+      </div>
+      <div className={`inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${status === 'ready' ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+        <Bot className="h-3.5 w-3.5" />
+        {status === 'loading' ? 'Generating local insights...' : status === 'ready' ? `${featuredInsights.length} featured signals` : 'Partial insight evidence'}
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+      {(featuredInsights.length ? featuredInsights : Array.from({ length: 4 }, () => null)).map((insight, index) => {
+        if (!insight) return <div key={`loading-${index}`} className="min-h-[260px] animate-pulse rounded-xl border border-border bg-card p-5"><div className="mb-4 h-10 w-10 rounded-lg bg-muted" /><div className="h-4 w-3/4 rounded bg-muted" /><div className="mt-4 h-20 rounded bg-muted" /></div>;
+        const Icon = insightIcons[insight.id] ?? Bot;
+        const tone = toneStyles[insight.tone];
+        const allowed = canOpenInsight(insight, subscriptionPlan);
+        return <button type="button" key={insight.id} onClick={() => openInsight(insight)} className={`group flex min-h-[300px] flex-col rounded-xl border border-border bg-card p-5 text-left transition-all ${allowed ? 'hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-lg' : 'cursor-default opacity-90'}`}>
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className={`rounded-lg border p-2 ${tone}`}><Icon className="h-5 w-5" /></div>
+            <span className={`max-w-[45%] truncate rounded-full border px-2 py-1 text-xs ${tone}`} title={insight.metric}>{insight.metric}</span>
+          </div>
+          <h3 className="mb-2 text-base transition-colors group-hover:text-primary">{insight.title}</h3>
+          <p className="overflow-hidden text-sm leading-relaxed text-muted-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]">{insight.summary}</p>
+          <div className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">
+            <div className="flex items-center justify-between gap-3">
+              <span className="truncate" title={insight.sourceName}>{insight.sourceName}</span>
+              <span className="shrink-0 text-foreground">Q {insight.qualityScore == null ? 'n/a' : insight.qualityScore.toFixed(1)}</span>
+            </div>
+            <div className="mt-2 inline-flex items-center gap-1 text-emerald-700">
+              <CheckCircle2 className="h-3 w-3" />
+              {insight.reviewStatus === 'rule-generated' ? 'Rule-generated' : 'Needs review'}
+            </div>
+          </div>
+          <div className="mt-auto flex items-center justify-between gap-4 pt-4 text-xs">
+            <span className="min-w-0 flex-1 truncate font-mono text-muted-foreground" title={insight.ruleId}>{insight.ruleId}</span>
+            <span className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap ${allowed ? 'text-primary' : 'text-muted-foreground'}`}>
+              {allowed ? 'Open details' : `View ${planLabel(insight.minimumPlan)} access`}
+              <ArrowRight className={`h-3.5 w-3.5 transition-transform ${allowed ? 'group-hover:translate-x-1' : ''}`} />
+            </span>
+          </div>
+        </button>;
+      })}
+    </div>
   </section>;
 }
