@@ -88,9 +88,19 @@ export function FeaturedInsights({ onNavigate, onIndicatorSelect, subscriptionPl
         <p className="mt-1 text-muted-foreground">Fast-reading signals generated from Gold data, with source, quality and review evidence preserved.</p>
         <button type="button" onClick={() => onNavigate('data-quality')} className="mt-2 text-xs text-primary underline-offset-4 hover:underline">Rule-generated means deterministic, source-backed logic — see methodology.</button>
       </div>
-      <div className={`inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${status === 'ready' ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
-        <Bot className="h-3.5 w-3.5" />
-        {status === 'loading' ? 'Generating local insights...' : status === 'ready' ? `${featuredInsights.length} featured signals` : 'Partial insight evidence'}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className={`inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${status === 'ready' ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+          <Bot className="h-3.5 w-3.5" />
+          {status === 'loading' ? 'Generating local insights...' : status === 'ready' ? `${featuredInsights.length} featured signals` : 'Partial insight evidence'}
+        </div>
+        <button
+          type="button"
+          onClick={() => onNavigate('insights')}
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs text-white shadow-sm transition-colors hover:bg-primary/90"
+        >
+          View all insights
+          <ArrowRight className="h-3.5 w-3.5" />
+        </button>
       </div>
     </div>
 

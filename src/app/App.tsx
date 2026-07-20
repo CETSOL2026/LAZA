@@ -17,6 +17,7 @@ const SovereignYieldCurveIntelligence = lazy(() => import('./components/Sovereig
 const OilNonOilGdpIntelligence = lazy(() => import('./components/OilNonOilGdpIntelligence').then((module) => ({ default: module.OilNonOilGdpIntelligence })));
 const ExecutiveMarketPulse = lazy(() => import('./components/ExecutiveMarketPulse').then((module) => ({ default: module.ExecutiveMarketPulse })));
 const IndicatorCatalog = lazy(() => import('./components/IndicatorCatalog').then((module) => ({ default: module.IndicatorCatalog })));
+const InsightsLibrary = lazy(() => import('./components/InsightsLibrary').then((module) => ({ default: module.InsightsLibrary })));
 const DataQualityMethodology = lazy(() => import('./components/DataQualityMethodology').then((module) => ({ default: module.DataQualityMethodology })));
 const DataMarketplace = lazy(() => import('./components/DataMarketplace').then((module) => ({ default: module.DataMarketplace })));
 const SourceFilesMarketplace = lazy(() => import('./components/SourceFilesMarketplace').then((module) => ({ default: module.SourceFilesMarketplace })));
@@ -46,6 +47,7 @@ function routeFromPath(pathname: string) {
   const institutionalTab = Object.keys(institutionalPaths).find((tab) => institutionalPaths[tab] === cleanPath);
   if (institutionalTab) return { tab: institutionalTab, indicatorId: 'gdp-growth', admin: false };
   if (cleanPath === '/indicators') return { tab: 'indicators', indicatorId: 'gdp-growth', admin: false };
+  if (cleanPath === '/insights') return { tab: 'insights', indicatorId: 'gdp-growth', admin: false };
   if (cleanPath === '/data') return { tab: 'data-intelligence', indicatorId: 'gdp-growth', admin: false };
   if (cleanPath === '/admin') return { tab: 'overview', indicatorId: 'gdp-growth', admin: true };
   const dataMatch = cleanPath.match(/^\/data\/([a-z0-9-]+)$/);
@@ -58,6 +60,7 @@ function routeFromPath(pathname: string) {
 function pathForTab(tab: string) {
   if (tab === 'overview') return '/';
   if (tab === 'indicators') return '/indicators';
+  if (tab === 'insights') return '/insights';
   if (tab === 'data-intelligence') return '/data';
   if (advancedPaths[tab]) return advancedPaths[tab];
   if (institutionalPaths[tab]) return institutionalPaths[tab];
@@ -82,7 +85,7 @@ export default function App() {
   useEffect(() => { window.localStorage.setItem('laza_subscription_plan', subscriptionPlan); }, [subscriptionPlan]);
   useEffect(() => {
     const indicatorTitles: Record<string, string> = { 'gdp-growth': 'GDP Growth', 'inflation-rate': 'Inflation Rate', 'exchange-rate': 'Exchange Rate', population: 'Population', 'banking-assets': 'Banking Assets', 'public-debt-gdp': 'Public Debt/GDP' };
-    const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', indicators: 'All Indicators', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };
+    const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', indicators: 'All Indicators', insights: 'All Insights', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };
     const pageTitle = showAdmin ? 'Admin Panel' : activeTab === 'official-indicator-detail' ? indicatorTitles[selectedOfficialIndicator] : tabTitles[activeTab] ?? 'Data & Intelligence';
     document.title = `${pageTitle} | LAZA`;
   }, [activeTab, selectedOfficialIndicator, showAdmin]);
@@ -172,6 +175,8 @@ export default function App() {
     </main>}
 
     {activeTab === 'indicators' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><IndicatorCatalog subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} /></main>}
+
+    {activeTab === 'insights' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><InsightsLibrary subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} /></main>}
 
     {activeTab === 'data-intelligence' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><SourceFilesMarketplace subscriptionPlan={subscriptionPlan} onUpgrade={() => setPricingOpen(true)} /></main>}
 

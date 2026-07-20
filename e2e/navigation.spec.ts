@@ -77,6 +77,19 @@ test.describe('Site navigation', () => {
     await expect(page.getByRole('heading', { name: 'GDP Growth Overview' })).toBeVisible();
   });
 
+  test('insights library is reachable from the header and opens a source detail', async ({ page }) => {
+    await page.goto('/');
+    await openHeaderDropdownItem(page, 'Data & Intelligence', 'Insights Library');
+    await expect(page).toHaveURL(/\/insights$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'All Insights' })).toBeVisible();
+    await expect(page.getByText('Insights library')).toBeVisible();
+    await expect(page.getByText('GDP_DIVERSIFICATION_CONTRIBUTION_V1')).toBeVisible();
+
+    await page.getByRole('article').filter({ hasText: 'Inflation signal needs close monitoring' }).getByRole('button', { name: 'Open source detail' }).click();
+    await expect(page).toHaveURL(/\/indicators\/inflation-rate$/);
+    await expect(page.getByRole('heading', { name: 'Inflation Overview' })).toBeVisible();
+  });
+
   test('data quality methodology page shows governed DQ content', async ({ page }) => {
     await page.goto('/methodology/data-quality');
     await expect(page).toHaveTitle(/Data Quality Methodology \| LAZA/);

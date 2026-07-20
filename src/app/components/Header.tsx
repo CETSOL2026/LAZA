@@ -34,6 +34,7 @@ export function Header({ activeTab, setActiveTab }: HeaderProps) {
       hasDropdown: true,
       dropdownItems: [
         { id: 'data-intelligence', label: 'Data Marketplace', topic: 'Data Catalogue', description: 'Datasets, formats and access options' },
+        { id: 'insights', label: 'Insights Library', topic: 'Executive Signals', description: 'Rule-generated insights with source evidence' },
         { id: 'advanced-gdp-diversification', label: 'Oil vs. Non-Oil GDP', topic: 'Macroeconomy & Diversification', description: 'Growth, contribution and economic structure' },
         { id: 'advanced-oil-gas', label: 'Oil & Gas Production', topic: 'Energy', description: 'Production, forecast and gas allocation' },
         { id: 'advanced-fiscal-execution', label: 'Fiscal Execution', topic: 'Public Finance', description: 'Revenue, expenditure and budget balance' },
