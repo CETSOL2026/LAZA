@@ -4,9 +4,18 @@ import logoFull from '../../imports/Artboard_1_3.png';
 import { AdminDashboard } from './AdminDashboard';
 
 type AuthState = 'checking' | 'signed-out' | 'signed-in' | 'unavailable';
+export interface AdminSession {
+  authenticated: true;
+  username: string;
+  displayName?: string;
+  role?: string;
+  scope?: string;
+  expiresAt: string;
+}
 
 export function AdminGate({ onBack }: { onBack: () => void }) {
   const [authState, setAuthState] = useState<AuthState>('checking');
+  const [session, setSession] = useState<AdminSession | null>(null);
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +25,16 @@ export function AdminGate({ onBack }: { onBack: () => void }) {
   useEffect(() => {
     const controller = new AbortController();
     fetch('/api/admin/session', { signal: controller.signal, credentials: 'same-origin' })
-      .then((response) => setAuthState(response.ok ? 'signed-in' : 'signed-out'))
+      .then(async (response) => {
+        if (!response.ok) {
+          setSession(null);
+          setAuthState('signed-out');
+          return;
+        }
+        const payload = await response.json() as AdminSession;
+        setSession(payload);
+        setAuthState('signed-in');
+      })
       .catch((error) => { if (error.name !== 'AbortError') setAuthState('unavailable'); });
     return () => controller.abort();
   }, []);
@@ -37,6 +55,7 @@ export function AdminGate({ onBack }: { onBack: () => void }) {
         setMessage(payload.message ?? (response.status === 429 ? 'Too many attempts. Try again later.' : 'Invalid username or password.'));
         return;
       }
+      setSession(payload as AdminSession);
       setPassword('');
       setAuthState('signed-in');
     } catch {
@@ -50,10 +69,11 @@ export function AdminGate({ onBack }: { onBack: () => void }) {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }).catch(() => undefined);
     setPassword('');
     setMessage('');
+    setSession(null);
     setAuthState('signed-out');
   }
 
-  if (authState === 'signed-in') return <AdminDashboard onBack={onBack} onLogout={logout} />;
+  if (authState === 'signed-in' && session) return <AdminDashboard session={session} onBack={onBack} onLogout={logout} />;
 
   return <div className="min-h-screen bg-slate-50">
     <header className="border-b border-[#a81b22] bg-[#bf1f27] px-6 py-4 shadow-sm"><div className="mx-auto flex max-w-6xl items-center justify-between"><img src={logoFull} alt="LAZA" className="h-10" /><button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white"><ArrowLeft className="h-4 w-4" />Back to site</button></div></header>

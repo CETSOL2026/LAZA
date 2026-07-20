@@ -1,8 +1,11 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pbkdf2Sync, randomBytes } from 'node:crypto';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const port = Number(process.env.LAZA_TEST_API_PORT ?? 8795);
@@ -10,6 +13,8 @@ const baseUrl = `http://127.0.0.1:${port}`;
 
 let apiProcess;
 let apiOutput = '';
+let authConfigDirectory;
+let authConfigPath;
 
 async function waitForHealth(timeoutMs = 20_000) {
   const deadline = Date.now() + timeoutMs;
@@ -35,9 +40,28 @@ async function getJson(pathName) {
 }
 
 before(async () => {
+  authConfigDirectory = mkdtempSync(path.join(tmpdir(), 'laza-admin-auth-'));
+  authConfigPath = path.join(authConfigDirectory, 'laza-admin-auth.json');
+  const testPassword = 'TestAdminPassword-042!';
+  const salt = randomBytes(16);
+  writeFileSync(authConfigPath, JSON.stringify({
+    version: 2,
+    updatedAt: new Date().toISOString(),
+    users: [{
+      username: 'admin',
+      displayName: 'LAZA Test Administrator',
+      role: 'admin',
+      scope: 'admin-panel',
+      enabled: true,
+      iterations: 100000,
+      saltHex: salt.toString('hex'),
+      passwordHashHex: pbkdf2Sync(testPassword, salt, 100000, 32, 'sha256').toString('hex'),
+    }],
+  }), 'utf8');
+
   apiProcess = spawn(process.execPath, ['server/indicator-api.mjs'], {
     cwd: projectRoot,
-    env: { ...process.env, LAZA_API_PORT: String(port) },
+    env: { ...process.env, LAZA_API_PORT: String(port), LAZA_ADMIN_AUTH_CONFIG: authConfigPath },
     stdio: ['ignore', 'pipe', 'pipe'],
     windowsHide: true,
   });
@@ -53,6 +77,7 @@ after(async () => {
     apiProcess.kill();
     setTimeout(resolve, 3000).unref();
   });
+  if (authConfigDirectory) rmSync(authConfigDirectory, { recursive: true, force: true });
 });
 
 test('GET /health reports ok with the six official indicators', async () => {
@@ -171,6 +196,21 @@ test('POST /api/admin/login rejects invalid credentials', async () => {
   const body = await response.json();
   assert.equal(response.status, 401);
   assert.equal(body.error, 'INVALID_ADMIN_CREDENTIALS');
+});
+
+test('POST /api/admin/login accepts a configured multi-user credential', async () => {
+  const response = await fetch(`${baseUrl}/api/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'admin', password: 'TestAdminPassword-042!' }),
+  });
+  const body = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(body.authenticated, true);
+  assert.equal(body.username, 'admin');
+  assert.equal(body.displayName, 'LAZA Test Administrator');
+  assert.equal(body.role, 'admin');
+  assert.match(response.headers.get('set-cookie') ?? '', /laza_admin_session=/);
 });
 
 test('GET on an unknown API route 404s', async () => {

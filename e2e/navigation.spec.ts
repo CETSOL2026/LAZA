@@ -53,6 +53,15 @@ test.describe('Site navigation', () => {
     await expect(page).toHaveURL(/\/data$/);
   });
 
+  test('data quality methodology page shows governed DQ content', async ({ page }) => {
+    await page.goto('/methodology/data-quality');
+    await expect(page).toHaveTitle(/Data Quality Methodology \| LAZA/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Data Quality Checks' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Publication gate' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Core DQ rules' })).toBeVisible();
+    await expect(page.getByText('Economy Overview')).toHaveCount(0);
+  });
+
   test('footer administrator link opens the admin login form', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Administrator access' }).click();

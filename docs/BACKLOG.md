@@ -1,6 +1,6 @@
 # Backlog do MVP LAZA
 
-> Atualizado em 17 de julho de 2026. Este documento contém apenas trabalho
+> Atualizado em 20 de julho de 2026. Este documento contém apenas trabalho
 > aberto ou decisões pendentes. A ordem dentro de cada prioridade representa a
 > sequência recomendada de execução.
 
@@ -30,11 +30,9 @@
 | --- | --- | --- | --- | --- | --- |
 | LAZA-001 | Criar a rota `laza.way4u.com.br` no túnel `Tunnel_Alteryx`, apontando para `http://127.0.0.1:8790` | Pendente no painel Cloudflare | XS | Sessão autenticada Cloudflare | DNS resolve, HTTPS retorna 200 e as rotas ALT_ORC/NOVOAPP permanecem disponíveis |
 | LAZA-002 | Executar validação pública ponta a ponta | Bloqueado por LAZA-001 | S | LAZA-001 | Página, assets e todas as APIs retornam 200 fora da rede local; certificado é válido |
-| LAZA-003 | Proteger ou remover o `Admin Panel` antes da divulgação pública | Concluído em 16/07/2026 | M | Nenhuma | Login validado no servidor, sessão HttpOnly, limitação de tentativas e logout invalidando a sessão |
 | LAZA-004 | Definir política Cloudflare Access para homologação e demonstrações restritas | Pendente | S | Lista de utilizadores autorizados | Somente identidades aprovadas acessam o hostname de homologação |
 | LAZA-005 | Rotacionar o token do túnel e atualizar o serviço Windows | Pendente | S | Janela curta de manutenção | Novo token instalado, túnel saudável e token anterior revogado sem indisponibilidade prolongada |
 | LAZA-006 | Formalizar backup e restauração do `LAZA_DATA_PLATFORM_DEV` | Pendente | M | Espaço de backup aprovado | Backup executado, restauração testada em base isolada e evidência registrada |
-| LAZA-042 | Criar usuários para teste do portal e do `Admin Panel` | Pendente | S | Política de acesso aprovada | Usuários de teste possuem perfis documentados, credenciais seguras, escopo mínimo e evidência de login/logout validada |
 
 ## P1 — Operação e confiabilidade
 
@@ -44,8 +42,6 @@
 | LAZA-008 | Criar monitor de saúde para porta `8790`, SQL Server e Cloudflare | Pendente | M | LAZA-001 | Falha gera alerta e tentativa controlada de recuperação; estado saudável fica auditável |
 | LAZA-009 | Avaliar execução no arranque do Windows sem depender de login interativo | Pendente | M | Conta de serviço/credenciais SQL | Site volta automaticamente após reinício e mantém autenticação SQL com privilégio mínimo |
 | LAZA-010 | Criar procedimento de publicação: build, smoke test, rollback e versionamento | Pendente | M | LAZA-007 | Uma versão pode ser publicada e revertida com comandos documentados e evidência de teste |
-| LAZA-011 | Adicionar testes automatizados de contrato para as APIs | Concluído em 17/07/2026 | M | Nenhuma | Testes cobrem `/health`, seis indicadores e quatro módulos avançados, incluindo esquemas, contagens, ordenação cronológica, autenticação admin e download de assets |
-| LAZA-012 | Adicionar testes de interface para navegação, detalhes e quatro análises avançadas | Concluído em 17/07/2026 | L | Ambiente de teste de navegador | Fluxos críticos passam em desktop e viewport móvel antes de cada publicação |
 | LAZA-013 | Monitorar tamanho do SQL Express e crescimento das camadas | Pendente | S | LAZA-007 | Relatório periódico alerta antes de atingir 70%, 85% e 95% do limite operacional |
 | LAZA-045 | Avaliar instalação dos MCP servers oficiais da Cloudflare para o Codex | Pendente | S | Aprovação de acesso à conta Cloudflare | Codex consegue consultar documentação, apoiar configuração de túnel/Access/deploys e analisar observabilidade sem expor tokens no repositório |
 | LAZA-046 | Implementar `AI Insight Cards` na página inicial | Prioridade 1 para 20/07/2026 | M | Dados Gold publicados e contrato de exibição aprovado | Primeira versão gera insights AI-ready com regras locais sobre dados Gold, exibe 3 cards revisáveis no site e mantém fonte, período, qualidade e status de revisão rastreáveis |
@@ -67,7 +63,6 @@
 
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
-| LAZA-022 | Atualizar README e documentos que ainda descrevem indicadores como DEMO | Concluído em 17/07/2026 | S | Nenhuma | Documentação reflete os nove produtos oficiais e a execução atual |
 | LAZA-023 | Criar catálogo funcional dos indicadores e metodologias | Pendente | M | Aprovação dos donos de dados | Cada indicador apresenta definição, fórmula, unidade, frequência, fonte, owner e versão |
 | LAZA-024 | Formalizar fluxo de aprovação e segregação de funções | Pendente | M | Papéis do projeto | Ingestão, validação e aprovação possuem responsáveis e evidência verificável |
 | LAZA-025 | Criar registro de mudanças de fonte e metodologia | Pendente | M | LAZA-023 | Alterações não sobrescrevem silenciosamente séries ou regras anteriores |
@@ -89,8 +84,6 @@
 
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
-| LAZA-033 | Mapear Bronze/Silver/Gold local para os serviços Google aprovados na arquitetura | Concluído em 17/07/2026 | M | Decisão de landing zone | Documento `docs/google-cloud-migration-blueprint.md` cobre storage, processamento, warehouse, API, IAM e observabilidade |
-| LAZA-034 | Definir infraestrutura como código e ambientes DEV/HML/PRD | Concluído em 17/07/2026 | L | LAZA-033 | Documento `docs/google-cloud-iac-environments.md`, Word oficial e scaffold `infra/google/` definem recursos recriáveis com configuração versionada e segregação de ambientes |
 | LAZA-035 | Executar prova de portabilidade de um indicador ponta a ponta | Pendente | XL | LAZA-033 e landing zone | Um indicador percorre ingestão, DQ, Gold e site na Google Cloud com reconciliação 100% contra SQL Server |
 | LAZA-036 | Planejar migração dos nove produtos e corte operacional | Pendente | L | LAZA-035 | Plano possui ondas, rollback, custos, responsáveis e critérios de saída |
 
@@ -103,7 +96,6 @@
 | LAZA-039 | Expansão para outros países e novas geografias | Estabilizar operação angolana e modelo de ownership |
 | LAZA-040 | Produtos premium e controlo por plano | Validar estratégia comercial e requisitos de faturação |
 | LAZA-043 | Gerar estrutura de assinaturas | Definir planos, permissões, métricas premium, cobrança, ciclo de vida da assinatura e integração futura com controlo por plano |
-| LAZA-044 | Pensar na segregação dos dados e acessos por tipo de assinatura | Definir quais indicadores, séries, granularidades, downloads, APIs e funcionalidades administrativas cada plano pode acessar |
 
 ## Decisões pendentes para a próxima revisão
 

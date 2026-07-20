@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ExternalLink, Info, Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { CheckCircle2, ExternalLink, Info, LockKeyhole, Minus, TrendingDown, TrendingUp } from 'lucide-react';
 import {
   IndicatorHistoryPoint,
   loadBankingAssetsHistory,
@@ -11,6 +11,13 @@ import {
   loadPublicDebtHistory,
   pilotIndicators,
 } from '../data/indicators';
+import {
+  accessLabel,
+  minimumPlanForFullAccess,
+  officialIndicatorAccess,
+  planLabel,
+  type SubscriptionPlan,
+} from '../data/subscriptionAccess';
 
 const IndicatorHistoryChart = lazy(() => import('./IndicatorHistoryChart').then((module) => ({ default: module.IndicatorHistoryChart })));
 
@@ -18,9 +25,10 @@ interface MetricsOverviewProps {
   summaryOnly?: boolean;
   initialSelectedId?: string;
   onIndicatorSelect?: (indicatorId: string) => void;
+  subscriptionPlan?: SubscriptionPlan;
 }
 
-export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndicatorSelect }: MetricsOverviewProps) {
+export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndicatorSelect, subscriptionPlan = 'free' }: MetricsOverviewProps) {
   const [indicators, setIndicators] = useState(pilotIndicators);
   const [selectedId, setSelectedId] = useState(initialSelectedId ?? pilotIndicators[0].id);
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'connected' | 'fallback'>('loading');
@@ -33,6 +41,8 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
     if (initialSelectedId) setSelectedId(initialSelectedId);
   }
   const selected = indicators.find((indicator) => indicator.id === selectedId) ?? indicators[0];
+  const selectedAccess = officialIndicatorAccess[selected.id]?.[subscriptionPlan] ?? 'full';
+  const selectedNeedsUpgrade = selectedAccess !== 'full';
   const officialCount = useMemo(
     () => indicators.filter((indicator) => indicator.isOfficial).length,
     [indicators],
@@ -53,6 +63,10 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
 
   useEffect(() => {
     if (summaryOnly) return;
+    const access = officialIndicatorAccess[selectedId]?.[subscriptionPlan] ?? 'full';
+    if (access !== 'full') {
+      return;
+    }
     const expectedHistorySize = selectedId === 'gdp-growth'
       ? 21
       : selectedId === 'banking-assets'
@@ -85,7 +99,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
         if (error.name !== 'AbortError') setHistoryStatus('error');
       });
     return () => controller.abort();
-  }, [selectedId, inflationHistory.length, historyIndicatorId, summaryOnly]);
+  }, [selectedId, inflationHistory.length, historyIndicatorId, summaryOnly, subscriptionPlan]);
 
   return (
     <section>
@@ -108,6 +122,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {indicators.map((metric) => {
+          const metricAccess = officialIndicatorAccess[metric.id]?.[subscriptionPlan] ?? 'full';
           const TrendIcon = metric.trend === 'up'
             ? TrendingUp
             : metric.trend === 'down'
@@ -134,10 +149,19 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
                   <div className="whitespace-nowrap rounded-lg bg-muted px-2 py-1 text-xs text-muted-foreground">
                     {metric.period}
                   </div>
-                  {metric.isOfficial && (
-                    <div className="rounded-lg bg-green-50 px-2 py-1 text-xs text-green-700">Official</div>
-                  )}
+                {metric.isOfficial && (
+                  <div className="rounded-lg bg-green-50 px-2 py-1 text-xs text-green-700">Official</div>
+                )}
+                <div className={`rounded-lg px-2 py-1 text-xs ${
+                  metricAccess === 'full'
+                    ? 'bg-blue-50 text-blue-700'
+                    : metricAccess === 'preview'
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {accessLabel(metricAccess)}
                 </div>
+              </div>
                 {metric.change && <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs ${
                   metric.trend === 'up' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'
                 }`}>
@@ -205,6 +229,17 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
 
         {['gdp-growth', 'inflation-rate', 'exchange-rate', 'population', 'banking-assets', 'public-debt-gdp'].includes(selected.id) && selected.isOfficial && (
           <div className="mt-6 border-t border-border pt-5">
+            {selectedNeedsUpgrade && (
+              <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+                <div className="flex items-start gap-3">
+                  <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0" />
+                  <div>
+                    <p className="font-medium">{selected.label} full history is not included in the {planLabel(subscriptionPlan)} plan.</p>
+                    <p className="mt-1 text-amber-800">This plan shows the latest published value and source evidence. Upgrade to {minimumPlanForFullAccess(officialIndicatorAccess[selected.id])} to access the full historical table, chart and downloadable analytical depth.</p>
+                  </div>
+                </div>
+              </div>
+            )}
             {historyStatus === 'loading' && (
                 <div className="mt-4 rounded-lg bg-white p-4 text-sm text-muted-foreground">Loading official history...</div>
             )}
@@ -213,7 +248,7 @@ export function MetricsOverview({ summaryOnly = false, initialSelectedId, onIndi
                 Historical series is temporarily unavailable. The latest published value remains valid.
               </div>
             )}
-            {historyStatus === 'loaded' && (
+            {historyStatus === 'loaded' && !selectedNeedsUpgrade && (
               <>
                 <div className="rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
                   <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">

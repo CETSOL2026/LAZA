@@ -8,12 +8,14 @@ import { AdvancedIntelligencePage } from './components/AdvancedIntelligencePage'
 import { FeaturedInsights } from './components/FeaturedInsights';
 import { TrustAndMethodology } from './components/TrustAndMethodology';
 import { Footer } from './components/Footer';
+import { SubscriptionPlanSwitcher } from './components/SubscriptionPlanSwitcher';
+import { normalizePlan, type SubscriptionPlan } from './data/subscriptionAccess';
 
 const OilGasIntelligence = lazy(() => import('./components/OilGasIntelligence').then((module) => ({ default: module.OilGasIntelligence })));
 const FiscalExecutionIntelligence = lazy(() => import('./components/FiscalExecutionIntelligence').then((module) => ({ default: module.FiscalExecutionIntelligence })));
 const SovereignYieldCurveIntelligence = lazy(() => import('./components/SovereignYieldCurveIntelligence').then((module) => ({ default: module.SovereignYieldCurveIntelligence })));
 const OilNonOilGdpIntelligence = lazy(() => import('./components/OilNonOilGdpIntelligence').then((module) => ({ default: module.OilNonOilGdpIntelligence })));
-const EconomySection = lazy(() => import('./components/EconomySection').then((module) => ({ default: module.EconomySection })));
+const DataQualityMethodology = lazy(() => import('./components/DataQualityMethodology').then((module) => ({ default: module.DataQualityMethodology })));
 const DataMarketplace = lazy(() => import('./components/DataMarketplace').then((module) => ({ default: module.DataMarketplace })));
 const SourceFilesMarketplace = lazy(() => import('./components/SourceFilesMarketplace').then((module) => ({ default: module.SourceFilesMarketplace })));
 const AboutUs = lazy(() => import('./components/AboutUs').then((module) => ({ default: module.AboutUs })));
@@ -69,8 +71,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(initialRoute.tab);
   const [showAdmin, setShowAdmin] = useState(initialRoute.admin);
   const [selectedOfficialIndicator, setSelectedOfficialIndicator] = useState(initialRoute.indicatorId);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(() => normalizePlan(window.localStorage.getItem('laza_subscription_plan')));
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
+  useEffect(() => { window.localStorage.setItem('laza_subscription_plan', subscriptionPlan); }, [subscriptionPlan]);
   useEffect(() => {
     const indicatorTitles: Record<string, string> = { 'gdp-growth': 'GDP Growth', 'inflation-rate': 'Inflation Rate', 'exchange-rate': 'Exchange Rate', population: 'Population', 'banking-assets': 'Banking Assets', 'public-debt-gdp': 'Public Debt/GDP' };
     const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };
@@ -141,8 +145,9 @@ export default function App() {
     <Suspense fallback={<PageLoader />}>
 
     {activeTab === 'overview' && <><Hero onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} /><main className="mx-auto max-w-[1400px] space-y-16 px-4 py-12 sm:px-6 lg:px-8">
-      <div id="official-indicators"><MetricsOverview summaryOnly onIndicatorSelect={openOfficialIndicator} /></div>
-      <AdvancedIntelligenceCards onNavigate={navigateTo} />
+      <SubscriptionPlanSwitcher currentPlan={subscriptionPlan} onChange={setSubscriptionPlan} />
+      <div id="official-indicators"><MetricsOverview summaryOnly subscriptionPlan={subscriptionPlan} onIndicatorSelect={openOfficialIndicator} /></div>
+      <AdvancedIntelligenceCards subscriptionPlan={subscriptionPlan} onNavigate={navigateTo} />
       <FeaturedInsights onNavigate={navigateTo} onIndicatorSelect={openOfficialIndicator} />
       <TrustAndMethodology onNavigate={navigateTo} />
     </main></>}
@@ -151,17 +156,20 @@ export default function App() {
       <button type="button" onClick={() => navigateTo('overview')} className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
         <ArrowLeft className="h-4 w-4" /> Back to overview
       </button>
-      <MetricsOverview key={selectedOfficialIndicator} initialSelectedId={selectedOfficialIndicator} />
+      <MetricsOverview key={selectedOfficialIndicator} subscriptionPlan={subscriptionPlan} initialSelectedId={selectedOfficialIndicator} />
     </main>}
 
-    {activeTab === 'data-intelligence' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><SourceFilesMarketplace /></main>}
+    {activeTab === 'data-intelligence' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><SourceFilesMarketplace subscriptionPlan={subscriptionPlan} /></main>}
 
     {advancedPage && <AdvancedIntelligencePage topic={advancedPage.topic} title={advancedPage.title} description={advancedPage.description} onBack={() => navigateTo('overview')}>{advancedPage.content}</AdvancedIntelligencePage>}
 
     {(['kiluange', 'bwila', 'lukeni', 'ekuikui', 'njinga'].includes(activeTab)) && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><DataMarketplace /></main>}
 
-    {(['data-quality', 'scn-2008', 'cpi', 'gfs', 'bpm', 'edi', 'equity', 'bond', 'yield', 'fsi', 'traffic', 'macro-fiscal', 'external', 'banking', 'market', 'stress', 'benchmarks'].includes(activeTab)) &&
-      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><div className="space-y-6"><div><h1 className="mb-2 text-3xl capitalize tracking-tight">{activeTab.replace('-', ' ')}</h1><p className="text-muted-foreground">Methodology and policy information</p></div><EconomySection /></div></main>}
+    {activeTab === 'data-quality' &&
+      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><DataQualityMethodology /></main>}
+
+    {(['scn-2008', 'cpi', 'gfs', 'bpm', 'edi', 'equity', 'bond', 'yield', 'fsi', 'traffic', 'macro-fiscal', 'external', 'banking', 'market', 'stress', 'benchmarks'].includes(activeTab)) &&
+      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><div className="rounded-lg border border-border bg-white p-6 shadow-sm"><h1 className="mb-2 text-3xl capitalize tracking-tight">{activeTab.replace('-', ' ')}</h1><p className="text-muted-foreground">Methodology and policy information under review.</p></div></main>}
 
     {activeTab === 'about' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><AboutUs /></main>}
     {activeTab === 'team' && <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8"><LazaTeam /></main>}

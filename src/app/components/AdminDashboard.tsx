@@ -36,6 +36,7 @@ import logoFull from '../../imports/Artboard_1_3.png';
 import { pilotIndicators } from '../data/indicators';
 import { PipelineOperations } from './PipelineOperations';
 import { DataLayers } from './DataLayers';
+import type { AdminSession } from './AdminGate';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Dataset {
@@ -76,6 +77,33 @@ const SIDEBAR_ITEMS = [
   { id: 'api', label: 'API', icon: Code2 },
   { id: 'cms', label: 'CMS', icon: FileText },
   { id: 'settings', label: 'Settings', icon: Settings },
+];
+
+const TEST_USER_PROFILES = [
+  {
+    username: 'admin',
+    displayName: 'LAZA Administrator',
+    role: 'Admin',
+    scope: 'Admin Panel',
+    access: 'Full operational review access',
+    status: 'Enabled',
+  },
+  {
+    username: 'reviewer',
+    displayName: 'LAZA Data Reviewer',
+    role: 'Reviewer',
+    scope: 'Admin Panel read-only',
+    access: 'Pipeline, data quality and catalog validation',
+    status: 'Enabled',
+  },
+  {
+    username: 'portal-demo',
+    displayName: 'LAZA Portal Demo',
+    role: 'Portal tester',
+    scope: 'Public portal validation',
+    access: 'Persona prepared for future subscription/access tests',
+    status: 'Prepared',
+  },
 ];
 
 // ─── Toast Component ──────────────────────────────────────────────────────────
@@ -237,7 +265,7 @@ function EditDrawer({
 }
 
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
-export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLogout: () => void }) {
+export function AdminDashboard({ session, onBack, onLogout }: { session: AdminSession; onBack: () => void; onLogout: () => void }) {
   const [activeNav, setActiveNav] = useState('pipelines');
   const [datasets, setDatasets] = useState<Dataset[]>(SAMPLE_DATASETS);
   const [search, setSearch] = useState('');
@@ -297,6 +325,9 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
   const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   const categories = ['All', ...Array.from(new Set(datasets.map((d) => d.category)))];
+  const displayName = session.displayName ?? session.username;
+  const displayInitial = displayName.trim().slice(0, 1).toUpperCase() || 'A';
+  const displayRole = session.role ?? 'admin';
 
   return (
     <div className="flex h-screen bg-[#f5f6fa] overflow-hidden">
@@ -418,19 +449,19 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
                 className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-muted transition-colors"
               >
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm shrink-0">
-                  A
+                  {displayInitial}
                 </div>
                 <div className="hidden sm:block text-left">
-                  <p className="text-sm text-foreground leading-none">Admin</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Super Admin</p>
+                  <p className="text-sm text-foreground leading-none">{displayName}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{displayRole}</p>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
               {profileOpen && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-border py-2 z-50">
                   <div className="px-4 py-2 border-b border-border mb-1">
-                    <p className="text-sm">Admin User</p>
-                    <p className="text-xs text-muted-foreground">admin@laza.ao</p>
+                    <p className="text-sm">{displayName}</p>
+                    <p className="text-xs text-muted-foreground">{session.username} · {displayRole}</p>
                   </div>
                   {['Profile', 'Settings', 'Help'].map((item) => (
                     <button key={item} className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted/60 transition-colors">
@@ -454,6 +485,56 @@ export function AdminDashboard({ onBack, onLogout }: { onBack: () => void; onLog
             <DataLayers onSessionExpired={onLogout} />
           ) : activeNav === 'pipelines' ? (
             <PipelineOperations onSessionExpired={onLogout} />
+          ) : activeNav === 'users' ? (
+            <section className="space-y-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h1 className="text-foreground">Test Users</h1>
+                  <p className="mt-1 text-sm text-muted-foreground">Prepared personas for validating Admin Panel and future portal access flows.</p>
+                </div>
+                <span className="inline-flex w-fit items-center rounded-full border border-green-100 bg-green-50 px-3 py-1 text-xs text-green-700">
+                  {TEST_USER_PROFILES.length} configured profiles
+                </span>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                {TEST_USER_PROFILES.map((user) => (
+                  <article key={user.username} className="rounded-2xl border border-border bg-white p-5 shadow-sm">
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-sm text-primary">
+                          {user.displayName.slice(0, 1)}
+                        </div>
+                        <div>
+                          <h2 className="text-sm text-foreground">{user.displayName}</h2>
+                          <p className="text-xs text-muted-foreground">@{user.username}</p>
+                        </div>
+                      </div>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">{user.status}</span>
+                    </div>
+                    <dl className="space-y-3 text-sm">
+                      <div>
+                        <dt className="text-xs text-muted-foreground">Role</dt>
+                        <dd className="mt-0.5 text-foreground">{user.role}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs text-muted-foreground">Scope</dt>
+                        <dd className="mt-0.5 text-foreground">{user.scope}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs text-muted-foreground">Purpose</dt>
+                        <dd className="mt-0.5 text-muted-foreground">{user.access}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+                <p className="font-medium">Important implementation note</p>
+                <p className="mt-1 text-amber-800">The public site now includes MVP subscription access simulation under LAZA-044. Production enforcement still requires identity, billing lifecycle, server-side authorization and audit controls.</p>
+              </div>
+            </section>
           ) : (
           <>
           {/* Page Header */}

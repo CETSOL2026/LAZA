@@ -9,16 +9,35 @@ const adminLoginMaxFailures = 5;
 function loadAdminAuthConfig() {
   try {
     const config = JSON.parse(readFileSync(adminAuthConfigPath, 'utf8').replace(/^\uFEFF/, ''));
-    if (typeof config.username !== 'string' || !config.username.trim()) throw new Error('username is missing');
-    if (!Number.isInteger(config.iterations) || config.iterations < 100_000) throw new Error('iterations are invalid');
-    if (!/^[A-Fa-f0-9]{32,}$/.test(config.saltHex)) throw new Error('saltHex is invalid');
-    if (!/^[A-Fa-f0-9]{64}$/.test(config.passwordHashHex)) throw new Error('passwordHashHex is invalid');
-    return {
-      username: config.username,
-      iterations: config.iterations,
-      salt: Buffer.from(config.saltHex, 'hex'),
-      passwordHash: Buffer.from(config.passwordHashHex, 'hex'),
-    };
+    const rawUsers = Array.isArray(config.users) ? config.users : [config];
+    const users = rawUsers
+      .filter((user) => user?.enabled !== false)
+      .map((user, index) => {
+        const label = Array.isArray(config.users) ? `users[${index}]` : 'legacy credential';
+        if (typeof user.username !== 'string' || !user.username.trim()) throw new Error(`${label}: username is missing`);
+        if (!Number.isInteger(user.iterations) || user.iterations < 100_000) throw new Error(`${label}: iterations are invalid`);
+        if (!/^[A-Fa-f0-9]{32,}$/.test(user.saltHex)) throw new Error(`${label}: saltHex is invalid`);
+        if (!/^[A-Fa-f0-9]{64}$/.test(user.passwordHashHex)) throw new Error(`${label}: passwordHashHex is invalid`);
+        return {
+          username: user.username.trim(),
+          displayName: typeof user.displayName === 'string' && user.displayName.trim() ? user.displayName.trim() : user.username.trim(),
+          role: typeof user.role === 'string' && user.role.trim() ? user.role.trim() : 'admin',
+          scope: typeof user.scope === 'string' && user.scope.trim() ? user.scope.trim() : 'admin-panel',
+          iterations: user.iterations,
+          salt: Buffer.from(user.saltHex, 'hex'),
+          passwordHash: Buffer.from(user.passwordHashHex, 'hex'),
+        };
+      });
+
+    if (users.length === 0) throw new Error('no enabled admin users are configured');
+    const usernames = new Set();
+    for (const user of users) {
+      const key = user.username.toLowerCase();
+      if (usernames.has(key)) throw new Error(`duplicate admin username: ${user.username}`);
+      usernames.add(key);
+    }
+
+    return { users };
   } catch (error) {
     console.error(`LAZA admin authentication is unavailable: ${error.message}`);
     return null;
@@ -30,7 +49,7 @@ const adminSessions = new Map();
 const adminLoginFailures = new Map();
 
 export function isAdminAuthConfigured() {
-  return adminAuth !== null;
+  return Boolean(adminAuth?.users?.length);
 }
 
 function readCookie(request, name) {
@@ -90,19 +109,39 @@ export function clearAdminLoginFailures(clientKey) {
 }
 
 export function verifyAdminCredentials(username, password) {
-  if (!adminAuth || typeof username !== 'string' || typeof password !== 'string') return false;
-  const suppliedUsername = Buffer.from(username);
-  const configuredUsername = Buffer.from(adminAuth.username);
-  const usernameMatches = suppliedUsername.length === configuredUsername.length
-    && timingSafeEqual(suppliedUsername, configuredUsername);
-  const candidateHash = pbkdf2Sync(password, adminAuth.salt, adminAuth.iterations, 32, 'sha256');
-  return usernameMatches && timingSafeEqual(candidateHash, adminAuth.passwordHash);
+  if (!adminAuth || typeof username !== 'string' || typeof password !== 'string') return null;
+
+  for (const user of adminAuth.users) {
+    const suppliedUsername = Buffer.from(username);
+    const configuredUsername = Buffer.from(user.username);
+    const usernameMatches = suppliedUsername.length === configuredUsername.length
+      && timingSafeEqual(suppliedUsername, configuredUsername);
+    const candidateHash = pbkdf2Sync(password, user.salt, user.iterations, 32, 'sha256');
+    const passwordMatches = timingSafeEqual(candidateHash, user.passwordHash);
+    if (usernameMatches && passwordMatches) {
+      return {
+        username: user.username,
+        displayName: user.displayName,
+        role: user.role,
+        scope: user.scope,
+      };
+    }
+  }
+
+  return null;
 }
 
-export function createAdminSession() {
+export function createAdminSession(user) {
+  if (!user?.username) throw new Error('Cannot create an admin session without a verified user.');
   const token = randomBytes(32).toString('hex');
   const tokenHash = createHash('sha256').update(token).digest('hex');
-  const session = { username: adminAuth.username, expiresAt: Date.now() + adminSessionTtlMs };
+  const session = {
+    username: user.username,
+    displayName: user.displayName ?? user.username,
+    role: user.role ?? 'admin',
+    scope: user.scope ?? 'admin-panel',
+    expiresAt: Date.now() + adminSessionTtlMs,
+  };
   adminSessions.set(tokenHash, session);
   return { token, session };
 }

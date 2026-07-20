@@ -45,6 +45,17 @@ import {
 
 const port = Number(process.env.LAZA_API_PORT ?? 8790);
 
+function adminSessionPayload(session) {
+  return {
+    authenticated: true,
+    username: session.username,
+    displayName: session.displayName,
+    role: session.role,
+    scope: session.scope,
+    expiresAt: new Date(session.expiresAt).toISOString(),
+  };
+}
+
 const server = createServer(async (request, response) => {
   if (request.method === 'GET' && request.url === '/health') {
     try {
@@ -64,7 +75,7 @@ const server = createServer(async (request, response) => {
   if (request.method === 'GET' && request.url === '/api/admin/session') {
     const session = adminSession(request);
     sendJson(response, session ? 200 : 401, session
-      ? { authenticated: true, username: session.username, expiresAt: new Date(session.expiresAt).toISOString() }
+      ? adminSessionPayload(session)
       : { authenticated: false });
     return;
   }
@@ -81,15 +92,16 @@ const server = createServer(async (request, response) => {
     }
     try {
       const credentials = await readJsonBody(request);
-      if (!verifyAdminCredentials(credentials.username, credentials.password)) {
+      const verifiedUser = verifyAdminCredentials(credentials.username, credentials.password);
+      if (!verifiedUser) {
         registerAdminLoginFailure(clientKey);
         sendJson(response, 401, { error: 'INVALID_ADMIN_CREDENTIALS', message: 'Invalid username or password.' });
         return;
       }
       clearAdminLoginFailures(clientKey);
-      const { token, session } = createAdminSession();
+      const { token, session } = createAdminSession(verifiedUser);
       response.setHeader('Set-Cookie', adminCookie(request, token, Math.floor(adminSessionTtlMs / 1000)));
-      sendJson(response, 200, { authenticated: true, username: session.username, expiresAt: new Date(session.expiresAt).toISOString() });
+      sendJson(response, 200, adminSessionPayload(session));
     } catch (error) {
       sendJson(response, error.message === 'REQUEST_BODY_TOO_LARGE' ? 413 : 400, { error: 'INVALID_LOGIN_REQUEST' });
     }
