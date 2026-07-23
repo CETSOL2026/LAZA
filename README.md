@@ -41,6 +41,66 @@ The Admin Panel (`/admin`) is protected by server-side credential validation;
 see [docs/ADMIN_ACCESS.md](docs/ADMIN_ACCESS.md) for access and credential
 rotation.
 
+## Windows production autostart
+
+The official local autostart mechanism for the production MVP is a Windows
+Scheduled Task named `LAZA Production Site`.
+
+The task runs at logon for the current Windows user and calls the governed
+startup script directly:
+
+```text
+scripts\start-laza-production.ps1
+```
+
+The task action uses Windows PowerShell with `-NoProfile`, `-NonInteractive`,
+`-WindowStyle Hidden` and `-ExecutionPolicy Bypass`, with the repository root as
+the explicit working directory. The PowerShell startup script is idempotent: it
+checks `http://127.0.0.1:8790/health` first and exits without starting another
+Node.js process when the LAZA API is already healthy.
+
+Install or refresh the task from the repository root:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File .\scripts\install-laza-autostart.ps1
+```
+
+Remove only the official LAZA autostart task:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File .\scripts\uninstall-laza-autostart.ps1
+```
+
+Health check:
+
+```powershell
+Invoke-RestMethod -Uri 'http://127.0.0.1:8790/health'
+```
+
+Diagnostics:
+
+```powershell
+Get-ScheduledTask -TaskName 'LAZA Production Site'
+Get-ScheduledTaskInfo -TaskName 'LAZA Production Site'
+Get-NetTCPConnection -LocalPort 8790 -State Listen
+Get-CimInstance Win32_Process |
+  Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -like '*indicator-api.mjs*' }
+```
+
+Rollback:
+
+1. Run `.\scripts\uninstall-laza-autostart.ps1`.
+2. Restore any previous Startup-folder launcher from the operational backup, if
+   required.
+3. Start LAZA manually with `.\scripts\start-laza-production.ps1`.
+
+The previous Startup-folder launcher is not the official mechanism. During the
+autostart migration it should be backed up outside the repository before being
+removed from the Startup folder, so only one LAZA autostart mechanism remains
+active.
+
 ## Monthly IPCN automation
 
 Run discovery without writes:
