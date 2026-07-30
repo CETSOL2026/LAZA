@@ -664,7 +664,7 @@
   ],
   "meta": {
     "source": "LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation",
-    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
     "observationCount": 66,
     "firstPeriod": "2021-01",
     "lastPeriod": "2026-06",

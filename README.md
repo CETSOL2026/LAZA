@@ -53,20 +53,28 @@ writes immutable demo responses under `public/api`, admin demo responses under
 The frontend keeps the same visual experience, charts, animations, indicator
 detail pages, insights and marketplace downloads.
 
-Build the static demo from the repository root:
+Refresh the static demo data locally from the repository root:
 
 ```powershell
 $env:VITE_LAZA_STATIC_DEMO='true'
 npm.cmd run build:static-demo
 ```
 
-Cloudflare Pages settings:
+Commit the refreshed `public/api`, `public/static-api` and `public/downloads`
+files before deploying through Cloudflare Pages Git integration. The Cloudflare
+build environment must not run the exporter because it does not have access to
+the local SQL Server or `D:\LAZA_DATA`.
+
+Cloudflare Pages Git settings:
 
 ```text
-Build command: npm run build:static-demo
+Build command: npm run build
 Build output directory: dist
 Environment variable: VITE_LAZA_STATIC_DEMO=true
 ```
+
+For a manual Pages Direct Upload, build locally with `npm.cmd run
+build:static-demo` and deploy the generated `dist` folder.
 
 The `/admin` route is a read-only demo operations console in this mode. Protect
 it with Cloudflare Access before sharing the public demo externally. Do not

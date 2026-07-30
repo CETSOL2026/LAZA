@@ -81,7 +81,7 @@
     "source": "LAZA_DATA_PLATFORM_DEV.api.vw_bodiva_sovereign_yield_curve",
     "sourceName": "Bolsa de Divida e Valores de Angola (BODIVA)",
     "sourceArchiveUrl": "https://www.bodiva.ao/estatistica",
-    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
     "observationCount": 48,
     "snapshotCount": 4,
     "firstPeriod": "2025-02-21",

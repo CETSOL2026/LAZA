@@ -129,7 +129,7 @@
   ],
   "meta": {
     "source": "LAZA_DATA_PLATFORM_DEV.api.vw_indicator_latest",
-    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
     "indicatorCount": 6,
     "officialIndicatorCount": 6,
     "staticDemo": true
