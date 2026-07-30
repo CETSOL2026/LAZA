@@ -1,0 +1,675 @@
+{
+  "data": [
+    {
+      "period": "2021-01",
+      "periodStart": "2021-01-01",
+      "numericValue": 651.31621,
+      "displayValue": "651.32 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-02",
+      "periodStart": "2021-02-01",
+      "numericValue": 644.929511,
+      "displayValue": "644.93 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-03",
+      "periodStart": "2021-03-01",
+      "numericValue": 619.208557,
+      "displayValue": "619.21 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-04",
+      "periodStart": "2021-04-01",
+      "numericValue": 637.681563,
+      "displayValue": "637.68 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-05",
+      "periodStart": "2021-05-01",
+      "numericValue": 644.090828,
+      "displayValue": "644.09 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-06",
+      "periodStart": "2021-06-01",
+      "numericValue": 643.784454,
+      "displayValue": "643.78 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-07",
+      "periodStart": "2021-07-01",
+      "numericValue": 641.756876,
+      "displayValue": "641.76 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-08",
+      "periodStart": "2021-08-01",
+      "numericValue": 637.066154,
+      "displayValue": "637.07 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-09",
+      "periodStart": "2021-09-01",
+      "numericValue": 617.463642,
+      "displayValue": "617.46 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-10",
+      "periodStart": "2021-10-01",
+      "numericValue": 597.759804,
+      "displayValue": "597.76 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-11",
+      "periodStart": "2021-11-01",
+      "numericValue": 591.132321,
+      "displayValue": "591.13 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2021-12",
+      "periodStart": "2021-12-01",
+      "numericValue": 563.130721,
+      "displayValue": "563.13 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-01",
+      "periodStart": "2022-01-01",
+      "numericValue": 537.488885,
+      "displayValue": "537.49 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-02",
+      "periodStart": "2022-02-01",
+      "numericValue": 515.65656,
+      "displayValue": "515.66 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-03",
+      "periodStart": "2022-03-01",
+      "numericValue": 461.654965,
+      "displayValue": "461.65 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-04",
+      "periodStart": "2022-04-01",
+      "numericValue": 420.574113,
+      "displayValue": "420.57 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-05",
+      "periodStart": "2022-05-01",
+      "numericValue": 411.571606,
+      "displayValue": "411.57 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-06",
+      "periodStart": "2022-06-01",
+      "numericValue": 430.624952,
+      "displayValue": "430.62 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-07",
+      "periodStart": "2022-07-01",
+      "numericValue": 430.366302,
+      "displayValue": "430.37 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-08",
+      "periodStart": "2022-08-01",
+      "numericValue": 429.611382,
+      "displayValue": "429.61 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-09",
+      "periodStart": "2022-09-01",
+      "numericValue": 430.515857,
+      "displayValue": "430.52 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-10",
+      "periodStart": "2022-10-01",
+      "numericValue": 451.695645,
+      "displayValue": "451.70 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-11",
+      "periodStart": "2022-11-01",
+      "numericValue": 500.900617,
+      "displayValue": "500.90 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2022-12",
+      "periodStart": "2022-12-01",
+      "numericValue": 504.464277,
+      "displayValue": "504.46 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-01",
+      "periodStart": "2023-01-01",
+      "numericValue": 503.801763,
+      "displayValue": "503.80 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-02",
+      "periodStart": "2023-02-01",
+      "numericValue": 504.114344,
+      "displayValue": "504.11 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-03",
+      "periodStart": "2023-03-01",
+      "numericValue": 504.466875,
+      "displayValue": "504.47 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-04",
+      "periodStart": "2023-04-01",
+      "numericValue": 506.316541,
+      "displayValue": "506.32 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-05",
+      "periodStart": "2023-05-01",
+      "numericValue": 531.76351,
+      "displayValue": "531.76 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-06",
+      "periodStart": "2023-06-01",
+      "numericValue": 713.197097,
+      "displayValue": "713.20 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 95,
+      "isOfficial": true,
+      "hasSourceWarning": true,
+      "sourceWarningMessage": "Exact source duplicate deduplicated"
+    },
+    {
+      "period": "2023-07",
+      "periodStart": "2023-07-01",
+      "numericValue": 824.008566,
+      "displayValue": "824.01 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-08",
+      "periodStart": "2023-08-01",
+      "numericValue": 824.916347,
+      "displayValue": "824.92 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-09",
+      "periodStart": "2023-09-01",
+      "numericValue": 825.281966,
+      "displayValue": "825.28 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-10",
+      "periodStart": "2023-10-01",
+      "numericValue": 826.197818,
+      "displayValue": "826.20 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-11",
+      "periodStart": "2023-11-01",
+      "numericValue": 827.43686,
+      "displayValue": "827.44 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2023-12",
+      "periodStart": "2023-12-01",
+      "numericValue": 828.74105,
+      "displayValue": "828.74 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-01",
+      "periodStart": "2024-01-01",
+      "numericValue": 828.771918,
+      "displayValue": "828.77 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-02",
+      "periodStart": "2024-02-01",
+      "numericValue": 828.483,
+      "displayValue": "828.48 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-03",
+      "periodStart": "2024-03-01",
+      "numericValue": 831.983152,
+      "displayValue": "831.98 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-04",
+      "periodStart": "2024-04-01",
+      "numericValue": 833.06847,
+      "displayValue": "833.07 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-05",
+      "periodStart": "2024-05-01",
+      "numericValue": 842.4888,
+      "displayValue": "842.49 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-06",
+      "periodStart": "2024-06-01",
+      "numericValue": 852.76315,
+      "displayValue": "852.76 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-07",
+      "periodStart": "2024-07-01",
+      "numericValue": 870.800578,
+      "displayValue": "870.80 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-08",
+      "periodStart": "2024-08-01",
+      "numericValue": 888.273281,
+      "displayValue": "888.27 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-09",
+      "periodStart": "2024-09-01",
+      "numericValue": 926.786621,
+      "displayValue": "926.79 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-10",
+      "periodStart": "2024-10-01",
+      "numericValue": 911.797613,
+      "displayValue": "911.80 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-11",
+      "periodStart": "2024-11-01",
+      "numericValue": 910.30614,
+      "displayValue": "910.31 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2024-12",
+      "periodStart": "2024-12-01",
+      "numericValue": 912.999984,
+      "displayValue": "913.00 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-01",
+      "periodStart": "2025-01-01",
+      "numericValue": 912,
+      "displayValue": "912.00 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-02",
+      "periodStart": "2025-02-01",
+      "numericValue": 912,
+      "displayValue": "912.00 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-03",
+      "periodStart": "2025-03-01",
+      "numericValue": 912,
+      "displayValue": "912.00 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-04",
+      "periodStart": "2025-04-01",
+      "numericValue": 912,
+      "displayValue": "912.00 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-05",
+      "periodStart": "2025-05-01",
+      "numericValue": 911.952725,
+      "displayValue": "911.95 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-06",
+      "periodStart": "2025-06-01",
+      "numericValue": 911.955009,
+      "displayValue": "911.96 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-07",
+      "periodStart": "2025-07-01",
+      "numericValue": 911.953039,
+      "displayValue": "911.95 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-08",
+      "periodStart": "2025-08-01",
+      "numericValue": 911.952871,
+      "displayValue": "911.95 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-09",
+      "periodStart": "2025-09-01",
+      "numericValue": 911.957228,
+      "displayValue": "911.96 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-10",
+      "periodStart": "2025-10-01",
+      "numericValue": 911.978,
+      "displayValue": "911.98 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-11",
+      "periodStart": "2025-11-01",
+      "numericValue": 911.958038,
+      "displayValue": "911.96 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2025-12",
+      "periodStart": "2025-12-01",
+      "numericValue": 912.207476,
+      "displayValue": "912.21 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-01",
+      "periodStart": "2026-01-01",
+      "numericValue": 912.1349,
+      "displayValue": "912.13 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-02",
+      "periodStart": "2026-02-01",
+      "numericValue": 912.152564,
+      "displayValue": "912.15 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-03",
+      "periodStart": "2026-03-01",
+      "numericValue": 912.126738,
+      "displayValue": "912.13 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-04",
+      "periodStart": "2026-04-01",
+      "numericValue": 912.785619,
+      "displayValue": "912.79 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-05",
+      "periodStart": "2026-05-01",
+      "numericValue": 913.116,
+      "displayValue": "913.12 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-06",
+      "periodStart": "2026-06-01",
+      "numericValue": 912.878118,
+      "displayValue": "912.88 AOA/USD",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasSourceWarning": false
+    }
+  ],
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "observationCount": 66,
+    "firstPeriod": "2021-01",
+    "lastPeriod": "2026-06",
+    "seriesCode": "EXCHANGE_RATE_AGO_BNA_USD_REFERENCE_MONTHLY",
+    "sourceWarningCount": 1,
+    "staticDemo": true
+  }
+}

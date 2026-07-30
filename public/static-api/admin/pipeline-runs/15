@@ -1,0 +1,89 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 15,
+      "pipelineCode": "UGD_PUBLIC_DEBT_GDP",
+      "pipelineName": "UGD public debt to nominal GDP",
+      "sourceSystem": "UGD - Ministry of Finance Angola",
+      "isActive": true,
+      "createdAt": "2026-07-16T14:48:02.067"
+    },
+    "runs": [
+      {
+        "runId": 15,
+        "correlationId": "EEFF8157-2581-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T14:48:02.067",
+        "endedAt": "2026-07-16T14:48:02.067",
+        "durationMs": 0,
+        "rowsRead": 2,
+        "rowsWritten": 2,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 12,
+        "batchCode": "UGD_PUBLIC_DEBT_2025_2026Q1_E5E981C11611",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T14:48:02.067",
+        "loadedAt": "2026-07-16T14:48:02.068",
+        "sourceRecordCount": 2,
+        "acceptedRecordCount": 2,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 7
+      },
+      {
+        "status": "WARN",
+        "total": 1
+      }
+    ],
+    "events": [
+      {
+        "eventId": 13,
+        "eventType": "UGD_PUBLIC_DEBT_GDP_INITIAL_LOAD",
+        "eventLevel": "WARN",
+        "message": "Official 2025 public-debt ratio and transparently derived Q1 2026 ratio published.",
+        "occurredAt": "2026-07-16T14:48:02.080"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 20,
+        "assetName": "ugd_public_debt_2026_q1.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-05-19",
+        "registeredSizeBytes": 912617,
+        "mirrorSizeBytes": 912617,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.860"
+      },
+      {
+        "assetId": 19,
+        "assetName": "ugd_public_debt_annual_2025_pt.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-02-20",
+        "registeredSizeBytes": 953471,
+        "mirrorSizeBytes": 953471,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.775"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

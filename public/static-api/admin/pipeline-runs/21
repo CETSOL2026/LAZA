@@ -1,0 +1,107 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 21,
+      "pipelineCode": "BODIVA_SOVEREIGN_YIELD_CURVE",
+      "pipelineName": "BODIVA domestic sovereign yield curve",
+      "sourceSystem": "BODIVA",
+      "isActive": true,
+      "createdAt": "2026-07-16T16:52:23.232"
+    },
+    "runs": [
+      {
+        "runId": 21,
+        "correlationId": "97D8EBB6-3681-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T16:52:23.232",
+        "endedAt": "2026-07-16T16:52:23.232",
+        "durationMs": 0,
+        "rowsRead": 48,
+        "rowsWritten": 48,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 18,
+        "batchCode": "BODIVA_YIELD_CURVE_202502_202606",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T16:52:23.232",
+        "loadedAt": "2026-07-16T16:52:23.232",
+        "sourceRecordCount": 48,
+        "acceptedRecordCount": 48,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 192
+      }
+    ],
+    "events": [
+      {
+        "eventId": 16,
+        "eventType": "BODIVA_YIELD_CURVE_INITIAL_LOAD",
+        "eventLevel": "INFO",
+        "message": "Four official BODIVA curve snapshots and 48 tenor observations published.",
+        "occurredAt": "2026-07-16T16:52:23.270"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 69,
+        "assetName": "bodiva_daily_bulletin_20260625.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-06-25",
+        "registeredSizeBytes": 1555888,
+        "mirrorSizeBytes": 1555888,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:40.180"
+      },
+      {
+        "assetId": 68,
+        "assetName": "bodiva_daily_bulletin_20260123.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-01-23",
+        "registeredSizeBytes": 1336109,
+        "mirrorSizeBytes": 1336109,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:40.101"
+      },
+      {
+        "assetId": 67,
+        "assetName": "bodiva_daily_bulletin_20250506.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2025-05-06",
+        "registeredSizeBytes": 751974,
+        "mirrorSizeBytes": 751974,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:40.022"
+      },
+      {
+        "assetId": 66,
+        "assetName": "bodiva_daily_bulletin_20250221.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2025-02-21",
+        "registeredSizeBytes": 578110,
+        "mirrorSizeBytes": 578110,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:39.938"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

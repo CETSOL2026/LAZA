@@ -1,0 +1,74 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 11,
+      "pipelineCode": "INE_GDP_QUARTERLY_YOY",
+      "pipelineName": "INE quarterly real GDP year-over-year growth",
+      "sourceSystem": "INE Angola",
+      "isActive": true,
+      "createdAt": "2026-07-16T14:05:28.921"
+    },
+    "runs": [
+      {
+        "runId": 11,
+        "correlationId": "B343ED65-1F81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T14:05:28.921",
+        "endedAt": "2026-07-16T14:05:28.921",
+        "durationMs": 0,
+        "rowsRead": 21,
+        "rowsWritten": 21,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 8,
+        "batchCode": "INE_GDP_2026Q1_REVISED_ac84c4a8a51a",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T14:05:28.921",
+        "loadedAt": "2026-07-16T14:05:28.921",
+        "sourceRecordCount": 21,
+        "acceptedRecordCount": 21,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 63
+      }
+    ],
+    "events": [
+      {
+        "eventId": 10,
+        "eventType": "INE_GDP_INITIAL_LOAD",
+        "eventLevel": "INFO",
+        "message": "21 revised official quarterly GDP YoY observations published.",
+        "occurredAt": "2026-07-16T14:05:28.981"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 15,
+        "assetName": "ine_gdp_quarterly_2026_q1_revised.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-05-29",
+        "registeredSizeBytes": 1612675,
+        "mirrorSizeBytes": 1612675,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.496"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

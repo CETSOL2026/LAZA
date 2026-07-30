@@ -14,9 +14,20 @@ export interface AdminSession {
   expiresAt: string;
 }
 
+const staticDemoAdminSession: AdminSession = {
+  authenticated: true,
+  username: 'demo-admin',
+  displayName: 'LAZA Demo Administrator',
+  role: 'admin',
+  scope: 'Static demo operations console',
+  expiresAt: '2099-12-31T23:59:59.000Z',
+};
+
+const isStaticDemoMode = import.meta.env.VITE_LAZA_STATIC_DEMO === 'true';
+
 export function AdminGate({ onBack, onPreviewPlan }: { onBack: () => void; onPreviewPlan: (plan: SubscriptionPlan) => void }) {
-  const [authState, setAuthState] = useState<AuthState>('checking');
-  const [session, setSession] = useState<AdminSession | null>(null);
+  const [authState, setAuthState] = useState<AuthState>(isStaticDemoMode ? 'signed-in' : 'checking');
+  const [session, setSession] = useState<AdminSession | null>(isStaticDemoMode ? staticDemoAdminSession : null);
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +35,10 @@ export function AdminGate({ onBack, onPreviewPlan }: { onBack: () => void; onPre
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    if (isStaticDemoMode) {
+      return undefined;
+    }
+
     const controller = new AbortController();
     fetch('/api/admin/session', { signal: controller.signal, credentials: 'same-origin' })
       .then(async (response) => {
@@ -42,6 +57,13 @@ export function AdminGate({ onBack, onPreviewPlan }: { onBack: () => void; onPre
 
   async function login(event: FormEvent) {
     event.preventDefault();
+    if (isStaticDemoMode) {
+      setSession(staticDemoAdminSession);
+      setPassword('');
+      setAuthState('signed-in');
+      return;
+    }
+
     setSubmitting(true);
     setMessage('');
     try {
@@ -67,6 +89,14 @@ export function AdminGate({ onBack, onPreviewPlan }: { onBack: () => void; onPre
   }
 
   async function logout() {
+    if (isStaticDemoMode) {
+      setPassword('');
+      setMessage('');
+      setSession(staticDemoAdminSession);
+      setAuthState('signed-in');
+      return;
+    }
+
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }).catch(() => undefined);
     setPassword('');
     setMessage('');
@@ -89,7 +119,7 @@ export function AdminGate({ onBack, onPreviewPlan }: { onBack: () => void; onPre
           {authState === 'unavailable' && !message && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">The authentication service is temporarily unavailable.</p>}
           <button disabled={submitting} className="w-full rounded-xl bg-primary px-4 py-3 text-sm text-white transition-colors hover:bg-primary/90 disabled:cursor-wait disabled:opacity-60">{submitting ? 'Signing in...' : 'Sign in securely'}</button>
         </form>}
-        <p className="mt-6 text-center text-xs leading-5 text-muted-foreground">Access is restricted, rate-limited and protected by an HttpOnly session.</p>
+        <p className="mt-6 text-center text-xs leading-5 text-muted-foreground">{isStaticDemoMode ? 'Static demo mode. Protect this route with Cloudflare Access before sharing externally.' : 'Access is restricted, rate-limited and protected by an HttpOnly session.'}</p>
       </section>
     </main>
   </div>;

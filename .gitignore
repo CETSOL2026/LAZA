@@ -5,6 +5,7 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.static-demo.example
 config/data-platform.local.json
 .claude/
 test-results/

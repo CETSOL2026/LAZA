@@ -1,0 +1,78 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 14,
+      "pipelineCode": "BNA_OSD_BANKING_ASSETS",
+      "pipelineName": "BNA other depository corporations total assets",
+      "sourceSystem": "Banco Nacional de Angola",
+      "isActive": true,
+      "createdAt": "2026-07-16T14:48:01.710"
+    },
+    "runs": [
+      {
+        "runId": 14,
+        "correlationId": "EDFF8157-2581-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T14:48:01.710",
+        "endedAt": "2026-07-16T14:48:01.710",
+        "durationMs": 0,
+        "rowsRead": 65,
+        "rowsWritten": 65,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 11,
+        "batchCode": "BNA_OSD_BALANCE_20260615_AB3B423A47D9",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T14:48:01.710",
+        "loadedAt": "2026-07-16T14:48:01.711",
+        "sourceRecordCount": 65,
+        "acceptedRecordCount": 65,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 255
+      },
+      {
+        "status": "WARN",
+        "total": 5
+      }
+    ],
+    "events": [
+      {
+        "eventId": 12,
+        "eventType": "BNA_BANKING_ASSETS_INITIAL_LOAD",
+        "eventLevel": "WARN",
+        "message": "65 official BNA monthly total-asset balances published; 2026 observations explicitly preliminary.",
+        "occurredAt": "2026-07-16T14:48:01.838"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 18,
+        "assetName": "bna_balance_other_depository_corporations_2026_05.xls",
+        "assetType": "XLSX",
+        "publicationDate": "2026-06-15",
+        "registeredSizeBytes": 276992,
+        "mirrorSizeBytes": 276992,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.678"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

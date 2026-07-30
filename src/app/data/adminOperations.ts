@@ -68,6 +68,14 @@ export interface PipelineDetail {
 
 interface ApiResponse<T> { data: T; meta: { generatedAt: string; source: string } }
 
+const adminApi = {
+  pipelineSummary: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/pipelines-summary' : '/api/admin/pipelines/summary',
+  pipelines: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/pipelines' : '/api/admin/pipelines',
+  dataQualitySummary: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/data-quality-summary' : '/api/admin/data-quality/summary',
+  assetSummary: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/assets-summary' : '/api/admin/assets/summary',
+  pipelineDetail: (pipelineId: number) => import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? `/static-api/admin/pipeline-runs/${pipelineId}` : `/api/admin/pipelines/${pipelineId}/runs`,
+};
+
 async function getAdminData<T>(url: string): Promise<ApiResponse<T>> {
   const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
   if (response.status === 401) throw new Error('ADMIN_SESSION_EXPIRED');
@@ -78,8 +86,8 @@ async function getAdminData<T>(url: string): Promise<ApiResponse<T>> {
   return response.json();
 }
 
-export const loadPipelineSummary = () => getAdminData<PipelineSummary>('/api/admin/pipelines/summary');
-export const loadAdminPipelines = () => getAdminData<AdminPipeline[]>('/api/admin/pipelines');
-export const loadDataQualitySummary = () => getAdminData<DataQualitySummary>('/api/admin/data-quality/summary');
-export const loadAssetSummary = () => getAdminData<AssetSummary>('/api/admin/assets/summary');
-export const loadPipelineDetail = (pipelineId: number) => getAdminData<PipelineDetail>(`/api/admin/pipelines/${pipelineId}/runs`);
+export const loadPipelineSummary = () => getAdminData<PipelineSummary>(adminApi.pipelineSummary);
+export const loadAdminPipelines = () => getAdminData<AdminPipeline[]>(adminApi.pipelines);
+export const loadDataQualitySummary = () => getAdminData<DataQualitySummary>(adminApi.dataQualitySummary);
+export const loadAssetSummary = () => getAdminData<AssetSummary>(adminApi.assetSummary);
+export const loadPipelineDetail = (pipelineId: number) => getAdminData<PipelineDetail>(adminApi.pipelineDetail(pipelineId));

@@ -1,0 +1,9 @@
+{
+  "authenticated": true,
+  "username": "demo-admin",
+  "displayName": "LAZA Demo Administrator",
+  "role": "admin",
+  "scope": "Static demo operations console",
+  "expiresAt": "2099-12-31T23:59:59.000Z",
+  "staticDemo": true
+}

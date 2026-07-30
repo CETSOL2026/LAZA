@@ -1,0 +1,21 @@
+{
+  "data": {
+    "activePipelines": 14,
+    "totalRuns": 14,
+    "successfulRuns": 14,
+    "failedRuns": 0,
+    "runningRuns": 0,
+    "successRatePct": 100,
+    "totalRowsRead": 1697,
+    "totalRowsWritten": 867,
+    "totalRowsRejected": 0,
+    "lastRunAt": "2026-07-16T17:35:34.995",
+    "lastCompletedAt": "2026-07-16T17:35:34.995"
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.control.pipeline_run",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

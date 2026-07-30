@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "period": "Census 2014",
+      "periodStart": "2014-05-16",
+      "numericValue": 25.789024,
+      "displayValue": "25.79M",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "Census 2024",
+      "periodStart": "2024-09-19",
+      "numericValue": 36.604681,
+      "displayValue": "36.60M",
+      "qualityStatus": "PASSED",
+      "qualityScore": 99.9,
+      "isOfficial": true,
+      "hasAcceptedException": false,
+      "hasSourceWarning": true,
+      "sourceWarningMessage": "One-person narrative arithmetic discrepancy documented"
+    }
+  ],
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation",
+    "generatedAt": "2026-07-30T18:27:04.808Z",
+    "observationCount": 2,
+    "firstPeriod": "Census 2014",
+    "lastPeriod": "Census 2024",
+    "seriesCode": "POPULATION_AGO_INE_RGPH_CENSUS",
+    "sourceWarningCount": 1,
+    "staticDemo": true
+  }
+}

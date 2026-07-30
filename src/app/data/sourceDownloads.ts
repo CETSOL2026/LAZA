@@ -13,8 +13,11 @@ export interface SourceDownloadAsset {
   sha256: string;
   registeredSha256: string;
   mirrorStatus: 'VERIFIED' | 'PUBLISHER_UPDATED_HTML';
-  storageMode: 'LOCAL_ARCHIVE';
+  storageMode: 'LOCAL_ARCHIVE' | 'STATIC_DEMO_ARCHIVE';
   isRemote: boolean;
+  staticUrl?: string;
+  staticExportStatus?: 'EXPORTED' | 'MISSING_LOCATION' | 'EXPORT_FAILED';
+  staticExportError?: string;
 }
 
 export interface SourceDownloadCatalogResponse {
@@ -35,6 +38,7 @@ export async function loadSourceDownloadCatalog(signal?: AbortSignal): Promise<S
   return payload;
 }
 
-export function sourceDownloadUrl(assetId: number) {
-  return `/api/downloads/assets/${assetId}`;
+export function sourceDownloadUrl(asset: Pick<SourceDownloadAsset, 'assetId' | 'staticUrl'> | number) {
+  if (typeof asset === 'number') return `/api/downloads/assets/${asset}`;
+  return asset.staticUrl ?? `/api/downloads/assets/${asset.assetId}`;
 }
