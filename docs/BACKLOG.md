@@ -10,10 +10,12 @@
 - três produtos analíticos avançados: Oil & Gas, Execução Fiscal e Curva
   Soberana;
 - camadas Bronze, Silver e Gold, evidências de qualidade e API somente leitura;
-- build de produção servido localmente em `127.0.0.1:8790`;
-- inicialização automática e invisível pela tarefa `LAZA Production Site`;
-- túnel Cloudflare compartilhado com NOVOAPP e ALT_ORC, ainda sem a rota pública
-  do LAZA.
+- build de produção local e API governada continuam disponíveis para
+  desenvolvimento e refresh do export estático;
+- MVP público servido em Cloudflare Pages no hostname
+  `https://lazadev.way4u.com.br`, sem depender da máquina local;
+- o túnel `Tunnel_Alteryx` permanece para ALT_ORC, NOVOAPP e ORGANIZZE; a rota
+  `lazadev.way4u.com.br` foi removida do túnel após validação do Pages.
 
 ## Prioridades
 
@@ -28,8 +30,6 @@
 
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
-| LAZA-001 | Criar a rota `laza.way4u.com.br` no túnel `Tunnel_Alteryx`, apontando para `http://127.0.0.1:8790` | Pendente no painel Cloudflare | XS | Sessão autenticada Cloudflare | DNS resolve, HTTPS retorna 200 e as rotas ALT_ORC/NOVOAPP permanecem disponíveis |
-| LAZA-002 | Executar validação pública ponta a ponta | Bloqueado por LAZA-001 | S | LAZA-001 | Página, assets e todas as APIs retornam 200 fora da rede local; certificado é válido |
 | LAZA-004 | Definir política Cloudflare Access para homologação e demonstrações restritas | Pendente | S | Lista de utilizadores autorizados | Somente identidades aprovadas acessam o hostname de homologação |
 | LAZA-005 | Rotacionar o token do túnel e atualizar o serviço Windows | Pendente | S | Janela curta de manutenção | Novo token instalado, túnel saudável e token anterior revogado sem indisponibilidade prolongada |
 | LAZA-006 | Formalizar backup e restauração do `LAZA_DATA_PLATFORM_DEV` | Pendente | M | Espaço de backup aprovado | Backup executado, restauração testada em base isolada e evidência registrada |
@@ -39,7 +39,7 @@
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
 | LAZA-007 | Adicionar logs persistentes e rotação para site/API | Pendente | S | Nenhuma | Inicialização, erro de API e encerramento ficam registrados sem guardar segredos |
-| LAZA-008 | Criar monitor de saúde para porta `8790`, SQL Server e Cloudflare | Pendente | M | LAZA-001 | Falha gera alerta e tentativa controlada de recuperação; estado saudável fica auditável |
+| LAZA-008 | Criar monitor de saúde para porta `8790`, SQL Server e Cloudflare Pages | Pendente | M | LAZA-001/002 concluídos | Falha gera alerta e tentativa controlada de recuperação; estado saudável fica auditável |
 | LAZA-009 | Avaliar execução no arranque do Windows sem depender de login interativo | Pendente | M | Conta de serviço/credenciais SQL | Site volta automaticamente após reinício e mantém autenticação SQL com privilégio mínimo |
 | LAZA-010 | Criar procedimento de publicação: build, smoke test, rollback e versionamento | Pendente | M | LAZA-007 | Uma versão pode ser publicada e revertida com comandos documentados e evidência de teste |
 | LAZA-013 | Monitorar tamanho do SQL Express e crescimento das camadas | Pendente | S | LAZA-007 | Relatório periódico alerta antes de atingir 70%, 85% e 95% do limite operacional |
@@ -98,7 +98,7 @@
 
 ## Decisões pendentes para a próxima revisão
 
-1. O primeiro hostname será público ou protegido por Cloudflare Access?
+1. A proteção do Admin no hostname público deve evoluir de Basic Auth para Cloudflare Access?
 2. Quem pode acessar e administrar o `Admin Panel`?
 3. Qual periodicidade desejada para a curva BODIVA: diária, semanal ou mensal?
 4. Quais pipelines devem ser automatizados primeiro após o IPCN?

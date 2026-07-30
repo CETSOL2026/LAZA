@@ -31,3 +31,10 @@
 | LAZA-049 | Revisao visual fina da Home e navegacao apos LAZA-048 | S | LAZA-048 | Header ajustado para nao gerar overflow em tablet, Featured Insights simplificados para leitura executiva, auditoria visual em desktop/notebook/tablet/mobile sem overflow horizontal e validacoes typecheck, lint, build, testes e2e e health OK |
 | LAZA-050 | Criar pagina dedicada All Indicators / Indicator Catalog | M | LAZA-048 e LAZA-049 | Nova rota `/indicators` criada com catalogo pesquisavel e filtros por topico, listando seis indicadores oficiais e quatro produtos avancados, com fonte, frequencia, periodo, qualidade e access status; menu recebeu item Indicators e teste e2e cobre abertura do catalogo e detalhe de indicador |
 | LAZA-051 | Criar pagina dedicada All Insights / Insights Library | M | LAZA-046 e LAZA-050 | Nova rota `/insights` criada com biblioteca pesquisavel e filtros por topico/status de revisao, exibindo todos os rule-generated insight cards com fonte, periodo, qualidade, regra, plano minimo e abertura do detalhe de origem; menu Data & Intelligence recebeu Insights Library e teste e2e cobre navegacao e abertura de insight |
+
+## Concluídas em 30/07/2026
+
+| ID | Item | Esforço | Dependência | Evidência / critério atendido |
+| --- | --- | --- | --- | --- |
+| LAZA-001 | Publicar o MVP LAZA em hostname oficial sem depender da máquina local | M | Cloudflare Pages, export estático e validação visual | `https://lazadev.way4u.com.br` foi migrado do `Tunnel_Alteryx` para Cloudflare Pages com CNAME `laza-dev.pages.dev`; custom domain ficou `active`, site público, indicadores, insights, APIs estáticas e downloads responderam HTTP 200 |
+| LAZA-002 | Executar validação pública ponta a ponta após migração Cloudflare Pages | S | LAZA-001 | Smoke test externo validou `/`, `/insights`, `/api/static-demo/manifest`, `/api/indicators/latest`, detalhes dos indicadores, download de fonte oficial e proteção do admin; `/admin` e `/static-api/admin/*` retornam 401 sem credenciais e 200 com credenciais configuradas como Pages secrets |

@@ -47,6 +47,12 @@ Use this mode to publish the MVP as a self-contained public demo that does not
 depend on the developer computer, SQL Server, PowerShell pipelines or the local
 Node.js API being online.
 
+The public MVP is currently served by Cloudflare Pages at:
+
+```text
+https://lazadev.way4u.com.br
+```
+
 The static export reads the current governed local API/SQL Server state and
 writes immutable demo responses under `public/api`, admin demo responses under
 `public/static-api`, and downloadable source assets under `public/downloads`.
@@ -86,8 +92,21 @@ LAZA_ADMIN_BASIC_USER
 LAZA_ADMIN_BASIC_PASSWORD
 ```
 
-Do not disable the existing Cloudflare Tunnel or local production task until the
-Pages deployment and custom domain are validated and approved.
+The custom domain must point to the Pages project with:
+
+```text
+Type: CNAME
+Name: lazadev
+Target: laza-dev.pages.dev
+Proxy status: Proxied
+TTL: Auto
+```
+
+Rollback to the previous local/Tunnel delivery model is possible by recreating
+the `lazadev.way4u.com.br` public hostname in `Tunnel_Alteryx` or by pointing
+the DNS CNAME back to the tunnel target, provided the local production service
+is running. Do not change the other tunnel hostnames (`altorc`, `novoapp` or
+`organizze`) when rolling LAZA back.
 
 ## Windows production autostart
 
