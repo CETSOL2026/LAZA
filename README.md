@@ -76,10 +76,18 @@ Environment variable: VITE_LAZA_STATIC_DEMO=true
 For a manual Pages Direct Upload, build locally with `npm.cmd run
 build:static-demo` and deploy the generated `dist` folder.
 
-The `/admin` route is a read-only demo operations console in this mode. Protect
-it with Cloudflare Access before sharing the public demo externally. Do not
-disable the existing Cloudflare Tunnel or local production task until the Pages
-deployment and custom domain are validated and approved.
+The `/admin` route is a read-only demo operations console in this mode. In
+Cloudflare Pages it is protected at the edge by `functions/_middleware.js`,
+which requires Basic Auth for `/admin` and `/static-api/admin/*`. Configure the
+credentials as Pages secrets before sharing the public demo externally:
+
+```text
+LAZA_ADMIN_BASIC_USER
+LAZA_ADMIN_BASIC_PASSWORD
+```
+
+Do not disable the existing Cloudflare Tunnel or local production task until the
+Pages deployment and custom domain are validated and approved.
 
 ## Windows production autostart
 
