@@ -30,7 +30,7 @@
 
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
-| LAZA-004 | Definir política Cloudflare Access para homologação e demonstrações restritas | Pendente | S | Lista de utilizadores autorizados | Somente identidades aprovadas acessam o hostname de homologação |
+| LAZA-004 | Evoluir a proteção do Admin público de Basic Auth para Cloudflare Access | Pendente por decisão operacional | S | Lista de utilizadores/e-mails autorizados e permissão Cloudflare Zero Trust | Somente identidades aprovadas acessam `/admin` e `/static-api/admin/*`, com auditoria de acesso e sem partilhar senha comum |
 | LAZA-005 | Rotacionar o token do túnel e atualizar o serviço Windows | Pendente | S | Janela curta de manutenção | Novo token instalado, túnel saudável e token anterior revogado sem indisponibilidade prolongada |
 | LAZA-006 | Formalizar backup e restauração do `LAZA_DATA_PLATFORM_DEV` | Pendente | M | Espaço de backup aprovado | Backup executado, restauração testada em base isolada e evidência registrada |
 
