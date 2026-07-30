@@ -1,0 +1,78 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 12,
+      "pipelineCode": "INE_RGPH_POPULATION",
+      "pipelineName": "INE resident population census totals",
+      "sourceSystem": "INE Angola",
+      "isActive": true,
+      "createdAt": "2026-07-16T14:15:22.242"
+    },
+    "runs": [
+      {
+        "runId": 12,
+        "correlationId": "E40693C7-2081-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T14:15:22.242",
+        "endedAt": "2026-07-16T14:15:22.242",
+        "durationMs": 0,
+        "rowsRead": 2,
+        "rowsWritten": 2,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 9,
+        "batchCode": "INE_RGPH_2014_2024_FINAL_6fb5f034d0a8",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T14:15:22.242",
+        "loadedAt": "2026-07-16T14:15:22.243",
+        "sourceRecordCount": 2,
+        "acceptedRecordCount": 2,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 5
+      },
+      {
+        "status": "WARN",
+        "total": 1
+      }
+    ],
+    "events": [
+      {
+        "eventId": 11,
+        "eventType": "INE_POPULATION_INITIAL_LOAD",
+        "eventLevel": "WARN",
+        "message": "Official 2014 and 2024 resident population census totals published; one-person narrative arithmetic discrepancy documented.",
+        "occurredAt": "2026-07-16T14:15:22.267"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 16,
+        "assetName": "ine_rgph_2024_final_summary.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2025-11-20",
+        "registeredSizeBytes": 3492679,
+        "mirrorSizeBytes": 3492679,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.587"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

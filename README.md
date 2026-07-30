@@ -41,6 +41,54 @@ The Admin Panel (`/admin`) is protected by server-side credential validation;
 see [docs/ADMIN_ACCESS.md](docs/ADMIN_ACCESS.md) for access and credential
 rotation.
 
+## Static demo build for Cloudflare Pages
+
+Use this mode to publish the MVP as a self-contained public demo that does not
+depend on the developer computer, SQL Server, PowerShell pipelines or the local
+Node.js API being online.
+
+The static export reads the current governed local API/SQL Server state and
+writes immutable demo responses under `public/api`, admin demo responses under
+`public/static-api`, and downloadable source assets under `public/downloads`.
+The frontend keeps the same visual experience, charts, animations, indicator
+detail pages, insights and marketplace downloads.
+
+Refresh the static demo data locally from the repository root:
+
+```powershell
+$env:VITE_LAZA_STATIC_DEMO='true'
+npm.cmd run build:static-demo
+```
+
+Commit the refreshed `public/api`, `public/static-api` and `public/downloads`
+files before deploying through Cloudflare Pages Git integration. The Cloudflare
+build environment must not run the exporter because it does not have access to
+the local SQL Server or `D:\LAZA_DATA`.
+
+Cloudflare Pages Git settings:
+
+```text
+Build command: npm run build
+Build output directory: dist
+Environment variable: VITE_LAZA_STATIC_DEMO=true
+```
+
+For a manual Pages Direct Upload, build locally with `npm.cmd run
+build:static-demo` and deploy the generated `dist` folder.
+
+The `/admin` route is a read-only demo operations console in this mode. In
+Cloudflare Pages it is protected at the edge by `functions/_middleware.js`,
+which requires Basic Auth for `/admin` and `/static-api/admin/*`. Configure the
+credentials as Pages secrets before sharing the public demo externally:
+
+```text
+LAZA_ADMIN_BASIC_USER
+LAZA_ADMIN_BASIC_PASSWORD
+```
+
+Do not disable the existing Cloudflare Tunnel or local production task until the
+Pages deployment and custom domain are validated and approved.
+
 ## Windows production autostart
 
 The official local autostart mechanism for the production MVP is a Windows

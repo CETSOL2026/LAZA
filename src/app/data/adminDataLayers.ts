@@ -100,6 +100,13 @@ export interface GoldIndicator {
 
 interface ApiResponse<T> { data: T; meta: { source: string; generatedAt: string } }
 
+const adminLayerApi = {
+  summary: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/data-layers-summary' : '/api/admin/data-layers/summary',
+  bronze: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/data-layers-bronze' : '/api/admin/data-layers/bronze',
+  silver: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/data-layers-silver' : '/api/admin/data-layers/silver',
+  gold: import.meta.env.VITE_LAZA_STATIC_DEMO === 'true' ? '/static-api/admin/data-layers-gold' : '/api/admin/data-layers/gold',
+};
+
 async function getLayerData<T>(url: string): Promise<ApiResponse<T>> {
   const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
   if (response.status === 401) throw new Error('ADMIN_SESSION_EXPIRED');
@@ -110,7 +117,7 @@ async function getLayerData<T>(url: string): Promise<ApiResponse<T>> {
   return response.json();
 }
 
-export const loadDataLayersSummary = () => getLayerData<DataLayersSummary>('/api/admin/data-layers/summary');
-export const loadBronzeLayer = () => getLayerData<BronzeAsset[]>('/api/admin/data-layers/bronze');
-export const loadSilverLayer = () => getLayerData<SilverIndicator[]>('/api/admin/data-layers/silver');
-export const loadGoldLayer = () => getLayerData<GoldIndicator[]>('/api/admin/data-layers/gold');
+export const loadDataLayersSummary = () => getLayerData<DataLayersSummary>(adminLayerApi.summary);
+export const loadBronzeLayer = () => getLayerData<BronzeAsset[]>(adminLayerApi.bronze);
+export const loadSilverLayer = () => getLayerData<SilverIndicator[]>(adminLayerApi.silver);
+export const loadGoldLayer = () => getLayerData<GoldIndicator[]>(adminLayerApi.gold);

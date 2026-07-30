@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "period": "2025",
+      "periodStart": "2025-01-01",
+      "numericValue": 52.17,
+      "displayValue": "52.17%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false,
+      "hasSourceWarning": false
+    },
+    {
+      "period": "2026-Q1",
+      "periodStart": "2026-01-01",
+      "numericValue": 48.09,
+      "displayValue": "48.09%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 99.5,
+      "isOfficial": true,
+      "hasAcceptedException": false,
+      "hasSourceWarning": true,
+      "sourceWarningMessage": "Derived from official government and public-enterprise debt components"
+    }
+  ],
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "observationCount": 2,
+    "firstPeriod": "2025",
+    "lastPeriod": "2026-Q1",
+    "seriesCode": "PUBLIC_DEBT_GDP_AGO_UGD_OFFICIAL_COMPONENTS",
+    "sourceWarningCount": 1,
+    "staticDemo": true
+  }
+}

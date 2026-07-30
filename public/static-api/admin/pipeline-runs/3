@@ -1,0 +1,54 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 3,
+      "pipelineCode": "INE_IPCN_BRONZE_TO_SILVER",
+      "pipelineName": "INE IPCN official publication to normalized Silver",
+      "sourceSystem": "INE_ANGOLA",
+      "isActive": true,
+      "createdAt": "2026-07-16T12:11:24.972"
+    },
+    "runs": [
+      {
+        "runId": 3,
+        "correlationId": "B9809D76-0F81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T12:11:24.966",
+        "endedAt": "2026-07-16T12:11:25.063",
+        "durationMs": 97,
+        "rowsRead": 66,
+        "rowsWritten": 66,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 186
+      },
+      {
+        "status": "WARN",
+        "total": 12
+      }
+    ],
+    "events": [
+      {
+        "eventId": 4,
+        "eventType": "IPCN_SILVER_VALIDATION_COMPLETED",
+        "eventLevel": "WARN",
+        "message": "66 monthly IPCN YoY observations normalized to Silver; 54 homologue reconciliations passed and 12 periods remain warnings due to unavailable 2020 indices.",
+        "occurredAt": "2026-07-16T12:11:25.063"
+      }
+    ],
+    "assets": []
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

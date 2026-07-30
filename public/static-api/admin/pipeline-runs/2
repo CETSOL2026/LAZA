@@ -1,0 +1,93 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 2,
+      "pipelineCode": "INE_IPCN_TO_BRONZE",
+      "pipelineName": "INE IPCN official assets to Bronze",
+      "sourceSystem": "INE_ANGOLA",
+      "isActive": true,
+      "createdAt": "2026-07-16T12:02:47.536"
+    },
+    "runs": [
+      {
+        "runId": 2,
+        "correlationId": "FE033342-0E81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T12:02:47.536",
+        "endedAt": "2026-07-16T12:02:47.540",
+        "durationMs": 4,
+        "rowsRead": 1,
+        "rowsWritten": 1,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 2,
+        "batchCode": "INE-IPCN-2026-06-20260716-V1",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T11:55:32.290",
+        "loadedAt": "2026-07-16T12:02:47.537",
+        "sourceRecordCount": 1,
+        "acceptedRecordCount": 1,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [],
+    "events": [
+      {
+        "eventId": 3,
+        "eventType": "SOURCE_ASSETS_ARCHIVED",
+        "eventLevel": "INFO",
+        "message": "INE IPCN source assets moved from landing to immutable archive paths.",
+        "occurredAt": "2026-07-16T12:03:57.351"
+      },
+      {
+        "eventId": 2,
+        "eventType": "OFFICIAL_BRONZE_LOAD_COMPLETED",
+        "eventLevel": "INFO",
+        "message": "INE IPCN June 2026 assets and headline observation loaded to Bronze.",
+        "occurredAt": "2026-07-16T12:02:47.540"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 7,
+        "assetName": "ine_ipcn_2026-06_publication.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-07-08",
+        "registeredSizeBytes": 483741,
+        "mirrorSizeBytes": 483741,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.230"
+      },
+      {
+        "assetId": 9,
+        "assetName": "ine_ipcn_2026-04_structured.xlsx",
+        "assetType": "XLSX",
+        "publicationDate": "2026-05-08",
+        "registeredSizeBytes": 55592,
+        "mirrorSizeBytes": 55592,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.329"
+      },
+      {
+        "assetId": 8,
+        "assetName": "ine_ipcn_methodology_acquired_2026-07-16.pdf",
+        "assetType": "PDF",
+        "registeredSizeBytes": 553385
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

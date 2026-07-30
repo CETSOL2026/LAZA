@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "build:static-demo": "node scripts/export-static-demo.mjs && vite build",
     "dev": "node scripts/dev.mjs",
     "dev:web": "vite",
     "dev:api": "node server/indicator-api.mjs",

@@ -37,6 +37,7 @@ const institutionalPaths: Record<string, string> = { about: '/institutional/abou
 const officialIndicatorIds = ['gdp-growth', 'inflation-rate', 'exchange-rate', 'population', 'banking-assets', 'public-debt-gdp'];
 const marketplaceTabs = ['kiluange', 'bwila', 'lukeni', 'ekuikui', 'njinga'];
 const methodologyTabs = ['data-quality', 'scn-2008', 'cpi', 'gfs', 'bpm', 'edi', 'equity', 'bond', 'yield', 'fsi', 'traffic', 'macro-fiscal', 'external', 'banking', 'market', 'stress', 'benchmarks'];
+const isStaticDemoMode = import.meta.env.VITE_LAZA_STATIC_DEMO === 'true';
 
 function routeFromPath(pathname: string) {
   const cleanPath = pathname.replace(/\/+$/, '') || '/';
@@ -78,11 +79,17 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(initialRoute.tab);
   const [showAdmin, setShowAdmin] = useState(initialRoute.admin);
   const [selectedOfficialIndicator, setSelectedOfficialIndicator] = useState(initialRoute.indicatorId);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(() => normalizePlan(window.localStorage.getItem('laza_subscription_plan')));
+  const [subscriptionPlan, setSubscriptionPlan] = useState<SubscriptionPlan>(() => isStaticDemoMode ? 'enterprise' : normalizePlan(window.localStorage.getItem('laza_subscription_plan')));
   const [pricingOpen, setPricingOpen] = useState(false);
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [activeTab]);
-  useEffect(() => { window.localStorage.setItem('laza_subscription_plan', subscriptionPlan); }, [subscriptionPlan]);
+  useEffect(() => {
+    if (isStaticDemoMode) {
+      window.localStorage.setItem('laza_subscription_plan', 'enterprise');
+      return;
+    }
+    window.localStorage.setItem('laza_subscription_plan', subscriptionPlan);
+  }, [subscriptionPlan]);
   useEffect(() => {
     const indicatorTitles: Record<string, string> = { 'gdp-growth': 'GDP Growth', 'inflation-rate': 'Inflation Rate', 'exchange-rate': 'Exchange Rate', population: 'Population', 'banking-assets': 'Banking Assets', 'public-debt-gdp': 'Public Debt/GDP' };
     const tabTitles: Record<string, string> = { overview: 'Data & Intelligence', indicators: 'All Indicators', insights: 'All Insights', 'data-intelligence': 'Official Source Marketplace', 'advanced-gdp-diversification': 'Oil vs. Non-Oil GDP', 'advanced-oil-gas': 'Oil & Gas Production', 'advanced-fiscal-execution': 'Fiscal Execution', 'advanced-sovereign-yield': 'Sovereign Yield Curve', about: 'About', team: 'Team', contacts: 'Contacts', 'data-quality': 'Data Quality Methodology' };

@@ -1,0 +1,265 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 17,
+      "pipelineCode": "ANPG_OIL_GAS_MONTHLY",
+      "pipelineName": "ANPG monthly oil and gas production",
+      "sourceSystem": "ANPG",
+      "isActive": true,
+      "createdAt": "2026-07-16T15:59:33.655"
+    },
+    "runs": [
+      {
+        "runId": 17,
+        "correlationId": "A9D6B455-2F81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T15:59:33.655",
+        "endedAt": "2026-07-16T15:59:33.655",
+        "durationMs": 0,
+        "rowsRead": 18,
+        "rowsWritten": 252,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 14,
+        "batchCode": "ANPG_OIL_GAS_202501_202606",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T15:59:33.655",
+        "loadedAt": "2026-07-16T15:59:33.656",
+        "sourceRecordCount": 18,
+        "acceptedRecordCount": 18,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 1258
+      },
+      {
+        "status": "WARN",
+        "total": 2
+      }
+    ],
+    "events": [
+      {
+        "eventId": 14,
+        "eventType": "ANPG_OIL_GAS_INITIAL_LOAD",
+        "eventLevel": "WARN",
+        "message": "18 official ANPG monthly publications and 252 metric observations published.",
+        "occurredAt": "2026-07-16T15:59:33.901"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 56,
+        "assetName": "anpg_monthly_oil_gas_2026-06.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-07-16",
+        "registeredSizeBytes": 160880,
+        "mirrorSizeBytes": 160880,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:39.387"
+      },
+      {
+        "assetId": 55,
+        "assetName": "anpg_monthly_oil_gas_2026-05.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-06-30",
+        "registeredSizeBytes": 161344,
+        "mirrorSizeBytes": 161344,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:39.301"
+      },
+      {
+        "assetId": 54,
+        "assetName": "anpg_monthly_oil_gas_2026-04.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-05-21",
+        "registeredSizeBytes": 161421,
+        "mirrorSizeBytes": 161421,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:39.205"
+      },
+      {
+        "assetId": 53,
+        "assetName": "anpg_monthly_oil_gas_2026-03.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-04-27",
+        "registeredSizeBytes": 160928,
+        "mirrorSizeBytes": 160928,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:39.131"
+      },
+      {
+        "assetId": 52,
+        "assetName": "anpg_monthly_oil_gas_2026-02.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-03-25",
+        "registeredSizeBytes": 161275,
+        "mirrorSizeBytes": 161275,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:39.053"
+      },
+      {
+        "assetId": 51,
+        "assetName": "anpg_monthly_oil_gas_2026-01.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-02-13",
+        "registeredSizeBytes": 161680,
+        "mirrorSizeBytes": 161680,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.969"
+      },
+      {
+        "assetId": 50,
+        "assetName": "anpg_monthly_oil_gas_2025-12.html",
+        "assetType": "HTML",
+        "publicationDate": "2026-01-28",
+        "registeredSizeBytes": 161365,
+        "mirrorSizeBytes": 161365,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.879"
+      },
+      {
+        "assetId": 49,
+        "assetName": "anpg_monthly_oil_gas_2025-11.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-12-16",
+        "registeredSizeBytes": 162616,
+        "mirrorSizeBytes": 162616,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.793"
+      },
+      {
+        "assetId": 48,
+        "assetName": "anpg_monthly_oil_gas_2025-10.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-11-20",
+        "registeredSizeBytes": 163317,
+        "mirrorSizeBytes": 163317,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.702"
+      },
+      {
+        "assetId": 47,
+        "assetName": "anpg_monthly_oil_gas_2025-09.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-10-15",
+        "registeredSizeBytes": 162306,
+        "mirrorSizeBytes": 162306,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.628"
+      },
+      {
+        "assetId": 46,
+        "assetName": "anpg_monthly_oil_gas_2025-08.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-09-19",
+        "registeredSizeBytes": 162126,
+        "mirrorSizeBytes": 162126,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.544"
+      },
+      {
+        "assetId": 45,
+        "assetName": "anpg_monthly_oil_gas_2025-07.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-08-20",
+        "registeredSizeBytes": 163177,
+        "mirrorSizeBytes": 163177,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.453"
+      },
+      {
+        "assetId": 44,
+        "assetName": "anpg_monthly_oil_gas_2025-06.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-07-14",
+        "registeredSizeBytes": 161410,
+        "mirrorSizeBytes": 161410,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.362"
+      },
+      {
+        "assetId": 43,
+        "assetName": "anpg_monthly_oil_gas_2025-05.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-06-13",
+        "registeredSizeBytes": 161166,
+        "mirrorSizeBytes": 161166,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.278"
+      },
+      {
+        "assetId": 42,
+        "assetName": "anpg_monthly_oil_gas_2025-04.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-05-29",
+        "registeredSizeBytes": 161768,
+        "mirrorSizeBytes": 161768,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.186"
+      },
+      {
+        "assetId": 41,
+        "assetName": "anpg_monthly_oil_gas_2025-03.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-04-22",
+        "registeredSizeBytes": 161772,
+        "mirrorSizeBytes": 161772,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.095"
+      },
+      {
+        "assetId": 40,
+        "assetName": "anpg_monthly_oil_gas_2025-02.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-03-17",
+        "registeredSizeBytes": 161543,
+        "mirrorSizeBytes": 161543,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:38.023"
+      },
+      {
+        "assetId": 39,
+        "assetName": "anpg_monthly_oil_gas_2025-01.html",
+        "assetType": "HTML",
+        "publicationDate": "2025-02-19",
+        "registeredSizeBytes": 161267,
+        "mirrorSizeBytes": 161267,
+        "mirrorStatus": "PUBLISHER_UPDATED_HTML",
+        "hashMatchesRegistered": false,
+        "lastVerifiedAt": "2026-07-16T18:36:37.931"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 23,
+      "pipelineCode": "INE_GDP_OIL_NON_OIL_QUARTERLY",
+      "pipelineName": "INE quarterly oil and non-oil GDP decomposition",
+      "sourceSystem": "INE Angola",
+      "isActive": true,
+      "createdAt": "2026-07-16T17:35:34.995"
+    },
+    "runs": [
+      {
+        "runId": 23,
+        "correlationId": "156EBBBF-3C81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T17:35:34.995",
+        "endedAt": "2026-07-16T17:35:34.995",
+        "durationMs": 0,
+        "rowsRead": 21,
+        "rowsWritten": 168,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 20,
+        "batchCode": "INE_GDP_OIL_NON_OIL_2021Q1_2026Q1_DC34A006",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T17:35:34.995",
+        "loadedAt": "2026-07-16T17:35:34.995",
+        "sourceRecordCount": 21,
+        "acceptedRecordCount": 21,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 840
+      },
+      {
+        "status": "WARN",
+        "total": 168
+      }
+    ],
+    "events": [
+      {
+        "eventId": 17,
+        "eventType": "INE_GDP_DECOMPOSITION_INITIAL_LOAD",
+        "eventLevel": "WARN",
+        "message": "21 official quarters and 168 oil/non-oil GDP observations published.",
+        "occurredAt": "2026-07-16T17:35:35.194"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 71,
+        "assetName": "CONTAS NACIONAIS TRIMESTRAIS.xlsx",
+        "assetType": "XLSX",
+        "publicationDate": "2026-05-29",
+        "registeredSizeBytes": 601481,
+        "mirrorSizeBytes": 601481,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:40.265"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

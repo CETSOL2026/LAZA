@@ -1,0 +1,122 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 18,
+      "pipelineCode": "MINFIN_FISCAL_EXECUTION_QUARTERLY",
+      "pipelineName": "MINFIN quarterly budget execution",
+      "sourceSystem": "MINFIN",
+      "isActive": true,
+      "createdAt": "2026-07-16T16:25:10.526"
+    },
+    "runs": [
+      {
+        "runId": 18,
+        "correlationId": "A1CEC0E9-3281-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T16:25:10.526",
+        "endedAt": "2026-07-16T16:25:10.526",
+        "durationMs": 0,
+        "rowsRead": 5,
+        "rowsWritten": 80,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 15,
+        "batchCode": "MINFIN_REOGE_2025Q1_2026Q1",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T16:25:10.526",
+        "loadedAt": "2026-07-16T16:25:10.527",
+        "sourceRecordCount": 5,
+        "acceptedRecordCount": 5,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 397
+      },
+      {
+        "status": "WARN",
+        "total": 3
+      }
+    ],
+    "events": [
+      {
+        "eventId": 15,
+        "eventType": "MINFIN_FISCAL_EXECUTION_INITIAL_LOAD",
+        "eventLevel": "WARN",
+        "message": "Five official MINFIN quarterly reports and 80 metrics published.",
+        "occurredAt": "2026-07-16T16:25:10.594"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 61,
+        "assetName": "minfin_reoge_2026-Q1.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-04-17",
+        "registeredSizeBytes": 1655528,
+        "mirrorSizeBytes": 1655528,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:39.841"
+      },
+      {
+        "assetId": 60,
+        "assetName": "minfin_reoge_2025-Q4.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2026-03-12",
+        "registeredSizeBytes": 1705843,
+        "mirrorSizeBytes": 1705843,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:39.745"
+      },
+      {
+        "assetId": 59,
+        "assetName": "minfin_reoge_2025-Q3.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2025-10-15",
+        "registeredSizeBytes": 1860464,
+        "mirrorSizeBytes": 1860464,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:39.661"
+      },
+      {
+        "assetId": 58,
+        "assetName": "minfin_reoge_2025-Q2.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2025-07-11",
+        "registeredSizeBytes": 1866630,
+        "mirrorSizeBytes": 1866630,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:39.575"
+      },
+      {
+        "assetId": 57,
+        "assetName": "minfin_reoge_2025-Q1.pdf",
+        "assetType": "PDF",
+        "publicationDate": "2025-05-06",
+        "registeredSizeBytes": 1663235,
+        "mirrorSizeBytes": 1663235,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:39.479"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

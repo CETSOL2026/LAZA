@@ -1,0 +1,103 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 1,
+      "pipelineCode": "PILOT_FIXTURE_TO_MEDALLION",
+      "pipelineName": "Pilot fixture to Bronze Silver Gold",
+      "sourceSystem": "LAZA_PROTOTYPE",
+      "isActive": true,
+      "createdAt": "2026-07-16T11:43:44.938"
+    },
+    "runs": [
+      {
+        "runId": 1,
+        "correlationId": "6C2A2999-0B81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T11:43:44.925",
+        "endedAt": "2026-07-16T11:43:45.363",
+        "durationMs": 438,
+        "rowsRead": 6,
+        "rowsWritten": 6,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 1,
+        "batchCode": "DEMO-PILOT-2024-V1",
+        "dataClassification": "DEMO",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T11:43:44.925",
+        "loadedAt": "2026-07-16T11:43:44.925",
+        "sourceRecordCount": 6,
+        "acceptedRecordCount": 6,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 12
+      },
+      {
+        "status": "WARN",
+        "total": 6
+      }
+    ],
+    "events": [
+      {
+        "eventId": 1,
+        "eventType": "DEMO_SEED_COMPLETED",
+        "eventLevel": "WARN",
+        "message": "Six prototype values loaded through Bronze, Silver, DQ and Gold as demonstration data.",
+        "occurredAt": "2026-07-16T11:43:45.363"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 6,
+        "assetName": "public-debt-gdp.json",
+        "assetType": "FIXTURE",
+        "registeredSizeBytes": 648
+      },
+      {
+        "assetId": 5,
+        "assetName": "banking-assets.json",
+        "assetType": "FIXTURE",
+        "registeredSizeBytes": 620
+      },
+      {
+        "assetId": 4,
+        "assetName": "population.json",
+        "assetType": "FIXTURE",
+        "registeredSizeBytes": 626
+      },
+      {
+        "assetId": 3,
+        "assetName": "exchange-rate.json",
+        "assetType": "FIXTURE",
+        "registeredSizeBytes": 644
+      },
+      {
+        "assetId": 2,
+        "assetName": "inflation-rate.json",
+        "assetType": "FIXTURE",
+        "registeredSizeBytes": 652
+      },
+      {
+        "assetId": 1,
+        "assetName": "gdp-growth.json",
+        "assetType": "FIXTURE",
+        "registeredSizeBytes": 636
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

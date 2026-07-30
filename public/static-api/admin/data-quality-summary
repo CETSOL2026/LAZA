@@ -1,0 +1,20 @@
+{
+  "data": {
+    "totalExecutions": 11,
+    "passedExecutions": 2,
+    "warningExecutions": 9,
+    "passedResults": 3412,
+    "warningResults": 199,
+    "failedResults": 0,
+    "averageQualityScore": 99.46,
+    "approvedExceptions": 185,
+    "openExceptions": 0,
+    "approvals": 776
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.dq",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

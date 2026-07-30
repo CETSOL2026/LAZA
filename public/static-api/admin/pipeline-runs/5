@@ -1,0 +1,45 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 5,
+      "pipelineCode": "INE_IPCN_SILVER_TO_GOLD",
+      "pipelineName": "Publish validated INE IPCN Silver series to Gold",
+      "sourceSystem": "INE_ANGOLA",
+      "isActive": true,
+      "createdAt": "2026-07-16T12:18:31.499"
+    },
+    "runs": [
+      {
+        "runId": 5,
+        "correlationId": "865CD874-1081-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T12:18:31.499",
+        "endedAt": "2026-07-16T12:18:31.529",
+        "durationMs": 30,
+        "rowsRead": 66,
+        "rowsWritten": 66,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [],
+    "dqResults": [],
+    "events": [
+      {
+        "eventId": 6,
+        "eventType": "IPCN_GOLD_PUBLICATION_COMPLETED",
+        "eventLevel": "INFO",
+        "message": "66 validated monthly IPCN observations were officially approved and published to Gold. The 12 accepted 2021 DQ exceptions remain traceable.",
+        "occurredAt": "2026-07-16T12:18:31.529"
+      }
+    ],
+    "assets": []
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

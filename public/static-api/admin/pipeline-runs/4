@@ -1,0 +1,45 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 4,
+      "pipelineCode": "INE_IPCN_DQ_EXCEPTION_ACCEPTANCE",
+      "pipelineName": "INE IPCN 2021 DQ exception acceptance",
+      "sourceSystem": "INE_ANGOLA",
+      "isActive": true,
+      "createdAt": "2026-07-16T12:15:07.295"
+    },
+    "runs": [
+      {
+        "runId": 4,
+        "correlationId": "2B3F21FB-0F81-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T12:15:07.295",
+        "endedAt": "2026-07-16T12:15:07.319",
+        "durationMs": 24,
+        "rowsRead": 12,
+        "rowsWritten": 24,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [],
+    "dqResults": [],
+    "events": [
+      {
+        "eventId": 5,
+        "eventType": "IPCN_DQ_EXCEPTION_ACCEPTED",
+        "eventLevel": "WARN",
+        "message": "The 12 IPCN 2021 homologue-reconciliation limitations were accepted because no 2020 index levels exist. Original DQ warnings were preserved and Silver observations were released as passed with exception.",
+        "occurredAt": "2026-07-16T12:15:07.319"
+      }
+    ],
+    "assets": []
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

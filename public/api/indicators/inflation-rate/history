@@ -1,0 +1,674 @@
+{
+  "data": [
+    {
+      "period": "2021-01",
+      "periodStart": "2021-01-01",
+      "numericValue": 24.41,
+      "displayValue": "24.41%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-02",
+      "periodStart": "2021-02-01",
+      "numericValue": 24.85,
+      "displayValue": "24.85%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-03",
+      "periodStart": "2021-03-01",
+      "numericValue": 24.77,
+      "displayValue": "24.77%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-04",
+      "periodStart": "2021-04-01",
+      "numericValue": 24.82,
+      "displayValue": "24.82%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-05",
+      "periodStart": "2021-05-01",
+      "numericValue": 24.94,
+      "displayValue": "24.94%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-06",
+      "periodStart": "2021-06-01",
+      "numericValue": 25.32,
+      "displayValue": "25.32%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-07",
+      "periodStart": "2021-07-01",
+      "numericValue": 25.72,
+      "displayValue": "25.72%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-08",
+      "periodStart": "2021-08-01",
+      "numericValue": 26.09,
+      "displayValue": "26.09%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-09",
+      "periodStart": "2021-09-01",
+      "numericValue": 26.57,
+      "displayValue": "26.57%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-10",
+      "periodStart": "2021-10-01",
+      "numericValue": 26.87,
+      "displayValue": "26.87%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-11",
+      "periodStart": "2021-11-01",
+      "numericValue": 26.98,
+      "displayValue": "26.98%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2021-12",
+      "periodStart": "2021-12-01",
+      "numericValue": 27.03,
+      "displayValue": "27.03%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 83.33,
+      "isOfficial": true,
+      "hasAcceptedException": true
+    },
+    {
+      "period": "2022-01",
+      "periodStart": "2022-01-01",
+      "numericValue": 27.66,
+      "displayValue": "27.66%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-02",
+      "periodStart": "2022-02-01",
+      "numericValue": 27.28,
+      "displayValue": "27.28%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-03",
+      "periodStart": "2022-03-01",
+      "numericValue": 27,
+      "displayValue": "27.00%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-04",
+      "periodStart": "2022-04-01",
+      "numericValue": 25.79,
+      "displayValue": "25.79%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-05",
+      "periodStart": "2022-05-01",
+      "numericValue": 24.42,
+      "displayValue": "24.42%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-06",
+      "periodStart": "2022-06-01",
+      "numericValue": 22.96,
+      "displayValue": "22.96%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-07",
+      "periodStart": "2022-07-01",
+      "numericValue": 21.4,
+      "displayValue": "21.40%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-08",
+      "periodStart": "2022-08-01",
+      "numericValue": 19.78,
+      "displayValue": "19.78%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-09",
+      "periodStart": "2022-09-01",
+      "numericValue": 18.16,
+      "displayValue": "18.16%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-10",
+      "periodStart": "2022-10-01",
+      "numericValue": 16.68,
+      "displayValue": "16.68%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-11",
+      "periodStart": "2022-11-01",
+      "numericValue": 15.24,
+      "displayValue": "15.24%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2022-12",
+      "periodStart": "2022-12-01",
+      "numericValue": 13.85,
+      "displayValue": "13.85%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-01",
+      "periodStart": "2023-01-01",
+      "numericValue": 12.54,
+      "displayValue": "12.54%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-02",
+      "periodStart": "2023-02-01",
+      "numericValue": 11.54,
+      "displayValue": "11.54%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-03",
+      "periodStart": "2023-03-01",
+      "numericValue": 10.81,
+      "displayValue": "10.81%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-04",
+      "periodStart": "2023-04-01",
+      "numericValue": 10.59,
+      "displayValue": "10.59%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-05",
+      "periodStart": "2023-05-01",
+      "numericValue": 10.62,
+      "displayValue": "10.62%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-06",
+      "periodStart": "2023-06-01",
+      "numericValue": 11.25,
+      "displayValue": "11.25%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-07",
+      "periodStart": "2023-07-01",
+      "numericValue": 12.12,
+      "displayValue": "12.12%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-08",
+      "periodStart": "2023-08-01",
+      "numericValue": 13.54,
+      "displayValue": "13.54%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-09",
+      "periodStart": "2023-09-01",
+      "numericValue": 15.01,
+      "displayValue": "15.01%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-10",
+      "periodStart": "2023-10-01",
+      "numericValue": 16.58,
+      "displayValue": "16.58%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-11",
+      "periodStart": "2023-11-01",
+      "numericValue": 18.19,
+      "displayValue": "18.19%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2023-12",
+      "periodStart": "2023-12-01",
+      "numericValue": 20.01,
+      "displayValue": "20.01%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-01",
+      "periodStart": "2024-01-01",
+      "numericValue": 21.99,
+      "displayValue": "21.99%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-02",
+      "periodStart": "2024-02-01",
+      "numericValue": 24.07,
+      "displayValue": "24.07%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-03",
+      "periodStart": "2024-03-01",
+      "numericValue": 26.09,
+      "displayValue": "26.09%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-04",
+      "periodStart": "2024-04-01",
+      "numericValue": 28.2,
+      "displayValue": "28.20%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-05",
+      "periodStart": "2024-05-01",
+      "numericValue": 30.16,
+      "displayValue": "30.16%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-06",
+      "periodStart": "2024-06-01",
+      "numericValue": 31,
+      "displayValue": "31.00%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-07",
+      "periodStart": "2024-07-01",
+      "numericValue": 31.09,
+      "displayValue": "31.09%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-08",
+      "periodStart": "2024-08-01",
+      "numericValue": 30.53,
+      "displayValue": "30.53%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-09",
+      "periodStart": "2024-09-01",
+      "numericValue": 29.93,
+      "displayValue": "29.93%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-10",
+      "periodStart": "2024-10-01",
+      "numericValue": 29.17,
+      "displayValue": "29.17%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-11",
+      "periodStart": "2024-11-01",
+      "numericValue": 28.4,
+      "displayValue": "28.40%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2024-12",
+      "periodStart": "2024-12-01",
+      "numericValue": 27.5,
+      "displayValue": "27.50%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-01",
+      "periodStart": "2025-01-01",
+      "numericValue": 26.48,
+      "displayValue": "26.48%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-02",
+      "periodStart": "2025-02-01",
+      "numericValue": 25.26,
+      "displayValue": "25.26%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-03",
+      "periodStart": "2025-03-01",
+      "numericValue": 23.85,
+      "displayValue": "23.85%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-04",
+      "periodStart": "2025-04-01",
+      "numericValue": 22.32,
+      "displayValue": "22.32%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-05",
+      "periodStart": "2025-05-01",
+      "numericValue": 20.74,
+      "displayValue": "20.74%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-06",
+      "periodStart": "2025-06-01",
+      "numericValue": 19.73,
+      "displayValue": "19.73%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-07",
+      "periodStart": "2025-07-01",
+      "numericValue": 19.48,
+      "displayValue": "19.48%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-08",
+      "periodStart": "2025-08-01",
+      "numericValue": 18.88,
+      "displayValue": "18.88%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-09",
+      "periodStart": "2025-09-01",
+      "numericValue": 18.16,
+      "displayValue": "18.16%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-10",
+      "periodStart": "2025-10-01",
+      "numericValue": 17.43,
+      "displayValue": "17.43%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-11",
+      "periodStart": "2025-11-01",
+      "numericValue": 16.56,
+      "displayValue": "16.56%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2025-12",
+      "periodStart": "2025-12-01",
+      "numericValue": 15.7,
+      "displayValue": "15.70%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2026-01",
+      "periodStart": "2026-01-01",
+      "numericValue": 14.56,
+      "displayValue": "14.56%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2026-02",
+      "periodStart": "2026-02-01",
+      "numericValue": 13.35,
+      "displayValue": "13.35%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2026-03",
+      "periodStart": "2026-03-01",
+      "numericValue": 12.42,
+      "displayValue": "12.42%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2026-04",
+      "periodStart": "2026-04-01",
+      "numericValue": 11.58,
+      "displayValue": "11.58%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2026-05",
+      "periodStart": "2026-05-01",
+      "numericValue": 10.88,
+      "displayValue": "10.88%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    },
+    {
+      "period": "2026-06",
+      "periodStart": "2026-06-01",
+      "numericValue": 10.11,
+      "displayValue": "10.11%",
+      "qualityStatus": "PASSED",
+      "qualityScore": 100,
+      "isOfficial": true,
+      "hasAcceptedException": false
+    }
+  ],
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.gold.fact_indicator_observation",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "observationCount": 66,
+    "firstPeriod": "2021-01",
+    "lastPeriod": "2026-06",
+    "seriesCode": "INFLATION_RATE_AGO_INE_IPCN_YOY",
+    "acceptedExceptionCount": 12,
+    "staticDemo": true
+  }
+}

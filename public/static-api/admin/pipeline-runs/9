@@ -1,0 +1,78 @@
+{
+  "data": {
+    "pipeline": {
+      "pipelineId": 9,
+      "pipelineCode": "BNA_EXCHANGE_REFERENCE_MONTHLY",
+      "pipelineName": "BNA USD/AOA reference rate monthly",
+      "sourceSystem": "BNA REST API",
+      "isActive": true,
+      "createdAt": "2026-07-16T13:24:25.369"
+    },
+    "runs": [
+      {
+        "runId": 9,
+        "correlationId": "68FA88A9-1981-F111-85A0-9C67D65196D0",
+        "status": "SUCCEEDED",
+        "triggerType": "MANUAL",
+        "startedAt": "2026-07-16T13:24:25.369",
+        "endedAt": "2026-07-16T13:24:25.369",
+        "durationMs": 0,
+        "rowsRead": 1364,
+        "rowsWritten": 66,
+        "rowsRejected": 0,
+        "initiatedBy": "CarlosTeixeira\\carlo"
+      }
+    ],
+    "batches": [
+      {
+        "batchId": 6,
+        "batchCode": "BNA_FX_20210101_20260630_a4f076e52613",
+        "dataClassification": "OFFICIAL",
+        "status": "VALIDATED",
+        "acquiredAt": "2026-07-16T13:24:25.369",
+        "loadedAt": "2026-07-16T13:24:25.375",
+        "sourceRecordCount": 1364,
+        "acceptedRecordCount": 1364,
+        "rejectedRecordCount": 0
+      }
+    ],
+    "dqResults": [
+      {
+        "status": "PASS",
+        "total": 197
+      },
+      {
+        "status": "WARN",
+        "total": 1
+      }
+    ],
+    "events": [
+      {
+        "eventId": 9,
+        "eventType": "BNA_FX_INITIAL_LOAD",
+        "eventLevel": "INFO",
+        "message": "Official BNA USD/AOA daily data loaded and published as 66 monthly averages.",
+        "occurredAt": "2026-07-16T13:24:25.708"
+      }
+    ],
+    "assets": [
+      {
+        "assetId": 13,
+        "assetName": "bna_usd_aoa_reference_daily_2021-01-01_2026-06-30.json",
+        "assetType": "API_RESPONSE",
+        "publicationDate": "2026-06-30",
+        "registeredSizeBytes": 227772,
+        "mirrorSizeBytes": 227772,
+        "mirrorStatus": "VERIFIED",
+        "hashMatchesRegistered": true,
+        "lastVerifiedAt": "2026-07-16T18:36:37.410"
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV operational schemas",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}

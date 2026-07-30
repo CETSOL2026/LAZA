@@ -1,0 +1,27 @@
+{
+  "data": {
+    "totalAssets": 36,
+    "totalMirrorBytes": 24502162,
+    "hashVerifiedAssets": 18,
+    "hashMismatchAssets": 18,
+    "lastVerifiedAt": "2026-07-16T18:36:40.265",
+    "statuses": [
+      {
+        "status": "PUBLISHER_UPDATED_HTML",
+        "total": 18,
+        "totalBytes": 2911361
+      },
+      {
+        "status": "VERIFIED",
+        "total": 18,
+        "totalBytes": 21590801
+      }
+    ]
+  },
+  "meta": {
+    "source": "LAZA_DATA_PLATFORM_DEV.control.source_asset_mirror",
+    "generatedAt": "2026-07-30T18:33:39.518Z",
+    "readOnly": true,
+    "staticDemo": true
+  }
+}
