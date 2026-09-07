@@ -1,6 +1,6 @@
 # Backlog do MVP LAZA
 
-> Atualizado em 20 de julho de 2026. Este documento contém apenas trabalho
+> Atualizado em 07 de setembro de 2026. Este documento contém apenas trabalho
 > aberto ou decisões pendentes. A ordem dentro de cada prioridade representa a
 > sequência recomendada de execução.
 
@@ -81,9 +81,17 @@
 
 ## P2 — Preparação para Google Cloud
 
+> Decisão de 07/09/2026: a prova de portabilidade na Google Cloud fica
+> definida como fase seguinte ao MVP atual, com início planejado para os
+> próximos dias. As três linhas abaixo são a sequência de arranque dessa
+> fase, na ordem recomendada pela avaliação de maturidade GCP
+> (`docs/gcp-migration-maturity-assessment.md`).
+
 | ID | Item | Estado | Esforço | Dependência | Critério de aceite |
 | --- | --- | --- | --- | --- | --- |
-| LAZA-035 | Executar prova de portabilidade de um indicador ponta a ponta | Pendente | XL | LAZA-033 e landing zone | Um indicador percorre ingestão, DQ, Gold e site na Google Cloud com reconciliação 100% contra SQL Server |
+| LAZA-052 | Criar `DataProvider` interface na API | Próximo | M | Nenhuma | API consome dados por interface (`SqlServerProvider` atual) sem alterar contrato consumido pelo frontend; abre espaço para `BigQueryProvider` futuro sem regressão |
+| LAZA-053 | Criar `StorageProvider` abstraction para downloads de assets | Próximo | M | Nenhuma | Download de assets oficiais passa por interface (`LocalFilesystemProvider` atual) sem alterar hash/verificação existente; abre espaço para `GoogleCloudStorageProvider` futuro |
+| LAZA-035 | Executar prova de portabilidade do IPCN ponta a ponta | Pendente | XL | LAZA-033, LAZA-052, LAZA-053 e landing zone GCP aprovada | O IPCN percorre ingestão, DQ, Gold e site na Google Cloud com reconciliação 100% contra SQL Server |
 | LAZA-036 | Planejar migração dos nove produtos e corte operacional | Pendente | L | LAZA-035 | Plano possui ondas, rollback, custos, responsáveis e critérios de saída |
 
 ## P3 — Estacionamento estratégico
@@ -103,7 +111,13 @@
 3. Qual periodicidade desejada para a curva BODIVA: diária, semanal ou mensal?
 4. Quais pipelines devem ser automatizados primeiro após o IPCN?
 5. Qual retenção de logs, arquivos Bronze e backups deve ser adotada?
-6. A prova na Google Cloud faz parte deste MVP ou da fase seguinte?
+
+## Decisões já tomadas
+
+- **07/09/2026** — A prova de portabilidade na Google Cloud é fase seguinte
+  ao MVP atual, não parte dele. Início planejado para os próximos dias,
+  começando pelo LAZA-052 e LAZA-053. Ver `docs/gcp-migration-maturity-assessment.md`
+  para a sequência completa de ondas recomendada.
 
 ## Definition of Done
 
