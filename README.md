@@ -102,6 +102,10 @@ Proxy status: Proxied
 TTL: Auto
 ```
 
+After changing Cloudflare Pages production secrets, trigger a new deployment
+from the connected `main` branch so the published site picks up the updated
+configuration.
+
 Rollback to the previous local/Tunnel delivery model is possible by recreating
 the `lazadev.way4u.com.br` public hostname in `Tunnel_Alteryx` or by pointing
 the DNS CNAME back to the tunnel target, provided the local production service
